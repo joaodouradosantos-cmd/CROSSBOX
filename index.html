@@ -182,7 +182,7 @@
     .section { display: none; }
     .section.active { display: block; }
 
-    /* Botão de apagar na tabela 1RM (pequeno) */
+    /* Botão de apagar nas tabelas (1RM e Diário) */
     .btn-delete {
       padding: 4px 8px;
       border-radius: 999px;
@@ -202,7 +202,6 @@
       font-size: 0.8rem;
       color: #444;
     }
-
   </style>
 </head>
 
@@ -248,6 +247,7 @@
 
   <div class="tabs">
     <button class="tab-btn active" data-target="sec-1rm">1RM</button>
+    <button class="tab-btn" data-target="sec-cargas">Cargas</button>
     <button class="tab-btn" data-target="sec-diario">Diário</button>
   </div>
 
@@ -262,7 +262,7 @@
         </div>
 
         <div class="field">
-          <label>1RM (kg)</label>
+          <label>1RM (kg) – peso máximo numa repetição</label>
           <input id="oneRm" type="number" step="0.5" />
         </div>
       </div>
@@ -293,6 +293,35 @@
       </div>
     </div>
 
+  </section>
+
+  <!-- CARGAS -->
+  <section id="sec-cargas" class="section">
+    <div class="card">
+      <div class="field">
+        <label>Exercício (com 1RM registado)</label>
+        <select id="loadExercise"></select>
+      </div>
+
+      <div class="scroll" style="margin-top:10px;">
+        <table>
+          <thead>
+            <tr>
+              <th>Reps</th>
+              <th>% 1RM</th>
+              <th>Carga sugerida</th>
+            </tr>
+          </thead>
+          <tbody id="loadBody"></tbody>
+        </table>
+      </div>
+
+      <div class="helper-text">
+        <div id="strengthZone"></div>
+        <div id="hypertrophyZone" style="margin-top:4px;"></div>
+        <small>Valores aproximados. Ajusta conforme técnica e sensação de esforço.</small>
+      </div>
+    </div>
   </section>
 
   <!-- DIÁRIO -->
@@ -330,7 +359,6 @@
 
       <div style="margin-top:8px;">
         <button class="btn-primary" id="saveDiary">Guardar</button>
-        <button class="btn-danger" id="clearDiary">Apagar tudo</button>
       </div>
 
     </div>
@@ -345,6 +373,7 @@
               <th>Tipo</th>
               <th>Resultado</th>
               <th>Notas</th>
+              <th></th> <!-- lixo por linha -->
             </tr>
           </thead>
           <tbody id="diaryBody"></tbody>
@@ -453,6 +482,24 @@ const sel = document.getElementById("exercise");
 const rm = document.getElementById("oneRm");
 const bodyTable = document.getElementById("tableBody");
 
+/* ==== CARGAS ==== */
+const REP_SCHEMES = [
+  { reps: 1,  perc: 1.00 },
+  { reps: 2,  perc: 0.96 },
+  { reps: 3,  perc: 0.93 },
+  { reps: 4,  perc: 0.90 },
+  { reps: 5,  perc: 0.87 },
+  { reps: 6,  perc: 0.85 },
+  { reps: 8,  perc: 0.80 },
+  { reps: 10, perc: 0.75 },
+  { reps: 12, perc: 0.70 }
+];
+
+const loadSel = document.getElementById("loadExercise");
+const loadBody = document.getElementById("loadBody");
+const strengthZone = document.getElementById("strengthZone");
+const hypertrophyZone = document.getElementById("hypertrophyZone");
+
 /* preencher select com exercícios */
 function initSelect() {
   sel.innerHTML = "";
@@ -476,6 +523,7 @@ function deleteEx(name) {
     delete dataRm[name];
     localStorage.setItem(STORAGE_RM, JSON.stringify(dataRm));
     renderRm();
+    updateLoadSelect();
   }
 }
 
@@ -517,6 +565,8 @@ function renderRm() {
 
     bodyTable.appendChild(tr);
   });
+
+  updateLoadSelect();
 }
 
 /* guardar / actualizar 1RM */
@@ -529,6 +579,75 @@ document.getElementById("addBtn").addEventListener("click", () => {
   rm.value = "";
   renderRm();
 });
+
+/* ===== CARGAS (a partir do 1RM) ===== */
+function updateLoadSelect() {
+  if (!loadSel) return;
+  const names = Object.keys(dataRm).sort();
+  loadSel.innerHTML = "";
+
+  if (!names.length) {
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "Regista primeiro o 1RM na aba 1RM";
+    loadSel.appendChild(opt);
+    renderLoadTable(null);
+    return;
+  }
+
+  names.forEach(name => {
+    const opt = document.createElement("option");
+    opt.value = name;
+    opt.textContent = name;
+    loadSel.appendChild(opt);
+  });
+
+  renderLoadTable(loadSel.value);
+}
+
+function renderLoadTable(exName) {
+  loadBody.innerHTML = "";
+  strengthZone.textContent = "";
+  hypertrophyZone.textContent = "";
+
+  if (!exName || !dataRm[exName]) return;
+
+  const oneRmVal = dataRm[exName];
+
+  REP_SCHEMES.forEach(row => {
+    const tr = document.createElement("tr");
+
+    const tdReps = document.createElement("td");
+    tdReps.textContent = row.reps + " reps";
+    tr.appendChild(tdReps);
+
+    const tdPerc = document.createElement("td");
+    tdPerc.textContent = (row.perc * 100).toFixed(0) + "%";
+    tr.appendChild(tdPerc);
+
+    const tdCarga = document.createElement("td");
+    tdCarga.textContent = formatKg(oneRmVal * row.perc);
+    tr.appendChild(tdCarga);
+
+    loadBody.appendChild(tr);
+  });
+
+  const stLow  = formatKg(oneRmVal * 0.80);
+  const stHigh = formatKg(oneRmVal * 0.90);
+  const hypLow  = formatKg(oneRmVal * 0.70);
+  const hypHigh = formatKg(oneRmVal * 0.80);
+
+  strengthZone.textContent =
+    `Força (3–5 reps): ~80–90% 1RM → ${stLow} – ${stHigh}`;
+  hypertrophyZone.textContent =
+    `Hipertrofia (6–12 reps): ~70–80% 1RM → ${hypLow} – ${hypHigh}`;
+}
+
+if (loadSel) {
+  loadSel.addEventListener("change", () => {
+    renderLoadTable(loadSel.value);
+  });
+}
 
 /* ===== DIÁRIO ===== */
 const STORAGE_DIARY = "crossfit_diary";
@@ -543,7 +662,7 @@ const diaryBody = document.getElementById("diaryBody");
 
 function renderDiary() {
   diaryBody.innerHTML = "";
-  diary.forEach(d => {
+  diary.forEach((d, index) => {
     const tr = document.createElement("tr");
 
     const tdDate = document.createElement("td");
@@ -566,8 +685,24 @@ function renderDiary() {
     tdNotas.textContent = d.notas || "";
     tr.appendChild(tdNotas);
 
+    const tdDelete = document.createElement("td");
+    const btn = document.createElement("button");
+    btn.textContent = "🗑";
+    btn.className = "btn-delete";
+    btn.addEventListener("click", () => deleteDiary(index));
+    tdDelete.appendChild(btn);
+    tr.appendChild(tdDelete);
+
     diaryBody.appendChild(tr);
   });
+}
+
+function deleteDiary(index) {
+  if (index < 0 || index >= diary.length) return;
+  if (!confirm("Apagar este registo do diário?")) return;
+  diary.splice(index, 1);
+  localStorage.setItem(STORAGE_DIARY, JSON.stringify(diary));
+  renderDiary();
 }
 
 /* guardar registo no diário */
@@ -592,15 +727,6 @@ document.getElementById("saveDiary").addEventListener("click", () => {
   notasEl.value = "";
 });
 
-/* apagar TODO o diário */
-document.getElementById("clearDiary").addEventListener("click", () => {
-  if (!diary.length) return;
-  if (!confirm("Apagar todos os registos do diário?")) return;
-  diary = [];
-  localStorage.setItem(STORAGE_DIARY, JSON.stringify(diary));
-  renderDiary();
-});
-
 /* ===== TABS ===== */
 document.querySelectorAll(".tab-btn").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -618,6 +744,7 @@ initSelect();
 loadProfile();
 renderRm();
 renderDiary();
+updateLoadSelect();
 
 /* preenche data de hoje por defeito */
 if (!dateEl.value) {
