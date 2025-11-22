@@ -277,6 +277,10 @@
             <tr>
               <th>Exercício</th>
               <th>1RM</th>
+              <th>25%</th>
+              <th>30%</th>
+              <th>35%</th>
+              <th>40%</th>
               <th>50%</th>
               <th>60%</th>
               <th>70%</th>
@@ -304,6 +308,7 @@
               <th>1RM</th>
               <th>Origem</th>
               <th>PR</th>
+              <th></th>
             </tr>
           </thead>
           <tbody id="rmLogBody"></tbody>
@@ -469,7 +474,13 @@ const MOVES = [
   "Kettlebell Lunges"
 ];
 
-const PERC = [0.5,0.6,0.7,0.75,0.8,0.85,0.9,0.95];
+/* agora com 25–40% + 50–95% */
+const PERC = [
+  0.25, 0.30, 0.35, 0.40,
+  0.50, 0.60, 0.70, 0.75,
+  0.80, 0.85, 0.90, 0.95
+];
+
 const STORAGE_RM = "crossfit_1rm";
 let dataRm = JSON.parse(localStorage.getItem(STORAGE_RM) || "{}");
 
@@ -548,6 +559,15 @@ function addRmLog(ex, val, source) {
   updateResumo();
 }
 
+function deleteRmLog(index) {
+  if (index < 0 || index >= rmLog.length) return;
+  if (!confirm("Apagar este registo do histórico de 1RM?")) return;
+  rmLog.splice(index, 1);
+  saveRmLog();
+  renderRmLog();
+  updateResumo();
+}
+
 function renderRmLog() {
   if (!rmLogBody) return;
   rmLogBody.innerHTML = "";
@@ -560,7 +580,7 @@ function renderRmLog() {
     }
   });
 
-  rmLog.slice(0, 20).forEach(e => {
+  rmLog.slice(0, 50).forEach((e, index) => {
     const tr = document.createElement("tr");
 
     const tdDate = document.createElement("td");
@@ -582,6 +602,14 @@ function renderRmLog() {
     const tdPr = document.createElement("td");
     tdPr.textContent = (e.val >= maxByEx[e.ex] - 0.0001) ? "PR" : "";
     tr.appendChild(tdPr);
+
+    const tdDel = document.createElement("td");
+    const btn = document.createElement("button");
+    btn.textContent = "🗑";
+    btn.className = "btn-delete";
+    btn.addEventListener("click", () => deleteRmLog(index));
+    tdDel.appendChild(btn);
+    tr.appendChild(tdDel);
 
     rmLogBody.appendChild(tr);
   });
@@ -841,7 +869,6 @@ function updateResumo() {
     }
   }
 
-  // N.º de exercícios com 1RM e nº de registos no histórico
   const nEx = Object.keys(dataRm).length;
   const nReg = rmLog.length;
   resumoTreinosEl.textContent =
