@@ -295,6 +295,37 @@
       </div>
     </div>
 
+    <!-- NOVO MÓDULO: CÁLCULO DE CARGA SUGERIDA -->
+    <div class="card">
+      <div class="form-row">
+        <div class="field">
+          <label>Exercício (com 1RM registado)</label>
+          <select id="calcExercicio"></select>
+        </div>
+        <div class="field">
+          <label>N.º de repetições planeadas</label>
+          <input id="calcReps" type="number" min="1" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Objetivo</label>
+          <select id="calcObjetivo">
+            <option value="">Automático</option>
+            <option value="forca">Força</option>
+            <option value="hipertrofia">Hipertrofia</option>
+            <option value="tecnica">Técnica / Volume leve</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="calcBtn">Calcular carga sugerida</button>
+      <div class="helper-text" id="calcResultado">
+        Escolhe um exercício com 1RM registado, indica o nº de repetições e, se quiseres, o objetivo (força / hipertrofia / técnica).
+      </div>
+    </div>
+
   </section>
 
   <!-- WOD -->
@@ -494,6 +525,13 @@ const sel = document.getElementById("exercise");
 const rm = document.getElementById("oneRm");
 const bodyTable = document.getElementById("tableBody");
 
+/* NOVO MÓDULO: ELEMENTOS DA CALCULADORA DE CARGA */
+const calcExEl = document.getElementById("calcExercicio");
+const calcRepsEl = document.getElementById("calcReps");
+const calcObjEl = document.getElementById("calcObjetivo");
+const calcResEl = document.getElementById("calcResultado");
+const calcBtn = document.getElementById("calcBtn");
+
 /* WOD */
 const STORAGE_TREINO = "crossfit_treinos";
 let treinos = JSON.parse(localStorage.getItem(STORAGE_TREINO) || "[]");
@@ -532,6 +570,30 @@ function initSelect() {
       treinoExEl.appendChild(opt);
     });
   }
+}
+
+/* Atualiza lista de exercícios na calculadora de carga (apenas com 1RM registado) */
+function refreshCalcExOptions() {
+  if (!calcExEl) return;
+  calcExEl.innerHTML = "";
+
+  const names = Object.keys(dataRm).sort();
+  if (!names.length) {
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "Nenhum 1RM registado";
+    calcExEl.appendChild(opt);
+    calcExEl.disabled = true;
+    return;
+  }
+
+  calcExEl.disabled = false;
+  names.forEach(n => {
+    const opt = document.createElement("option");
+    opt.value = n;
+    opt.textContent = n;
+    calcExEl.appendChild(opt);
+  });
 }
 
 function formatKg(v) {
@@ -584,6 +646,9 @@ function renderRm() {
 
     bodyTable.appendChild(tr);
   });
+
+  // Atualiza lista de exercícios na calculadora
+  refreshCalcExOptions();
 }
 
 /* Guardar / atualizar 1RM manual */
@@ -596,6 +661,73 @@ document.getElementById("addBtn").addEventListener("click", () => {
   rm.value = "";
   renderRm();
 });
+
+/* === NOVO MÓDULO: CÁLCULO DE CARGA SUGERIDA === */
+
+/* devolve intervalo de percentagens sugeridas com base em reps e objetivo */
+function getPercentRange(reps, objetivo) {
+  let minP, maxP;
+
+  if (objetivo === "forca") {
+    if (reps <= 2) { minP = 0.9; maxP = 0.98; }
+    else if (reps <= 3) { minP = 0.88; maxP = 0.95; }
+    else if (reps <= 5) { minP = 0.80; maxP = 0.90; }
+    else { minP = 0.75; maxP = 0.85; }
+  } else if (objetivo === "hipertrofia") {
+    if (reps <= 5) { minP = 0.75; maxP = 0.85; }
+    else if (reps <= 8) { minP = 0.70; maxP = 0.80; }
+    else if (reps <= 12) { minP = 0.65; maxP = 0.75; }
+    else { minP = 0.55; maxP = 0.70; }
+  } else if (objetivo === "tecnica") {
+    if (reps <= 5) { minP = 0.50; maxP = 0.65; }
+    else if (reps <= 10) { minP = 0.45; maxP = 0.60; }
+    else { minP = 0.40; maxP = 0.55; }
+  } else {
+    // automático com base no nº de reps
+    if (reps === 1) { minP = 0.9; maxP = 1.0; }
+    else if (reps <= 3) { minP = 0.85; maxP = 0.95; }
+    else if (reps <= 5) { minP = 0.80; maxP = 0.90; }
+    else if (reps <= 8) { minP = 0.70; maxP = 0.80; }
+    else if (reps <= 12) { minP = 0.65; maxP = 0.75; }
+    else { minP = 0.50; maxP = 0.65; }
+  }
+
+  return { minP, maxP };
+}
+
+if (calcBtn) {
+  calcBtn.addEventListener("click", () => {
+    if (!calcExEl || !calcRepsEl || !calcResEl) return;
+
+    const ex = calcExEl.value;
+    const reps = parseInt(calcRepsEl.value || "0", 10);
+    const obj = calcObjEl ? calcObjEl.value : "";
+
+    if (!ex || !dataRm[ex]) {
+      calcResEl.textContent = "Escolhe um exercício com 1RM registado.";
+      return;
+    }
+    if (!reps || reps <= 0) {
+      calcResEl.textContent = "Indica o número de repetições.";
+      return;
+    }
+
+    const oneRmVal = dataRm[ex];
+    const { minP, maxP } = getPercentRange(reps, obj);
+    const minLoad = oneRmVal * minP;
+    const maxLoad = oneRmVal * maxP;
+
+    let objetivoTexto = "automático";
+    if (obj === "forca") objetivoTexto = "força";
+    if (obj === "hipertrofia") objetivoTexto = "hipertrofia";
+    if (obj === "tecnica") objetivoTexto = "técnica / volume leve";
+
+    calcResEl.textContent =
+      `Para ${reps} repetições em ${ex}, com objetivo ${objetivoTexto}, ` +
+      `a carga sugerida é entre ${(minP*100).toFixed(0)}% e ${(maxP*100).toFixed(0)}% do 1RM: ` +
+      `${formatKg(minLoad)} – ${formatKg(maxLoad)}. Ajusta ligeiramente para bater certo com os discos que tens.`;
+  });
+}
 
 /* === WOD: CARGA E REGISTO === */
 function saveTreinos() {
