@@ -145,7 +145,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: #111;
     }
 
@@ -248,7 +248,7 @@
   <!-- TABS -->
   <div class="tabs">
     <button class="tab-btn active" data-target="sec-1rm">1RM</button>
-    <button class="tab-btn" data-target="sec-cargas">Cargas</button>
+    <button class="tab-btn" data-target="sec-treino">Treino</button>
   </div>
 
   <!-- 1RM -->
@@ -318,8 +318,89 @@
 
   </section>
 
-  <!-- CARGAS -->
-  <section id="sec-cargas" class="section">
+  <!-- TREINO (WOD + CARGA + SUGESTÃO) -->
+  <section id="sec-treino" class="section">
+
+    <!-- REGISTO DO TREINO DO DIA -->
+    <div class="card">
+      <div class="form-row">
+        <div class="field">
+          <label>Data</label>
+          <input id="treinoData" type="date">
+        </div>
+        <div class="field">
+          <label>Exercício</label>
+          <select id="treinoExercicio"></select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Tipo</label>
+          <select id="treinoTipo">
+            <option value="">Selecionar</option>
+            <option value="força">Força</option>
+            <option value="hipertrofia">Hipertrofia</option>
+            <option value="técnica">Técnica</option>
+            <option value="metcon">Metcon</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Rondas / Séries</label>
+          <input id="treinoRondas" type="number" min="1" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Repetições por série</label>
+          <input id="treinoReps" type="number" min="1" />
+        </div>
+        <div class="field">
+          <label>Peso (kg)</label>
+          <input id="treinoPeso" type="number" step="0.5" min="0" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Tempo (opcional)</label>
+          <input id="treinoTempo" type="text" placeholder="Ex.: 12:35, 20', AMRAP 10'..." />
+        </div>
+      </div>
+
+      <button class="btn-primary" id="treinoAdd">Adicionar ao treino</button>
+      <div class="helper-text">
+        A carga de cada exercício é calculada como: peso × repetições × rondas.
+      </div>
+    </div>
+
+    <!-- TABELA DO TREINO E RESUMO -->
+    <div class="card">
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Exercício</th>
+              <th>Tipo</th>
+              <th>Rondas</th>
+              <th>Reps</th>
+              <th>Peso</th>
+              <th>% 1RM</th>
+              <th>Tempo</th>
+              <th>Carga</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="treinoBody"></tbody>
+        </table>
+      </div>
+      <div class="helper-text" id="treinoResumo"></div>
+      <div class="helper-text" id="treinoSugestao" style="margin-top:4px; font-weight:500;"></div>
+    </div>
+
+    <!-- FERRAMENTA DE CARGAS A PARTIR DO 1RM -->
     <div class="card">
       <div class="field">
         <label>Exercício (com 1RM registado)</label>
@@ -346,6 +427,7 @@
       </div>
     </div>
 
+    <!-- CALCULADORA DE 1RM ESTIMADO -->
     <div class="card">
       <div class="form-row">
         <div class="field">
@@ -474,7 +556,7 @@ const MOVES = [
   "Kettlebell Lunges"
 ];
 
-/* agora com 25–40% + 50–95% */
+/* percentagens 25–40% + 50–95% */
 const PERC = [
   0.25, 0.30, 0.35, 0.40,
   0.50, 0.60, 0.70, 0.75,
@@ -492,6 +574,22 @@ const rmLogBody = document.getElementById("rmLogBody");
 const sel = document.getElementById("exercise");
 const rm = document.getElementById("oneRm");
 const bodyTable = document.getElementById("tableBody");
+
+/* TREINO (WOD) */
+const STORAGE_TREINO = "crossfit_treinos";
+let treinos = JSON.parse(localStorage.getItem(STORAGE_TREINO) || "[]");
+
+const treinoDataEl = document.getElementById("treinoData");
+const treinoExEl = document.getElementById("treinoExercicio");
+const treinoTipoEl = document.getElementById("treinoTipo");
+const treinoRondasEl = document.getElementById("treinoRondas");
+const treinoRepsEl = document.getElementById("treinoReps");
+const treinoPesoEl = document.getElementById("treinoPeso");
+const treinoTempoEl = document.getElementById("treinoTempo");
+const treinoAddBtn = document.getElementById("treinoAdd");
+const treinoBody = document.getElementById("treinoBody");
+const treinoResumoEl = document.getElementById("treinoResumo");
+const treinoSugestaoEl = document.getElementById("treinoSugestao");
 
 /* CARGAS */
 const REP_SCHEMES = [
@@ -526,21 +624,32 @@ const resumoTreinosEl = document.getElementById("resumoTreinos");
 
 /* Helpers */
 function initSelect() {
-  if (!sel) return;
-  sel.innerHTML = "";
-  MOVES.forEach(m => {
-    const opt = document.createElement("option");
-    opt.value = m;
-    opt.textContent = m;
-    sel.appendChild(opt);
-  });
+  if (sel) {
+    sel.innerHTML = "";
+    MOVES.forEach(m => {
+      const opt = document.createElement("option");
+      opt.value = m;
+      opt.textContent = m;
+      sel.appendChild(opt);
+    });
+  }
+
+  if (treinoExEl) {
+    treinoExEl.innerHTML = "";
+    MOVES.forEach(m => {
+      const opt = document.createElement("option");
+      opt.value = m;
+      opt.textContent = m;
+      treinoExEl.appendChild(opt);
+    });
+  }
 }
 
 function formatKg(v) {
   return v.toFixed(1).replace(".", ",") + " kg";
 }
 
-/* Histórico de 1RM */
+/* === Histórico de 1RM === */
 function saveRmLog() {
   localStorage.setItem(STORAGE_RM_LOG, JSON.stringify(rmLog));
 }
@@ -615,7 +724,7 @@ function renderRmLog() {
   });
 }
 
-/* Apagar exercício */
+/* === Tabela 1RM === */
 function deleteEx(name) {
   if (!name) return;
   if (!confirm(`Apagar o exercício "${name}"?`)) return;
@@ -626,7 +735,6 @@ function deleteEx(name) {
   updateResumo();
 }
 
-/* Tabela 1RM */
 function renderRm() {
   bodyTable.innerHTML = "";
   Object.keys(dataRm).sort().forEach(name => {
@@ -680,7 +788,182 @@ document.getElementById("addBtn").addEventListener("click", () => {
   renderRm();
 });
 
-/* CARGAS a partir de 1RM */
+/* === TREINO: WOD / CARGA === */
+function saveTreinos() {
+  localStorage.setItem(STORAGE_TREINO, JSON.stringify(treinos));
+}
+
+function calcCarga(entry) {
+  const peso = entry.peso || 0;
+  const reps = entry.reps || 0;
+  const rondas = entry.rondas || 1;
+  return peso * reps * rondas;
+}
+
+function addTreinoEntry() {
+  const date = treinoDataEl.value || new Date().toISOString().slice(0,10);
+  const ex = treinoExEl.value;
+  const tipo = treinoTipoEl.value;
+  const rondas = parseInt(treinoRondasEl.value || "1", 10);
+  const reps = parseInt(treinoRepsEl.value || "0", 10);
+  const peso = parseFloat(treinoPesoEl.value || "0");
+  const tempo = treinoTempoEl.value.trim();
+
+  if (!ex || !reps || reps <= 0) return;
+
+  const carga = calcCarga({ peso, reps, rondas });
+  let perc1rm = null;
+  if (dataRm[ex] && dataRm[ex] > 0 && peso > 0) {
+    perc1rm = peso / dataRm[ex];
+  }
+
+  const entry = {
+    date,
+    ex,
+    tipo,
+    rondas,
+    reps,
+    peso,
+    tempo,
+    carga,
+    perc1rm
+  };
+
+  treinos.unshift(entry);
+  saveTreinos();
+  renderTreinos();
+
+  treinoRondasEl.value = "";
+  treinoRepsEl.value = "";
+  treinoPesoEl.value = "";
+  treinoTempoEl.value = "";
+}
+
+function deleteTreinoEntry(index) {
+  if (index < 0 || index >= treinos.length) return;
+  if (!confirm("Apagar este registo de treino?")) return;
+  treinos.splice(index, 1);
+  saveTreinos();
+  renderTreinos();
+}
+
+function renderTreinos() {
+  if (!treinoBody) return;
+  treinoBody.innerHTML = "";
+
+  const dia = treinoDataEl.value || new Date().toISOString().slice(0,10);
+  const lista = treinos.filter(t => t.date === dia);
+
+  if (!lista.length) {
+    treinoResumoEl.textContent = "Sem treino registado para esta data.";
+    treinoSugestaoEl.textContent = "";
+    return;
+  }
+
+  let totalCarga = 0;
+  let totalSeries = 0;
+  let blocosForca = 0;
+  let blocosHipertrofia = 0;
+  let blocosLeve = 0;
+
+  lista.forEach((e, index) => {
+    const tr = document.createElement("tr");
+
+    const tdDate = document.createElement("td");
+    tdDate.textContent = e.date || "";
+    tr.appendChild(tdDate);
+
+    const tdEx = document.createElement("td");
+    tdEx.textContent = e.ex;
+    tr.appendChild(tdEx);
+
+    const tdTipo = document.createElement("td");
+    tdTipo.textContent = e.tipo || "";
+    tr.appendChild(tdTipo);
+
+    const tdR = document.createElement("td");
+    tdR.textContent = e.rondas || "";
+    tr.appendChild(tdR);
+
+    const tdReps = document.createElement("td");
+    tdReps.textContent = e.reps || "";
+    tr.appendChild(tdReps);
+
+    const tdPeso = document.createElement("td");
+    tdPeso.textContent = e.peso ? formatKg(e.peso) : "";
+    tr.appendChild(tdPeso);
+
+    const tdPerc = document.createElement("td");
+    if (e.perc1rm) {
+      tdPerc.textContent = (e.perc1rm * 100).toFixed(0) + "%";
+    } else {
+      tdPerc.textContent = "";
+    }
+    tr.appendChild(tdPerc);
+
+    const tdTempo = document.createElement("td");
+    tdTempo.textContent = e.tempo || "";
+    tr.appendChild(tdTempo);
+
+    const tdCarga = document.createElement("td");
+    tdCarga.textContent = e.carga ? formatKg(e.carga) : "";
+    tr.appendChild(tdCarga);
+
+    const tdDel = document.createElement("td");
+    const btn = document.createElement("button");
+    btn.textContent = "🗑";
+    btn.className = "btn-delete";
+    btn.addEventListener("click", () => deleteTreinoEntry(treinos.indexOf(e)));
+    tdDel.appendChild(btn);
+    tr.appendChild(tdDel);
+
+    treinoBody.appendChild(tr);
+
+    totalCarga += e.carga || 0;
+    totalSeries += (e.rondas || 0);
+
+    if (e.perc1rm && e.reps) {
+      const p = e.perc1rm;
+      const r = e.reps;
+      if (p >= 0.8 && r <= 5) {
+        blocosForca++;
+      } else if (p >= 0.65 && p <= 0.8 && r >= 6 && r <= 12) {
+        blocosHipertrofia++;
+      } else if (p < 0.6 || r >= 15) {
+        blocosLeve++;
+      }
+    }
+  });
+
+  treinoResumoEl.textContent =
+    "Carga total do treino: " + formatKg(totalCarga) +
+    " · Séries totais: " + totalSeries;
+
+  // Sugestão de melhoria para objetivo: crescer e ganhar força
+  let sugestao = "";
+
+  if (blocosForca === 0 && blocosHipertrofia === 0) {
+    sugestao = "Para crescer e ganhar força, procura incluir blocos a ~70–85% 1RM, entre 5–10 repetições, nos principais levantamentos (agachamentos, puxadas, empurrões).";
+  } else if (blocosForca > 0 && blocosHipertrofia === 0) {
+    sugestao = "O treino de hoje está muito focado em força máxima. Para ganhar mais massa muscular, adiciona 2–4 séries de 6–10 repetições a ~70–75% 1RM em 1–2 exercícios grandes.";
+  } else if (blocosHipertrofia > 0 && blocosForca === 0) {
+    sugestao = "Estás a trabalhar bem a hipertrofia. Para reforçar a força, inclui 2–3 séries mais pesadas (3–5 repetições a ~80–85% 1RM) em movimentos fundamentais.";
+  } else {
+    sugestao = "Boa combinação de força e hipertrofia. Mantém esta lógica: 2–3 exercícios principais pesados (3–5 reps a 80–85% 1RM) e 2–3 exercícios de apoio com 6–12 reps a 65–75% 1RM.";
+  }
+
+  if (profile && profile.idade && profile.idade > 40) {
+    sugestao += " Ajusta o volume à recuperação: prioriza qualidade de movimento e evita acumular fadiga excessiva em semanas consecutivas.";
+  }
+
+  treinoSugestaoEl.textContent = sugestao;
+}
+
+if (treinoAddBtn) {
+  treinoAddBtn.addEventListener("click", addTreinoEntry);
+}
+
+/* === CARGAS a partir de 1RM === */
 function updateLoadSelect() {
   const names = Object.keys(dataRm).sort();
 
@@ -767,7 +1050,7 @@ if (loadSel) {
   });
 }
 
-/* Calculadora de 1RM estimado (Epley) */
+/* === Calculadora de 1RM estimado (Epley) === */
 if (btnCalc1RM) {
   btnCalc1RM.addEventListener("click", () => {
     const peso = parseFloat(calcPesoEl.value);
@@ -832,7 +1115,7 @@ if (btnApply1RM) {
   });
 }
 
-/* RESUMO (PR e nº de registos) */
+/* === RESUMO (PR e nº de registos) === */
 function updateResumo() {
   if (!resumoPrEl || !resumoTreinosEl) return;
 
@@ -894,6 +1177,12 @@ renderRm();
 renderRmLog();
 updateLoadSelect();
 updateResumo();
+
+/* Data do treino = hoje por defeito */
+if (treinoDataEl && !treinoDataEl.value) {
+  treinoDataEl.value = new Date().toISOString().slice(0, 10);
+}
+renderTreinos();
 </script>
 
 </body>
