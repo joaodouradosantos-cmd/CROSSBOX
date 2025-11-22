@@ -651,6 +651,76 @@ function deleteTreinoEntry(index) {
   renderTreinos();
 }
 
+/* === SUGESTÃO MOTIVADORA PERSONALIZADA === */
+function buildSugestao(lista, totalCarga, totalSeries, blocosForca, blocosHipertrofia, blocosLeve, dia) {
+  let partes = [];
+
+  // Saudação / feedback geral
+  if (totalSeries === 0 || totalCarga === 0) {
+    return "Hoje o treino ficou muito leve. Se o objetivo é ganhar força e músculo, planeia pelo menos 2–3 blocos de trabalho com carga moderada a alta.";
+  }
+
+  partes.push("Bom trabalho hoje, treino concluído em " + dia + "!");
+
+  // Perfil
+  const idade = profile && profile.idade ? profile.idade : null;
+  const sexo = profile && profile.sexo ? profile.sexo : null;
+  const peso = profile && profile.peso ? profile.peso : null;
+  const altura = profile && profile.altura ? profile.altura : null;
+
+  // Intensidade do dia (força / hipertrofia / leve)
+  if (blocosForca === 0 && blocosHipertrofia === 0) {
+    partes.push("O dia ficou mais leve em termos de estímulo de força e hipertrofia.");
+    partes.push("Para evoluir, tenta incluir 2–3 exercícios principais entre 70–85% do teu 1RM, com 5–10 repetições.");
+  } else if (blocosForca > 0 && blocosHipertrofia === 0) {
+    partes.push("Treino muito focado em força máxima, com séries pesadas e repetições baixas.");
+    partes.push("Para aumentar também a massa muscular, acrescenta 2–4 séries de 6–10 repetições a 65–75% do 1RM em 1–2 exercícios grandes.");
+  } else if (blocosHipertrofia > 0 && blocosForca === 0) {
+    partes.push("Treino consistente para hipertrofia, com bastante trabalho de volume.");
+    partes.push("Para reforçar a força, vale a pena incluir 2–3 séries pesadas (3–5 repetições a 80–85% do 1RM) em movimentos fundamentais.");
+  } else {
+    partes.push("Boa combinação de força e hipertrofia hoje.");
+    partes.push("Mantém a lógica de 2–3 exercícios principais mais pesados (3–5 reps a 80–85% do 1RM) e 2–3 exercícios de apoio com 6–12 reps a 65–75% do 1RM.");
+  }
+
+  // Ajuste por sexo
+  if (sexo === "homem") {
+    partes.push("Como homem, toleras bem blocos pesados entre 80–85% do 1RM, desde que respeites a técnica e a recuperação.");
+  } else if (sexo === "mulher") {
+    partes.push("Como mulher, costumas recuperar melhor entre séries; não tenhas receio de trabalhar com 8–12 repetições a 70–75% do 1RM nos grandes movimentos.");
+  }
+
+  // Ajuste por idade
+  if (idade && idade >= 40) {
+    partes.push("Com a idade atual, é importante controlar o volume: dá prioridade à qualidade do movimento e garante 48–72 horas de recuperação entre dias muito pesados.");
+  }
+
+  // Ajuste por peso corporal
+  if (peso) {
+    const cargaMediaPorSerie = totalCarga / Math.max(totalSeries, 1);
+    const rel = cargaMediaPorSerie / peso;
+
+    if (rel < 0.8) {
+      partes.push("A carga média por série ficou relativamente baixa face ao teu peso corporal; aos poucos podes aproximar os principais levantamentos de 1.0–1.5x do teu peso.");
+    } else if (rel >= 0.8 && rel <= 1.5) {
+      partes.push("A relação entre carga média por série e peso corporal está numa faixa interessante para progresso continuo. Mantém esta consistência.");
+    } else if (rel > 1.5) {
+      partes.push("Estás a trabalhar com uma carga média por série alta relativamente ao teu peso corporal; mantém atenção à técnica e à recuperação para evitar excesso de fadiga.");
+    }
+  }
+
+  // Ajuste por altura (mais genérico, só afina a recomendação)
+  if (altura) {
+    if (altura >= 185) {
+      partes.push("Com a tua estatura, dá atenção extra à posição lombar em agachamentos e deadlifts, mantendo o core firme em todas as repetições.");
+    } else if (altura <= 165) {
+      partes.push("Com a tua estatura, tens vantagem para estabilizar cargas pesadas; usa isso para consolidar técnica sólida nos básicos antes de aumentar muito o volume.");
+    }
+  }
+
+  return partes.join(" ");
+}
+
 function renderTreinos() {
   if (!treinoBody) return;
   treinoBody.innerHTML = "";
@@ -743,23 +813,16 @@ function renderTreinos() {
   treinoResumoEl.textContent =
     "Resumo do dia " + dia + ": carga total do treino = " + formatKg(totalCarga);
 
-  // Sugestão de melhoria (objetivo: crescer e ganhar força)
-  let sugestao = "";
-
-  if (blocosForca === 0 && blocosHipertrofia === 0) {
-    sugestao = "Para crescer e ganhar força, inclui blocos a ~70–85% 1RM, entre 5–10 repetições, nos principais levantamentos.";
-  } else if (blocosForca > 0 && blocosHipertrofia === 0) {
-    sugestao = "Treino muito focado em força máxima. Para ganhar mais massa, adiciona 2–4 séries de 6–10 repetições a ~70–75% 1RM em 1–2 exercícios grandes.";
-  } else if (blocosHipertrofia > 0 && blocosForca === 0) {
-    sugestao = "Estás a trabalhar bem a hipertrofia. Para reforçar a força, inclui 2–3 séries mais pesadas (3–5 repetições a ~80–85% 1RM) em movimentos fundamentais.";
-  } else {
-    sugestao = "Boa combinação de força e hipertrofia. Mantém: 2–3 exercícios principais pesados (3–5 reps a 80–85% 1RM) e 2–3 exercícios de apoio com 6–12 reps a 65–75% 1RM.";
-  }
-
-  if (profile && profile.idade && profile.idade > 40) {
-    sugestao += " Ajusta o volume à recuperação: prioriza qualidade de movimento e evita acumular fadiga excessiva.";
-  }
-
+  // Sugestão motivadora personalizada
+  const sugestao = buildSugestao(
+    lista,
+    totalCarga,
+    totalSeries,
+    blocosForca,
+    blocosHipertrofia,
+    blocosLeve,
+    dia
+  );
   treinoSugestaoEl.textContent = sugestao;
 }
 
