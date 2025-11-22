@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cross Moita – 1RM & Diário</title>
+
+  <!-- Cor da barra de topo nos telemóveis -->
+  <meta name="theme-color" content="#f2f2f2" />
+  <link rel="manifest" href="manifest.json" />
+
+  <style>
+    :root {
+      font-family: system-ui, sans-serif;
+      color-scheme: light;
+    }
+
+    /* === FUNDO CLARO (CINZA SUAVE) === */
+    body {
+      margin: 0;
+      background: #f2f2f2;   /* cinza muito claro */
+      color: #111111;        /* texto escuro */
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 900px;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    #appLogo {
+      max-width: 220px;
+      height: auto;
+      display: block;
+      margin: 0 auto 6px auto;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.6rem;
+      color: #111;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: #555;
+    }
+
+    /* === TABS === */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px 0;
+      border-radius: 999px;
+      border: 1px solid #cccccc;
+      background: #e5e5e5;
+      color: #222;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .tab-btn.active {
+      background: #22c55e;
+      border-color: #22c55e;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* === CARDS === */
+    .card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 16px;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .field {
+      flex: 1;
+      min-width: 140px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    label {
+      font-size: 0.8rem;
+      color: #444;
+    }
+
+    input, select, textarea, button {
+      padding: 10px;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #111;
+      border: 1px solid #cccccc;
+      font-size: 0.9rem;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #22c55e;
+      box-shadow: 0 0 0 1px rgba(34,197,94,0.2);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+      max-height: 140px;
+    }
+
+    .btn-primary {
+      background: #22c55e;
+      border-color: #22c55e;
+      color: #ffffff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-danger {
+      background: #b91c1c;
+      border-color: #991b1b;
+      color: #ffffff;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      color: #111;
+    }
+
+    th, td {
+      padding: 6px;
+      text-align: center;
+      border-bottom: 1px solid #dddddd;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #f9f9f9;
+      color: #333;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .scroll {
+      max-height: 260px;
+      overflow: auto;
+      border-radius: 10px;
+      border: 1px solid #e5e5e5;
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* Botão de apagar nas tabelas (1RM e Diário) */
+    .btn-delete {
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid #e5e5e5;
+      background: #f97373;
+      color: #ffffff;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    .btn-delete:hover {
+      background: #ef4444;
+    }
+  </style>
+</head>
+
+<body>
+<div class="app">
+
+  <header>
+    <img id="appLogo" src="imagens/crossmoita_logo.png" alt="Cross Moita Logo">
+    <div class="subtitle">Registo pessoal de treinos</div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-target="sec-1rm">1RM</button>
+    <button class="tab-btn" data-target="sec-diario">Diário</button>
+  </div>
+
+  <!-- 1RM -->
+  <section id="sec-1rm" class="section active">
+
+    <div class="card">
+      <div class="form-row">
+        <div class="field">
+          <label>Exercício</label>
+          <select id="exercise"></select>
+        </div>
+
+        <div class="field">
+          <label>1RM (kg)</label>
+          <input id="oneRm" type="number" step="0.5" />
+        </div>
+      </div>
+
+      <button class="btn-primary" id="addBtn">Guardar / Atualizar</button>
+    </div>
+
+    <div class="card">
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Exercício</th>
+              <th>1RM</th>
+              <th>25%</th>
+              <th>50%</th>
+              <th>60%</th>
+              <th>70%</th>
+              <th>75%</th>
+              <th>80%</th>
+              <th>85%</th>
+              <th>90%</th>
+              <th>95%</th>
+              <th></th> <!-- coluna do botão apagar -->
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- DIÁRIO -->
+  <section id="sec-diario" class="section">
+
+    <div class="card">
+      <div class="form-row">
+        <div class="field">
+          <label>Data</label>
+          <input id="date" type="date">
+        </div>
+
+        <div class="field">
+          <label>WOD</label>
+          <input id="wod" type="text" placeholder="Ex.: Cindy, EMOM 10’...">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Tipo</label>
+          <input id="tipo" type="text" placeholder="Força, Metcon, Skill...">
+        </div>
+
+        <div class="field">
+          <label>Resultado</label>
+          <input id="resultado" type="text" placeholder="Ex.: 10 rondas, 120 kg, 12:35...">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Notas</label>
+        <textarea id="notas" placeholder="Sensações, ajustes, técnica, etc."></textarea>
+      </div>
+
+      <div style="margin-top:8px;">
+        <button class="btn-primary" id="saveDiary">Guardar</button>
+      </div>
+
+    </div>
+
+    <div class="card">
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>WOD</th>
+              <th>Tipo</th>
+              <th>Resultado</th>
+              <th>Notas</th>
+              <th></th> <!-- coluna do lixo individual -->
+            </tr>
+          </thead>
+          <tbody id="diaryBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<script>
+/* ===== 1RM ===== */
+const MOVES = [
+  "Chest Press",
+  "Back Squat",
+  "Front Squat",
+  "Overhead Squat",
+  "Deadlift",
+  "Sumo Deadlift",
+  "Romanian Deadlift (RDL)",
+  "Power Clean",
+  "Squat Clean",
+  "Clean & Jerk",
+  "Power Snatch",
+  "Squat Snatch",
+  "Push Press",
+  "Push Jerk",
+  "Split Jerk",
+  "Strict Press",
+  "Thruster",
+  "Barbell Row",
+  "Bent Over Row",
+  "Good Morning",
+  "Lunges com barra",
+  "Hip Thrust com barra",
+  "Dumbbell Press",
+  "Dumbbell Bench Press",
+  "Dumbbell Snatch",
+  "Dumbbell Clean",
+  "Dumbbell Clean & Jerk",
+  "Dumbbell Thruster",
+  "Dumbbell Row",
+  "Dumbbell Lunges",
+  "Kettlebell Swing",
+  "Kettlebell Clean",
+  "Kettlebell Snatch",
+  "Goblet Squat",
+  "Kettlebell Lunges"
+];
+
+const PERC = [0.5,0.6,0.7,0.75,0.8,0.85,0.9,0.95];
+const STORAGE_RM = "crossfit_1rm";
+let dataRm = JSON.parse(localStorage.getItem(STORAGE_RM) || "{}");
+
+const sel = document.getElementById("exercise");
+const rm = document.getElementById("oneRm");
+const bodyTable = document.getElementById("tableBody");
+
+/* preencher select com exercícios */
+function initSelect() {
+  sel.innerHTML = "";
+  MOVES.forEach(m => {
+    const opt = document.createElement("option");
+    opt.value = m;
+    opt.textContent = m;
+    sel.appendChild(opt);
+  });
+}
+
+/* formatar kg com uma casa decimal */
+function formatKg(v) {
+  return v.toFixed(1).replace(".", ",") + " kg";
+}
+
+/* apagar um exercício específico */
+function deleteEx(name) {
+  if (!name) return;
+  if (confirm(`Apagar o exercício "${name}"?`)) {
+    delete dataRm[name];
+    localStorage.setItem(STORAGE_RM, JSON.stringify(dataRm));
+    renderRm();
+  }
+}
+
+/* desenhar tabela 1RM */
+function renderRm() {
+  bodyTable.innerHTML = "";
+  Object.keys(dataRm).sort().forEach(name => {
+    const tr = document.createElement("tr");
+
+    const tdName = document.createElement("td");
+    tdName.textContent = name;
+    tr.appendChild(tdName);
+
+    const td1rm = document.createElement("td");
+    td1rm.textContent = formatKg(dataRm[name]);
+    tr.appendChild(td1rm);
+
+    PERC.forEach(p => {
+      const td = document.createElement("td");
+      td.textContent = formatKg(dataRm[name] * p);
+      tr.appendChild(td);
+    });
+
+    const tdDelete = document.createElement("td");
+    const btn = document.createElement("button");
+    btn.textContent = "🗑";
+    btn.className = "btn-delete";
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      deleteEx(name);
+    });
+    tdDelete.appendChild(btn);
+    tr.appendChild(tdDelete);
+
+    bodyTable.appendChild(tr);
+  });
+}
+
+/* guardar / actualizar 1RM */
+document.getElementById("addBtn").addEventListener("click", () => {
+  const ex = sel.value;
+  const val = parseFloat(rm.value);
+  if (!ex || !val || val <= 0) return;
+  dataRm[ex] = val;
+  localStorage.setItem(STORAGE_RM, JSON.stringify(dataRm));
+  rm.value = "";
+  renderRm();
+});
+
+/* ===== DIÁRIO ===== */
+const STORAGE_DIARY = "crossfit_diary";
+let diary = JSON.parse(localStorage.getItem(STORAGE_DIARY) || "[]");
+
+const dateEl = document.getElementById("date");
+const wodEl = document.getElementById("wod");
+const tipoEl = document.getElementById("tipo");
+const resEl = document.getElementById("resultado");
+const notasEl = document.getElementById("notas");
+const diaryBody = document.getElementById("diaryBody");
+
+/* apagar um registo específico do diário */
+function deleteDiary(index) {
+  if (index < 0 || index >= diary.length) return;
+  if (!confirm("Apagar este registo do diário?")) return;
+  diary.splice(index, 1);
+  localStorage.setItem(STORAGE_DIARY, JSON.stringify(diary));
+  renderDiary();
+}
+
+/* desenhar tabela do diário */
+function renderDiary() {
+  diaryBody.innerHTML = "";
+  diary.forEach((d, index) => {
+    const tr = document.createElement("tr");
+
+    const tdDate = document.createElement("td");
+    tdDate.textContent = d.date || "";
+    tr.appendChild(tdDate);
+
+    const tdWod = document.createElement("td");
+    tdWod.textContent = d.wod || "";
+    tr.appendChild(tdWod);
+
+    const tdTipo = document.createElement("td");
+    tdTipo.textContent = d.tipo || "";
+    tr.appendChild(tdTipo);
+
+    const tdRes = document.createElement("td");
+    tdRes.textContent = d.resultado || "";
+    tr.appendChild(tdRes);
+
+    const tdNotas = document.createElement("td");
+    tdNotas.textContent = d.notas || "";
+    tr.appendChild(tdNotas);
+
+    const tdDelete = document.createElement("td");
+    const btn = document.createElement("button");
+    btn.textContent = "🗑";
+    btn.className = "btn-delete";
+    btn.addEventListener("click", () => deleteDiary(index));
+    tdDelete.appendChild(btn);
+    tr.appendChild(tdDelete);
+
+    diaryBody.appendChild(tr);
+  });
+}
+
+/* guardar registo no diário */
+document.getElementById("saveDiary").addEventListener("click", () => {
+  const entry = {
+    date: dateEl.value || "",
+    wod: wodEl.value.trim(),
+    tipo: tipoEl.value.trim(),
+    resultado: resEl.value.trim(),
+    notas: notasEl.value.trim()
+  };
+
+  if (!entry.date && !entry.wod && !entry.resultado && !entry.notas) return;
+
+  diary.unshift(entry);
+  localStorage.setItem(STORAGE_DIARY, JSON.stringify(diary));
+  renderDiary();
+
+  wodEl.value = "";
+  tipoEl.value = "";
+  resEl.value = "";
+  notasEl.value = "";
+});
+
+/* ===== TABS ===== */
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    const target = btn.dataset.target;
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.getElementById(target).classList.add("active");
+  });
+});
+
+/* INIT */
+initSelect();
+renderRm();
+renderDiary();
+
+/* preenche data de hoje por defeito */
+if (!dateEl.value) {
+  dateEl.value = new Date().toISOString().slice(0, 10);
+}
+</script>
+
+</body>
+</html>
