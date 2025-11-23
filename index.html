@@ -200,7 +200,7 @@
 
     /* BOTÃO APAGAR */
     .btn-delete {
-      padding: 4px 8px;
+      padding: 2px 4px;
       border-radius: 999px;
       border: 1px solid #e5e5e5;
       background: #f97373;
@@ -234,20 +234,22 @@
       flex: 1;
     }
 
-    .btn-edit-profile {
-      padding: 4px 8px;
-      border-radius: 999px;
-      border: 1px solid #cccccc;
-      background: #e5e5e5;
-      color: #222;
-      font-size: 0.7rem;
-      cursor: pointer;
-      white-space: nowrap;
-    }
+   .btn-edit-profile {
+  padding: 2px 6px;            /* menor altura e largura */
+  border-radius: 999px;
+  border: 1px solid #cccccc;
+  background: #e5e5e5;
+  color: #222;
+  font-size: 0.6rem;           /* letra mais pequena */
+  cursor: pointer;
+  white-space: nowrap;
+  transform: scale(0.95);      /* ligeiramente mais pequeno */
+}
 
-    .btn-edit-profile:active {
-      transform: scale(0.97);
-    }
+.btn-edit-profile:active {
+  transform: scale(0.90);      /* feedback ao clicar */
+}
+
   </style>
 </head>
 
@@ -1435,6 +1437,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
