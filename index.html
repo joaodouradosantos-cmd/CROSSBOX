@@ -258,7 +258,7 @@
       transform: scale(0.90);
     }
 
-    /* Traduções */
+    /* Traduções – já não usado, mas não faz mal ficar o CSS */
     #tradSearch {
       width: 100%;
       margin-bottom: 8px;
@@ -384,10 +384,6 @@
         <button class="btn-secondary opt-btn" data-target="opt-graficos">
           <span class="opt-emoji">📈</span>
           <span>Gráfico</span>
-        </button>
-        <button class="btn-secondary opt-btn" data-target="opt-traducoes">
-          <span class="opt-emoji">🇵🇹</span>
-          <span>Traduções</span>
         </button>
       </div>
       <div class="helper-text" style="margin-top:8px;">
@@ -555,27 +551,6 @@
         </div>
         <div style="margin-top:8px;">
           <canvas id="rmChart" style="width:100%; max-height:260px;"></canvas>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- OPÇÃO 4: TRADUÇÕES -->
-    <section id="opt-traducoes" class="option-section">
-
-      <div class="card">
-        <h3 style="margin-top:0; margin-bottom:8px;">🇵🇹 Traduções dos exercícios</h3>
-        <input id="tradSearch" type="text" placeholder="Procurar exercício (EN ou PT)..." />
-        <div class="scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Nome em inglês</th>
-                <th>Tradução PT-Portugal</th>
-              </tr>
-            </thead>
-            <tbody id="tradBody"></tbody>
-          </table>
         </div>
       </div>
 
@@ -773,10 +748,6 @@ const calcBtn = document.getElementById("calcBtn");
 const graphExerciseEl = document.getElementById("graphExercise");
 const rmChartCanvas = document.getElementById("rmChart");
 let rmChart = null;
-
-/* Traduções */
-const tradBody = document.getElementById("tradBody");
-const tradSearch = document.getElementById("tradSearch");
 
 /* Helpers */
 function formatKg(v) {
@@ -1478,36 +1449,6 @@ if (toggleDailyHistoryBtn && dailyHistorySection) {
   });
 }
 
-/* === TRADUÇÕES === */
-function renderTraducoes() {
-  if (!tradBody) return;
-  tradBody.innerHTML = "";
-
-  const filter = (tradSearch.value || "").toLowerCase().trim();
-
-  MOVES.forEach(m => {
-    const pt = MOVES_PT[m] || "";
-    const enMatch = m.toLowerCase().includes(filter);
-    const ptMatch = pt.toLowerCase().includes(filter);
-    if (filter && !enMatch && !ptMatch) return;
-
-    const tr = document.createElement("tr");
-    const tdEn = document.createElement("td");
-    tdEn.textContent = m;
-    tr.appendChild(tdEn);
-
-    const tdPt = document.createElement("td");
-    tdPt.textContent = pt;
-    tr.appendChild(tdPt);
-
-    tradBody.appendChild(tr);
-  });
-}
-
-if (tradSearch) {
-  tradSearch.addEventListener("input", renderTraducoes);
-}
-
 /* === TABS PRINCIPAIS === */
 document.querySelectorAll(".tab-btn").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -1536,7 +1477,6 @@ loadProfile();
 renderRm();
 refreshCalcExOptions();
 refreshGraphExerciseOptions();
-renderTraducoes();
 
 if (treinoDataEl && !treinoDataEl.value) {
   treinoDataEl.value = new Date().toISOString().slice(0, 10);
@@ -1553,4 +1493,3 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
-
