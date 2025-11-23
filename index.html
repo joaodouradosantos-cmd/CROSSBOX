@@ -3,14 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CrossFit Moita</title>
+  <title>CROSSBOX – 1RM e WOD</title>
 
+  <!-- PWA / ícones básicos -->
   <meta name="theme-color" content="#f2f2f2" />
   <link rel="manifest" href="manifest.json" />
-
   <link rel="apple-touch-icon" sizes="180x180" href="imagens/crossmoita_logo.png" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+  <!-- Preview em WhatsApp / redes sociais -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="CROSSBOX – Registo de 1RM e WOD" />
+  <meta property="og:description" content="App simples para registares 1RM, WOD, carga total, gráficos e guia de exercícios." />
+  <meta property="og:image" content="https://joaodouradosantos-cmd.github.io/CrossFit/imagens/crossmoita_logo.png" />
+  <meta property="og:url" content="https://joaodouradosantos-cmd.github.io/CrossFit/" />
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -45,11 +52,11 @@
       max-width: 220px;
       height: auto;
       display: block;
-      margin: 0 auto 6px auto;
+      margin: 0 auto 4px auto;
     }
 
     .subtitle {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       color: #555;
     }
 
@@ -62,7 +69,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.04);
     }
 
-    /* PERFIL SEM “CARTÃO” BRANCO */
+    /* Perfil sem “cartão” branco */
     #perfil.card {
       background: transparent;
       border: none;
@@ -281,18 +288,43 @@
 
   <header>
     <button id="editProfileBtnHeader" class="btn-edit-profile">Editar perfil</button>
-    <img id="appLogo" src="imagens/crossmoita_logo.png" alt="Cross Moita Logo">
-    <div id="subtitleText" class="subtitle">Registo pessoal de treinos de força</div>
+    <img id="appLogo" src="imagens/crossmoita_logo.png" alt="CROSSBOX logo">
+    <div class="subtitle" id="subtitleText">Registo pessoal de treinos de força</div>
   </header>
 
   <!-- PERFIL -->
   <section class="card" id="perfil">
     <div id="perfilForm">
-
       <div class="form-row">
         <div class="field">
           <label>Nome</label>
-          <input id="nome" type="text" maxlength="40" />
+          <input id="nome" type="text" placeholder="Ex.: João, Sofia..." />
+        </div>
+        <div class="field">
+          <label>Sexo</label>
+          <select id="sexo">
+            <option value="">Selecionar</option>
+            <option value="homem">Homem</option>
+            <option value="mulher">Mulher</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Idade</label>
+          <input id="idade" type="number" min="10" max="100" />
+        </div>
+        <div class="field">
+          <label>Altura (cm)</label>
+          <input id="altura" type="number" min="100" max="230" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Peso (kg)</label>
+          <input id="peso" type="number" step="0.1" min="30" max="250" />
         </div>
         <div class="field">
           <label>Nível</label>
@@ -305,33 +337,10 @@
         </div>
       </div>
 
-      <div class="form-row">
-        <div class="field">
-          <label>Sexo</label>
-          <select id="sexo">
-            <option value="">Selecionar</option>
-            <option value="homem">Homem</option>
-            <option value="mulher">Mulher</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Idade</label>
-          <input id="idade" type="number" min="10" max="100" />
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="field">
-          <label>Altura (cm)</label>
-          <input id="altura" type="number" min="100" max="230" />
-        </div>
-        <div class="field">
-          <label>Peso (kg)</label>
-          <input id="peso" type="number" step="0.1" min="30" max="250" />
-        </div>
-      </div>
-
       <button class="btn-primary" id="saveProfile">Guardar perfil</button>
+      <div class="helper-text">
+        Estes dados são usados apenas no teu dispositivo para adaptar sugestões de carga e motivação.
+      </div>
     </div>
   </section>
 
@@ -358,6 +367,9 @@
       </div>
 
       <button class="btn-primary" id="addBtn">Guardar / Atualizar</button>
+      <div class="helper-text">
+        Regista o teu melhor 1RM em cada exercício para depois veres percentagens, carga sugerida e evolução.
+      </div>
     </div>
 
     <div class="card">
@@ -549,7 +561,7 @@
 
         <div class="form-row">
           <div class="field">
-            <label>Objetivo</label>
+            <label>Objetivo de estímulo</label>
             <select id="calcObjetivo">
               <option value="">Automático</option>
               <option value="forca">Força</option>
@@ -557,22 +569,15 @@
               <option value="tecnica">Técnica / Volume leve</option>
             </select>
           </div>
-        </div>
-
-        <div class="form-row">
           <div class="field">
             <label>Objetivo de 1RM (kg, opcional)</label>
-            <input id="calcObjetivo1rm" type="number" step="0.5" min="0" />
-          </div>
-          <div class="field">
-            <label>Prazo (semanas, opcional)</label>
-            <input id="calcSemanas" type="number" min="1" />
+            <input id="calcObjetivo1Rm" type="number" step="0.5" />
           </div>
         </div>
 
         <button class="btn-primary" id="calcBtn">Calcular</button>
         <div class="helper-text" id="calcResultado" style="margin-top:6px;">
-          Escolhe um exercício com 1RM registado, indica o nº de repetições e, se quiseres, o objetivo e um 1RM alvo com prazo.
+          Escolhe um exercício com 1RM registado, indica o nº de repetições e, se quiseres, o objetivo (força / hipertrofia / técnica) e um 1RM alvo.
         </div>
       </div>
     </section>
@@ -644,38 +649,40 @@ const STORAGE_BACKUP_META = "crossfit_backup_meta";
 let profile = JSON.parse(localStorage.getItem(STORAGE_PROFILE) || "{}");
 
 const nomeEl = document.getElementById("nome");
-const nivelEl = document.getElementById("nivel");
 const sexoEl = document.getElementById("sexo");
 const idadeEl = document.getElementById("idade");
 const alturaEl = document.getElementById("altura");
 const pesoEl = document.getElementById("peso");
+const nivelEl = document.getElementById("nivel");
 const perfilForm = document.getElementById("perfilForm");
 const editProfileBtnHeader = document.getElementById("editProfileBtnHeader");
-const subtitleEl = document.getElementById("subtitleText");
+const subtitleTextEl = document.getElementById("subtitleText");
 
-function updateSubtitle() {
-  if (!subtitleEl) return;
-  if (profile && profile.nome && profile.nome.trim() !== "") {
-    subtitleEl.textContent = "Registo de treinos de " + profile.nome.trim();
+function updateSubtitleFromProfile() {
+  if (!subtitleTextEl) return;
+  const nome = profile && profile.nome ? profile.nome.trim() : "";
+  if (nome) {
+    subtitleTextEl.textContent = "Registo de treinos de " + nome;
   } else {
-    subtitleEl.textContent = "Registo pessoal de treinos de força";
+    subtitleTextEl.textContent = "Registo pessoal de treinos de força";
   }
 }
 
 function updateProfileInfo() {
+  updateSubtitleFromProfile();
   if (perfilForm) perfilForm.style.display = "none";
-  updateSubtitle();
 }
 
 function loadProfile() {
   if (!sexoEl) return;
 
-  if (profile.nome && nomeEl) nomeEl.value = profile.nome;
-  if (profile.nivel && nivelEl) nivelEl.value = profile.nivel;
+  if (profile.nome) nomeEl.value = profile.nome;
   if (profile.sexo) sexoEl.value = profile.sexo;
   if (profile.idade) idadeEl.value = profile.idade;
   if (profile.altura) alturaEl.value = profile.altura;
   if (profile.peso) pesoEl.value = profile.peso;
+  if (profile.nivel) nivelEl.value = profile.nivel;
+
   updateProfileInfo();
 }
 
@@ -683,16 +690,16 @@ const saveProfileBtn = document.getElementById("saveProfile");
 if (saveProfileBtn) {
   saveProfileBtn.addEventListener("click", () => {
     profile = {
-      nome: nomeEl ? nomeEl.value.trim() : "",
-      nivel: nivelEl ? (nivelEl.value || "") : "",
+      nome: nomeEl.value || "",
       sexo: sexoEl.value || "",
       idade: idadeEl.value ? parseInt(idadeEl.value, 10) : "",
       altura: alturaEl.value ? parseInt(alturaEl.value, 10) : "",
-      peso: pesoEl.value ? parseFloat(pesoEl.value) : ""
+      peso: pesoEl.value ? parseFloat(pesoEl.value) : "",
+      nivel: nivelEl.value || ""
     };
     localStorage.setItem(STORAGE_PROFILE, JSON.stringify(profile));
-    updateProfileInfo();
     registerBackupMeta("Perfil atualizado");
+    updateProfileInfo();
     alert("Perfil atualizado.");
   });
 }
@@ -782,7 +789,7 @@ const MOVES_PT = {
   "Kettlebell Lunges": "Passadas com kettlebell"
 };
 
-/* GUIA – LISTA TIPO JSON (MAIS EXERCÍCIOS) */
+/* GUIA – LISTA TIPO JSON */
 const EXER_INFO = [
   { en: "Chest Press", pt: "Supino com barra", descricao: "Empurrar a barra para longe do peito, deitado no banco, controlando a descida e a subida." },
   { en: "Back Squat", pt: "Agachamento com barra nas costas", descricao: "Agachamento com a barra apoiada nas costas, descendo até pelo menos à paralela e subindo com o tronco firme." },
@@ -904,8 +911,7 @@ const dailyHistoryBody = document.getElementById("dailyHistoryBody");
 const calcExEl = document.getElementById("calcExercicio");
 const calcRepsEl = document.getElementById("calcReps");
 const calcObjEl = document.getElementById("calcObjetivo");
-const calcObjetivo1rmEl = document.getElementById("calcObjetivo1rm");
-const calcSemanasEl = document.getElementById("calcSemanas");
+const calcObjetivo1RmEl = document.getElementById("calcObjetivo1Rm");
 const calcResEl = document.getElementById("calcResultado");
 const calcBtn = document.getElementById("calcBtn");
 
@@ -924,11 +930,12 @@ const importBackupBtn = document.getElementById("importBackupBtn");
 const backupFileInput = document.getElementById("backupFileInput");
 const backupInfoEl = document.getElementById("backupInfo");
 
+/* Helpers */
 function formatKg(v) {
   return v.toFixed(1).replace(".", ",") + " kg";
 }
 
-/* Selects – só nomes em inglês (para não confundir com WOD / 1RM) */
+/* Selects – só nomes em inglês para 1RM e WOD */
 function initSelects() {
   if (sel) {
     sel.innerHTML = "";
@@ -951,7 +958,7 @@ function initSelects() {
   }
 }
 
-/* Atualizar lista da calculadora */
+/* Atualizar lista da calculadora (só exercícios com 1RM) */
 function refreshCalcExOptions() {
   if (!calcExEl) return;
   calcExEl.innerHTML = "";
@@ -1006,6 +1013,7 @@ function refreshGraphExerciseOptions() {
   updateRmChart();
 }
 
+/* === Tabela 1RM === */
 function deleteEx(name) {
   if (!name) return;
   if (!confirm(`Apagar o exercício "${name}"?`)) return;
@@ -1099,7 +1107,25 @@ document.getElementById("addBtn").addEventListener("click", () => {
   renderRm();
 });
 
-/* ===== MELHORAMENTO ===== */
+/* === MELHORAMENTO (CALCULADORA) === */
+/* Ajuste ligeiro da faixa de percentagens consoante o nível */
+function ajustarPorNivel(minP, maxP) {
+  const nivel = profile && profile.nivel ? profile.nivel : "";
+  let delta = 0;
+  if (nivel === "iniciante") {
+    delta = -0.05; // mais prudente
+  } else if (nivel === "avancado") {
+    delta = +0.03; // ligeiramente mais agressivo
+  } else {
+    delta = 0; // intermédio ou vazio
+  }
+
+  minP = Math.max(0.35, minP + delta);
+  maxP = Math.min(1.0, maxP + delta);
+  if (maxP < minP) maxP = minP;
+  return { minP, maxP };
+}
+
 function getPercentRange(reps, objetivo) {
   let minP, maxP;
 
@@ -1126,7 +1152,7 @@ function getPercentRange(reps, objetivo) {
     else { minP = 0.50; maxP = 0.65; }
   }
 
-  return { minP, maxP };
+  return ajustarPorNivel(minP, maxP);
 }
 
 if (calcBtn) {
@@ -1136,6 +1162,7 @@ if (calcBtn) {
     const ex = calcExEl.value;
     const reps = parseInt(calcRepsEl.value || "0", 10);
     const obj = calcObjEl ? calcObjEl.value : "";
+    const objetivo1Rm = calcObjetivo1RmEl ? parseFloat(calcObjetivo1RmEl.value || "0") : 0;
 
     if (!ex || !dataRm[ex]) {
       calcResEl.textContent = "Escolhe um exercício com 1RM registado.";
@@ -1156,47 +1183,37 @@ if (calcBtn) {
     if (obj === "hipertrofia") objetivoTexto = "hipertrofia";
     if (obj === "tecnica") objetivoTexto = "técnica / volume leve";
 
-    let base =
-      `Para ${reps} repetições em ${ex}, com objetivo ${objetivoTexto}, ` +
-      `a carga sugerida é entre ${(minP*100).toFixed(0)}% e ${(maxP*100).toFixed(0)}% do 1RM: ` +
+    const nivelLabel = profile && profile.nivel
+      ? (profile.nivel === "iniciante" ? "iniciante" :
+         profile.nivel === "intermedio" ? "intermédio" :
+         "avançado")
+      : "não definido";
+
+    let msg =
+      `Para ${reps} repetições em ${ex}, com objetivo ${objetivoTexto} ` +
+      `(nível ${nivelLabel}), a carga sugerida é entre ${(minP*100).toFixed(0)}% e ${(maxP*100).toFixed(0)}% do 1RM: ` +
       `${formatKg(minLoad)} – ${formatKg(maxLoad)}. Ajusta ligeiramente para bater certo com os discos que tens.`;
 
-    /* Objetivo de 1RM + prazo */
-    const target = calcObjetivo1rmEl ? parseFloat(calcObjetivo1rmEl.value || "0") : 0;
-    const weeks = calcSemanasEl ? parseInt(calcSemanasEl.value || "0", 10) : 0;
+    if (objetivo1Rm && objetivo1Rm > oneRmVal * 1.02) {
+      const ganhoPerc = ((objetivo1Rm - oneRmVal) / oneRmVal) * 100;
+      const progressoSemana = 1.5; // %/semana aproximado
+      const semanas = ganhoPerc / progressoSemana;
+      const sessoesSemana = 2;
+      const sessoes = Math.ceil(semanas * sessoesSemana);
 
-    let extra = "";
-
-    if (target && target > 0 && weeks && weeks > 0 && oneRmVal > 0) {
-      if (target <= oneRmVal) {
-        extra =
-          ` Já tens um 1RM registado de ${formatKg(oneRmVal)} que é igual ou superior ao objetivo indicado. ` +
-          `Usa o próximo ciclo para consolidar técnica e consistência antes de voltar a subir a carga.`;
-      } else {
-        const delta = target - oneRmVal;
-        const porSemana = delta / weeks;
-        const pctTotal = ((target / oneRmVal) - 1) * 100;
-
-        extra =
-          ` Para sair de ${formatKg(oneRmVal)} para ${formatKg(target)} em ${weeks} semana(s), ` +
-          `precisas de progredir, em média, cerca de ${porSemana.toFixed(1).replace(".", ",")} kg por semana ` +
-          `(${pctTotal.toFixed(1).replace(".", ",")}% no total). Planeia blocos progressivos e volta a testar o 1RM a cada 4–6 semanas.`;
-
-        if (profile && profile.nivel === "iniciante") {
-          extra += " Sendo iniciante, dá prioridade à técnica e aceita que a progressão real pode ser mais irregular do que a média.";
-        } else if (profile && profile.nivel === "intermedio") {
-          extra += " Como atleta intermédio, esta progressão é ambiciosa mas pode ser realista se gerires bem o descanso e o volume semanal.";
-        } else if (profile && profile.nivel === "avancado") {
-          extra += " Como atleta avançado, ganhos rápidos tornam-se mais difíceis; usa este objetivo como referência e ajusta se sentires acumulação de fadiga.";
-        }
-      }
+      msg += ` Se trabalhares este movimento de forma consistente, ` +
+             `um aumento do 1RM de cerca de ${ganhoPerc.toFixed(1)}% (até ${formatKg(objetivo1Rm).replace(" kg","")} kg) ` +
+             `poderá exigir aproximadamente ${Math.ceil(semanas)} semanas com ~${sessoes} sessões focadas. ` +
+             `É apenas uma estimativa teórica: respeita sempre a técnica, recuperação e orientação do coach.`;
+    } else if (objetivo1Rm && objetivo1Rm <= oneRmVal * 1.02) {
+      msg += " O objetivo de 1RM que introduziste é muito próximo do valor atual; pequenos ajustes de técnica e consistência já podem ser suficientes.";
     }
 
-    calcResEl.textContent = base + extra;
+    calcResEl.textContent = msg;
   });
 }
 
-/* ===== GRÁFICO 1RM ===== */
+/* === GRÁFICO DE 1RM === */
 function updateRmChart() {
   if (!rmChartCanvas || !graphExerciseEl) return;
 
@@ -1286,7 +1303,7 @@ if (graphExerciseEl) {
   graphExerciseEl.addEventListener("change", updateRmChart);
 }
 
-/* ===== WOD ===== */
+/* === WOD === */
 function saveTreinos() {
   localStorage.setItem(STORAGE_TREINO, JSON.stringify(treinos));
 }
@@ -1342,6 +1359,7 @@ function deleteTreinoEntry(index) {
   renderTreinos();
 }
 
+/* Histórico diário completo */
 function renderDailyHistory() {
   if (!dailyHistoryBody) return;
   dailyHistoryBody.innerHTML = "";
@@ -1410,7 +1428,7 @@ function renderDailyHistory() {
   });
 }
 
-/* Sugestão motivadora */
+/* Sugestão motivadora (usa perfil + nível) */
 function buildSugestao(lista, totalCarga, totalSeries, blocosForca, blocosHipertrofia, blocosLeve, dia) {
   let partes = [];
 
@@ -1418,13 +1436,18 @@ function buildSugestao(lista, totalCarga, totalSeries, blocosForca, blocosHipert
     return "Hoje o treino ficou muito leve. Se o objetivo é ganhar força e músculo, planeia pelo menos 2–3 blocos de trabalho com carga moderada a alta.";
   }
 
-  partes.push("Bom trabalho hoje, treino concluído em " + dia + "!");
+  const nome = profile && profile.nome ? profile.nome.trim() : "";
+  if (nome) {
+    partes.push("Bom trabalho, " + nome + ", treino concluído em " + dia + "!");
+  } else {
+    partes.push("Bom trabalho hoje, treino concluído em " + dia + "!");
+  }
 
   const idade = profile && profile.idade ? profile.idade : null;
   const sexo = profile && profile.sexo ? profile.sexo : null;
   const peso = profile && profile.peso ? profile.peso : null;
   const altura = profile && profile.altura ? profile.altura : null;
-  const nivel = profile && profile.nivel ? profile.nivel : null;
+  const nivel = profile && profile.nivel ? profile.nivel : "";
 
   if (blocosForca === 0 && blocosHipertrofia === 0) {
     partes.push("O dia ficou mais leve em termos de estímulo de força e hipertrofia.");
@@ -1440,6 +1463,14 @@ function buildSugestao(lista, totalCarga, totalSeries, blocosForca, blocosHipert
     partes.push("Mantém a lógica de 2–3 exercícios principais mais pesados (3–5 reps a 80–85% do 1RM) e 2–3 exercícios de apoio com 6–12 reps a 65–75% do 1RM.");
   }
 
+  if (nivel === "iniciante") {
+    partes.push("Como estás num nível iniciante, foca-te sobretudo em técnica sólida e progressões lentas mas consistentes, sem pressa em aumentar muito a carga.");
+  } else if (nivel === "intermedio") {
+    partes.push("Ao nível intermédio, já compensa planear blocos semanais com dias mais pesados e dias mais leves para continuares a progredir sem acumular fadiga excessiva.");
+  } else if (nivel === "avancado") {
+    partes.push("Ao nível avançado, vale a pena coordenar bem dias pesados, dias de volume e deloads pontuais, para manteres progresso e evitar lesões.");
+  }
+
   if (sexo === "homem") {
     partes.push("Como homem, toleras bem blocos pesados entre 80–85% do 1RM, desde que respeites a técnica e a recuperação.");
   } else if (sexo === "mulher") {
@@ -1448,14 +1479,6 @@ function buildSugestao(lista, totalCarga, totalSeries, blocosForca, blocosHipert
 
   if (idade && idade >= 40) {
     partes.push("Com a idade atual, é importante controlar o volume: dá prioridade à qualidade do movimento e garante 48–72 horas de recuperação entre dias muito pesados.");
-  }
-
-  if (nivel === "iniciante") {
-    partes.push("Sendo iniciante, o foco principal deve ser consolidar técnica e consistência semanal; progressos pequenos e regulares já são um excelente sinal.");
-  } else if (nivel === "intermedio") {
-    partes.push("Como atleta intermédio, vale a pena estruturar 2–3 blocos fortes por semana, alternando dias mais pesados com dias de volume moderado.");
-  } else if (nivel === "avancado") {
-    partes.push("Como atleta avançado, a gestão da fadiga torna-se decisiva; usa bem as semanas mais leves para chegares fresco aos testes de 1RM.");
   }
 
   if (peso) {
@@ -1668,7 +1691,7 @@ if (toggleDailyHistoryBtn && dailyHistorySection) {
   });
 }
 
-/* ===== BACKUP ===== */
+/* === BACKUP === */
 function formatDateTime(dt) {
   const d = new Date(dt);
   if (isNaN(d.getTime())) return "";
@@ -1680,6 +1703,7 @@ function formatDateTime(dt) {
   return `${dd}/${mm}/${yyyy} ${hh}:${mi}`;
 }
 
+/* Regista meta-informação de backup */
 function registerBackupMeta(evento) {
   try {
     const meta = JSON.parse(localStorage.getItem(STORAGE_BACKUP_META) || "{}");
@@ -1730,7 +1754,7 @@ if (exportBackupBtn) {
     const yyyy = now.getFullYear();
     const mm = String(now.getMonth() + 1).padStart(2, "0");
     const dd = String(now.getDate()).padStart(2, "0");
-    const filename = `crossfit_backup_${yyyy}${mm}${dd}.json`;
+    const filename = `crossbox_backup_${yyyy}${mm}${dd}.json`;
     downloadJson(backup, filename);
 
     try {
@@ -1830,7 +1854,7 @@ if (guiaSearch) {
   guiaSearch.addEventListener("input", renderGuiaExercicios);
 }
 
-/* TABS PRINCIPAIS */
+/* TABS principais */
 document.querySelectorAll(".tab-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
@@ -1842,7 +1866,7 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
   });
 });
 
-/* OPÇÕES (sub-seções) */
+/* Sub-seções de opções */
 document.querySelectorAll(".opt-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     const target = btn.dataset.target;
@@ -1866,7 +1890,13 @@ renderTreinos();
 updateBackupInfo();
 renderGuiaExercicios();
 
-/* Service worker DESATIVADO – não registamos nada aqui */
+/* SERVICE WORKER DESATIVADO PARA EVITAR CACHE ANTIGA
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("service-worker.js");
+  });
+}
+*/
 </script>
 
 </body>
