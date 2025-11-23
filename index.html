@@ -393,6 +393,10 @@
           <span class="opt-emoji">📈</span>
           <span>Gráfico</span>
         </button>
+        <button class="btn-secondary opt-btn" data-target="opt-guia">
+          <span class="opt-emoji">📚</span>
+          <span>Guia exercícios</span>
+        </button>
         <button class="btn-secondary opt-btn" data-target="opt-backup">
           <span class="opt-emoji">💾</span>
           <span>Backup</span>
@@ -558,6 +562,26 @@
         </div>
         <div style="margin-top:8px;">
           <canvas id="rmChart" style="width:100%; max-height:260px;"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- GUIA EXERCÍCIOS -->
+    <section id="opt-guia" class="option-section">
+      <div class="card">
+        <h3 style="margin-top:0; margin-bottom:8px;">📚 Guia de exercícios</h3>
+        <input id="guiaSearch" type="text" placeholder="Procurar por nome (EN/PT) ou descrição..." />
+        <div class="scroll" style="margin-top:8px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome (EN)</th>
+                <th>Tradução (PT)</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+            <tbody id="guiaBody"></tbody>
+          </table>
         </div>
       </div>
     </section>
@@ -732,6 +756,185 @@ const MOVES_PT = {
   "Kettlebell Lunges": "Lunges com kettlebell"
 };
 
+/* INFO DETALHADA PARA O GUIA */
+const EXER_INFO = [
+  {
+    en: "Chest Press",
+    pt: "Supino com barra",
+    descricao: "Empurrar a barra para longe do peito, deitado no banco, controlando a descida e a subida."
+  },
+  {
+    en: "Back Squat",
+    pt: "Agachamento costas",
+    descricao: "Agachamento com a barra apoiada na parte de trás dos ombros, descendo até abaixo da paralela."
+  },
+  {
+    en: "Front Squat",
+    pt: "Agachamento frontal",
+    descricao: "Agachamento com a barra apoiada na parte da frente dos ombros, tronco mais vertical."
+  },
+  {
+    en: "Overhead Squat",
+    pt: "Agachamento acima da cabeça",
+    descricao: "Agachamento com a barra acima da cabeça, braços estendidos e core bem firme."
+  },
+  {
+    en: "Deadlift",
+    pt: "Peso morto",
+    descricao: "Levar a barra do chão até à anca com costas neutras, empurrando o chão com as pernas."
+  },
+  {
+    en: "Sumo Deadlift",
+    pt: "Peso morto sumo",
+    descricao: "Peso morto com pés mais afastados e mãos a agarrar a barra entre as pernas."
+  },
+  {
+    en: "Romanian Deadlift (RDL)",
+    pt: "Peso morto romeno",
+    descricao: "Peso morto com menos flexão de joelhos, maior foco nos posteriores da coxa."
+  },
+  {
+    en: "Power Clean",
+    pt: "Power clean",
+    descricao: "Levar a barra do chão até aos ombros com receção acima da paralela, explosivo."
+  },
+  {
+    en: "Squat Clean",
+    pt: "Squat clean",
+    descricao: "Clean com receção em agachamento profundo antes de subir."
+  },
+  {
+    en: "Clean & Jerk",
+    pt: "Clean & jerk",
+    descricao: "Barra do chão aos ombros (clean) e depois dos ombros até acima da cabeça (jerk)."
+  },
+  {
+    en: "Power Snatch",
+    pt: "Power snatch",
+    descricao: "Arranco com receção acima da paralela, num só movimento do chão para overhead."
+  },
+  {
+    en: "Squat Snatch",
+    pt: "Squat snatch",
+    descricao: "Arranco com receção em agachamento profundo antes de recuperar para cima."
+  },
+  {
+    en: "Push Press",
+    pt: "Push press",
+    descricao: "Press de ombros com pequeno impulso das pernas, terminando com os braços estendidos."
+  },
+  {
+    en: "Push Jerk",
+    pt: "Push jerk",
+    descricao: "Impulso de pernas e encaixe debaixo da barra em semi-agachamento antes de estabilizar."
+  },
+  {
+    en: "Split Jerk",
+    pt: "Split jerk",
+    descricao: "Jerk com receção em passada, uma perna à frente e outra atrás."
+  },
+  {
+    en: "Strict Press",
+    pt: "Press militar estrito",
+    descricao: "Press de ombros sem ajuda das pernas, só com força dos ombros e braços."
+  },
+  {
+    en: "Thruster",
+    pt: "Thruster",
+    descricao: "Agachamento frontal seguido diretamente de press acima da cabeça num só movimento fluido."
+  },
+  {
+    en: "Barbell Row",
+    pt: "Remada com barra",
+    descricao: "Com o tronco inclinado à frente, puxar a barra na direção do abdómen."
+  },
+  {
+    en: "Bent Over Row",
+    pt: "Remada dobrado",
+    descricao: "Remada com maior inclinação do tronco, mantendo as costas neutras."
+  },
+  {
+    en: "Good Morning",
+    pt: "Good morning",
+    descricao: "Com a barra nas costas, inclinar o tronco à frente e voltar à posição inicial."
+  },
+  {
+    en: "Lunges com barra",
+    pt: "Passadas com barra",
+    descricao: "Passadas à frente ou atrás com a barra apoiada nos ombros."
+  },
+  {
+    en: "Hip Thrust com barra",
+    pt: "Hip thrust com barra",
+    descricao: "Elevar a anca com as costas apoiadas num banco e a barra sobre a bacia."
+  },
+  {
+    en: "Dumbbell Press",
+    pt: "Press com halteres",
+    descricao: "Press de ombros com halteres, de pé ou sentado, subindo os halteres acima da cabeça."
+  },
+  {
+    en: "Dumbbell Bench Press",
+    pt: "Supino com halteres",
+    descricao: "Deitado no banco, empurrar dois halteres para cima a partir do peito."
+  },
+  {
+    en: "Dumbbell Snatch",
+    pt: "Snatch com halteres",
+    descricao: "Do chão até acima da cabeça com um haltere, num só movimento explosivo."
+  },
+  {
+    en: "Dumbbell Clean",
+    pt: "Clean com halteres",
+    descricao: "Levar o haltere do chão até ao ombro numa só sequência."
+  },
+  {
+    en: "Dumbbell Clean & Jerk",
+    pt: "Clean & jerk com halteres",
+    descricao: "Clean com haltere até ao ombro seguido de impulso até overhead."
+  },
+  {
+    en: "Dumbbell Thruster",
+    pt: "Thruster com halteres",
+    descricao: "Agachamento seguido de press com halteres acima da cabeça."
+  },
+  {
+    en: "Dumbbell Row",
+    pt: "Remada com halteres",
+    descricao: "Remada unilateral ou bilateral puxando o haltere em direção ao tronco."
+  },
+  {
+    en: "Dumbbell Lunges",
+    pt: "Passadas com halteres",
+    descricao: "Passadas segurando um haltere em cada mão, ao lado do corpo."
+  },
+  {
+    en: "Kettlebell Swing",
+    pt: "Swing com kettlebell",
+    descricao: "Balanço da kettlebell usando sobretudo o impulso da anca, não dos braços."
+  },
+  {
+    en: "Kettlebell Clean",
+    pt: "Clean com kettlebell",
+    descricao: "Levar a kettlebell do fundo até à posição de rack junto ao peito."
+  },
+  {
+    en: "Kettlebell Snatch",
+    pt: "Snatch com kettlebell",
+    descricao: "Arranco unilateral, do chão ou baloiço até acima da cabeça."
+  },
+  {
+    en: "Goblet Squat",
+    pt: "Agachamento goblet",
+    descricao: "Agachamento segurando a kettlebell ou haltere junto ao peito."
+  },
+  {
+    en: "Kettlebell Lunges",
+    pt: "Passadas com kettlebell",
+    descricao: "Passadas segurando a kettlebell, ao lado do corpo ou em rack."
+  }
+];
+
 const PERC = [
   0.25, 0.30, 0.35, 0.40,
   0.50, 0.60, 0.70, 0.75,
@@ -776,6 +979,10 @@ const graphExerciseEl = document.getElementById("graphExercise");
 const rmChartCanvas = document.getElementById("rmChart");
 let rmChart = null;
 
+/* Guia exercícios */
+const guiaBody = document.getElementById("guiaBody");
+const guiaSearch = document.getElementById("guiaSearch");
+
 /* Backup */
 const exportBackupBtn = document.getElementById("exportBackupBtn");
 const importBackupBtn = document.getElementById("importBackupBtn");
@@ -787,14 +994,14 @@ function formatKg(v) {
   return v.toFixed(1).replace(".", ",") + " kg";
 }
 
+/* Selects – só nomes em inglês */
 function initSelects() {
   if (sel) {
     sel.innerHTML = "";
     MOVES.forEach(m => {
       const opt = document.createElement("option");
       opt.value = m;
-      const label = MOVES_PT[m] ? `${m} – ${MOVES_PT[m]}` : m;
-      opt.textContent = label;
+      opt.textContent = m; // só EN
       sel.appendChild(opt);
     });
   }
@@ -804,8 +1011,7 @@ function initSelects() {
     MOVES.forEach(m => {
       const opt = document.createElement("option");
       opt.value = m;
-      const label = MOVES_PT[m] ? `${m} – ${MOVES_PT[m]}` : m;
-      opt.textContent = label;
+      opt.textContent = m; // só EN
       treinoExEl.appendChild(opt);
     });
   }
@@ -830,8 +1036,7 @@ function refreshCalcExOptions() {
   names.forEach(n => {
     const opt = document.createElement("option");
     opt.value = n;
-    const label = MOVES_PT[n] ? `${n} – ${MOVES_PT[n]}` : n;
-    opt.textContent = label;
+    opt.textContent = n; // só EN
     calcExEl.appendChild(opt);
   });
 }
@@ -860,8 +1065,7 @@ function refreshGraphExerciseOptions() {
   names.forEach(n => {
     const opt = document.createElement("option");
     opt.value = n;
-    const label = MOVES_PT[n] ? `${n} – ${MOVES_PT[n]}` : n;
-    opt.textContent = label;
+    opt.textContent = n; // só EN
     graphExerciseEl.appendChild(opt);
   });
 
@@ -1626,6 +1830,39 @@ if (importBackupBtn && backupFileInput) {
   });
 }
 
+/* === GUIA EXERCÍCIOS === */
+function renderGuiaExercicios() {
+  if (!guiaBody) return;
+  guiaBody.innerHTML = "";
+
+  const filtro = (guiaSearch?.value || "").toLowerCase().trim();
+
+  EXER_INFO.forEach(ex => {
+    const texto = (ex.en + " " + ex.pt + " " + ex.descricao).toLowerCase();
+    if (filtro && !texto.includes(filtro)) return;
+
+    const tr = document.createElement("tr");
+
+    const tdEn = document.createElement("td");
+    tdEn.textContent = ex.en;
+    tr.appendChild(tdEn);
+
+    const tdPt = document.createElement("td");
+    tdPt.textContent = ex.pt;
+    tr.appendChild(tdPt);
+
+    const tdDesc = document.createElement("td");
+    tdDesc.textContent = ex.descricao;
+    tr.appendChild(tdDesc);
+
+    guiaBody.appendChild(tr);
+  });
+}
+
+if (guiaSearch) {
+  guiaSearch.addEventListener("input", renderGuiaExercicios);
+}
+
 /* === TABS PRINCIPAIS === */
 document.querySelectorAll(".tab-btn").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -1660,6 +1897,7 @@ if (treinoDataEl && !treinoDataEl.value) {
 }
 renderTreinos();
 updateBackupInfo();
+renderGuiaExercicios();
 
 /* SERVICE WORKER */
 if ("serviceWorker" in navigator) {
