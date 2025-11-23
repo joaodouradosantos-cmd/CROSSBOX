@@ -282,12 +282,28 @@
   <header>
     <button id="editProfileBtnHeader" class="btn-edit-profile">Editar perfil</button>
     <img id="appLogo" src="imagens/crossmoita_logo.png" alt="Cross Moita Logo">
-    <div class="subtitle">Registo pessoal de treinos de força</div>
+    <div class="subtitle" id="appSubtitle">Registo de treinos</div>
   </header>
 
   <!-- PERFIL -->
   <section class="card" id="perfil">
     <div id="perfilForm">
+      <div class="form-row">
+        <div class="field">
+          <label>Nome</label>
+          <input id="nome" type="text" />
+        </div>
+        <div class="field">
+          <label>Nível</label>
+          <select id="nivel">
+            <option value="">Selecionar</option>
+            <option value="iniciante">Iniciante</option>
+            <option value="intermedio">Intermédio</option>
+            <option value="avancado">Avançado</option>
+          </select>
+        </div>
+      </div>
+
       <div class="form-row">
         <div class="field">
           <label>Sexo</label>
@@ -542,6 +558,17 @@
           </div>
         </div>
 
+        <div class="form-row">
+          <div class="field">
+            <label>Peso objetivo (kg – opcional)</label>
+            <input id="calcTargetKg" type="number" step="0.5" min="0" />
+          </div>
+          <div class="field">
+            <label>Prazo (semanas – opcional)</label>
+            <input id="calcWeeks" type="number" min="1" />
+          </div>
+        </div>
+
         <button class="btn-primary" id="calcBtn">Calcular</button>
         <div class="helper-text" id="calcResultado" style="margin-top:6px;">
           Escolhe um exercício com 1RM registado, indica o nº de repetições e, se quiseres, o objetivo (força / hipertrofia / técnica).
@@ -615,6 +642,8 @@ const STORAGE_BACKUP_META = "crossfit_backup_meta";
 /* ===== PERFIL ===== */
 let profile = JSON.parse(localStorage.getItem(STORAGE_PROFILE) || "{}");
 
+const nomeEl = document.getElementById("nome");
+const nivelEl = document.getElementById("nivel");
 const sexoEl = document.getElementById("sexo");
 const idadeEl = document.getElementById("idade");
 const alturaEl = document.getElementById("altura");
@@ -626,19 +655,34 @@ function updateProfileInfo() {
   if (perfilForm) perfilForm.style.display = "none";
 }
 
+function updateSubtitle() {
+  const sub = document.getElementById("appSubtitle");
+  if (!sub) return;
+  if (profile && profile.nome && profile.nome.trim() !== "") {
+    sub.textContent = `Registo de treinos do ${profile.nome}`;
+  } else {
+    sub.textContent = "Registo de treinos";
+  }
+}
+
 function loadProfile() {
   if (!sexoEl) return;
+  if (profile.nome && nomeEl) nomeEl.value = profile.nome;
+  if (profile.nivel && nivelEl) nivelEl.value = profile.nivel;
   if (profile.sexo) sexoEl.value = profile.sexo;
   if (profile.idade) idadeEl.value = profile.idade;
   if (profile.altura) alturaEl.value = profile.altura;
   if (profile.peso) pesoEl.value = profile.peso;
   updateProfileInfo();
+  updateSubtitle();
 }
 
 const saveProfileBtn = document.getElementById("saveProfile");
 if (saveProfileBtn) {
   saveProfileBtn.addEventListener("click", () => {
     profile = {
+      nome: nomeEl && nomeEl.value ? nomeEl.value.trim() : "",
+      nivel: nivelEl ? (nivelEl.value || "") : "",
       sexo: sexoEl.value || "",
       idade: idadeEl.value ? parseInt(idadeEl.value, 10) : "",
       altura: alturaEl.value ? parseInt(alturaEl.value, 10) : "",
@@ -646,6 +690,7 @@ if (saveProfileBtn) {
     };
     localStorage.setItem(STORAGE_PROFILE, JSON.stringify(profile));
     updateProfileInfo();
+    updateSubtitle();
     registerBackupMeta("Perfil atualizado");
     alert("Perfil atualizado.");
   });
@@ -659,7 +704,84 @@ if (editProfileBtnHeader) {
   });
 }
 
-/* ===== EXERCÍCIOS / GUIA ===== */
+/* ===== EXERCÍCIOS ===== */
+const MOVES = [
+  "Chest Press",
+  "Back Squat",
+  "Front Squat",
+  "Overhead Squat",
+  "Deadlift",
+  "Sumo Deadlift",
+  "Romanian Deadlift (RDL)",
+  "Power Clean",
+  "Squat Clean",
+  "Clean & Jerk",
+  "Power Snatch",
+  "Squat Snatch",
+  "Push Press",
+  "Push Jerk",
+  "Split Jerk",
+  "Strict Press",
+  "Thruster",
+  "Barbell Row",
+  "Bent Over Row",
+  "Good Morning",
+  "Lunges com barra",
+  "Hip Thrust com barra",
+  "Dumbbell Press",
+  "Dumbbell Bench Press",
+  "Dumbbell Snatch",
+  "Dumbbell Clean",
+  "Dumbbell Clean & Jerk",
+  "Dumbbell Thruster",
+  "Dumbbell Row",
+  "Dumbbell Lunges",
+  "Kettlebell Swing",
+  "Kettlebell Clean",
+  "Kettlebell Snatch",
+  "Goblet Squat",
+  "Kettlebell Lunges"
+];
+
+const MOVES_PT = {
+  "Chest Press": "Supino com barra",
+  "Back Squat": "Agachamento com barra nas costas",
+  "Front Squat": "Agachamento frontal",
+  "Overhead Squat": "Agachamento acima da cabeça",
+  "Deadlift": "Peso morto",
+  "Sumo Deadlift": "Peso morto sumo",
+  "Romanian Deadlift (RDL)": "Peso morto romeno",
+  "Power Clean": "Power clean",
+  "Squat Clean": "Squat clean",
+  "Clean & Jerk": "Clean & jerk",
+  "Power Snatch": "Power snatch",
+  "Squat Snatch": "Squat snatch",
+  "Push Press": "Push press",
+  "Push Jerk": "Push jerk",
+  "Split Jerk": "Split jerk",
+  "Strict Press": "Press militar estrito",
+  "Thruster": "Thruster",
+  "Barbell Row": "Remada com barra",
+  "Bent Over Row": "Remada inclinada",
+  "Good Morning": "Good morning",
+  "Lunges com barra": "Passadas com barra",
+  "Hip Thrust com barra": "Hip thrust com barra",
+  "Dumbbell Press": "Press com halteres",
+  "Dumbbell Bench Press": "Supino com halteres",
+  "Dumbbell Snatch": "Snatch com halteres",
+  "Dumbbell Clean": "Clean com halteres",
+  "Dumbbell Clean & Jerk": "Clean & jerk com halteres",
+  "Dumbbell Thruster": "Thruster com halteres",
+  "Dumbbell Row": "Remada com halteres",
+  "Dumbbell Lunges": "Passadas com halteres",
+  "Kettlebell Swing": "Swing com kettlebell",
+  "Kettlebell Clean": "Clean com kettlebell",
+  "Kettlebell Snatch": "Snatch com kettlebell",
+  "Goblet Squat": "Agachamento goblet",
+  "Kettlebell Lunges": "Passadas com kettlebell"
+};
+
+/* GUIA – LISTA TIPO JSON (inclui mais exercícios que MOVES) */
 const EXER_INFO = [
   { en: "Chest Press", pt: "Supino com barra", descricao: "Empurrar a barra para longe do peito, deitado no banco, controlando a descida e a subida." },
   { en: "Back Squat", pt: "Agachamento com barra nas costas", descricao: "Agachamento com a barra apoiada nas costas, descendo até pelo menos à paralela e subindo com o tronco firme." },
@@ -745,13 +867,6 @@ const EXER_INFO = [
   { en: "Shrug", pt: "Encolhimento de ombros", descricao: "Elevar os ombros em direção às orelhas segurando barra ou halteres, focando trapézios." }
 ];
 
-const MOVES = EXER_INFO.map(ex => ex.en);
-
-const MOVES_PT = EXER_INFO.reduce((map, ex) => {
-  map[ex.en] = ex.pt;
-  return map;
-}, {});
-
 const PERC = [
   0.25, 0.30, 0.35, 0.40,
   0.50, 0.60, 0.70, 0.75,
@@ -788,6 +903,8 @@ const dailyHistoryBody = document.getElementById("dailyHistoryBody");
 const calcExEl = document.getElementById("calcExercicio");
 const calcRepsEl = document.getElementById("calcReps");
 const calcObjEl = document.getElementById("calcObjetivo");
+const calcTargetKgEl = document.getElementById("calcTargetKg");
+const calcWeeksEl = document.getElementById("calcWeeks");
 const calcResEl = document.getElementById("calcResultado");
 const calcBtn = document.getElementById("calcBtn");
 
@@ -810,7 +927,7 @@ function formatKg(v) {
   return v.toFixed(1).replace(".", ",") + " kg";
 }
 
-/* Selects – só nomes em inglês */
+/* Selects – só nomes em inglês (para 1RM e WOD) */
 function initSelects() {
   if (sel) {
     sel.innerHTML = "";
@@ -978,6 +1095,7 @@ document.getElementById("addBtn").addEventListener("click", () => {
   renderRm();
 });
 
+/* ===== MELHORAMENTO (CALCULADORA) ===== */
 function getPercentRange(reps, objetivo) {
   let minP, maxP;
 
@@ -1014,6 +1132,8 @@ if (calcBtn) {
     const ex = calcExEl.value;
     const reps = parseInt(calcRepsEl.value || "0", 10);
     const obj = calcObjEl ? calcObjEl.value : "";
+    const targetKgVal = calcTargetKgEl ? parseFloat(calcTargetKgEl.value || "0") : 0;
+    const weeksVal = calcWeeksEl ? parseInt(calcWeeksEl.value || "0", 10) : 0;
 
     if (!ex || !dataRm[ex]) {
       calcResEl.textContent = "Escolhe um exercício com 1RM registado.";
@@ -1034,13 +1154,57 @@ if (calcBtn) {
     if (obj === "hipertrofia") objetivoTexto = "hipertrofia";
     if (obj === "tecnica") objetivoTexto = "técnica / volume leve";
 
-    calcResEl.textContent =
+    let msg =
       `Para ${reps} repetições em ${ex}, com objetivo ${objetivoTexto}, ` +
       `a carga sugerida é entre ${(minP*100).toFixed(0)}% e ${(maxP*100).toFixed(0)}% do 1RM: ` +
       `${formatKg(minLoad)} – ${formatKg(maxLoad)}. Ajusta ligeiramente para bater certo com os discos que tens.`;
+
+    // Se o utilizador definir um peso objetivo e/ou prazo, acrescentamos orientação extra
+    if (targetKgVal && !isNaN(targetKgVal)) {
+      if (targetKgVal <= oneRmVal) {
+        msg += `\n\nO peso objetivo (${formatKg(targetKgVal)}) está abaixo ou muito próximo do teu 1RM atual. Foca-te em consolidar técnica, controlar o volume e manter consistência semanal.`;
+      } else {
+        if (weeksVal && weeksVal > 0) {
+          const incPercent = ((targetKgVal - oneRmVal) / oneRmVal) * 100;
+          const incPerWeek = incPercent / weeksVal;
+          let dificuldade;
+          if (incPerWeek <= 1) {
+            dificuldade = "uma progressão realista";
+          } else if (incPerWeek <= 2) {
+            dificuldade = "uma progressão exigente mas ainda possível";
+          } else {
+            dificuldade = "uma progressão muito agressiva e pouco realista para a maioria das pessoas";
+          }
+
+          const nivel = (profile && profile.nivel) ? profile.nivel.toLowerCase() : "";
+          let freq = "2–3 sessões semanais";
+          let seriesReps = "3–5 séries de 3–6 repetições entre 75–90% do 1RM atual";
+
+          if (nivel === "iniciante") {
+            freq = "2–3 sessões semanais focadas no movimento principal";
+            seriesReps = "3–4 séries de 5–8 repetições entre 70–80% do 1RM atual";
+          } else if (nivel === "intermedio") {
+            freq = "2–3 sessões semanais com variações do movimento principal";
+            seriesReps = "4–5 séries de 3–6 repetições entre 75–85% do 1RM atual";
+          } else if (nivel === "avancado") {
+            freq = "2–3 sessões semanais mais específicas (força + variações técnicas)";
+            seriesReps = "3–6 séries entre 2–5 repetições a 80–90% do 1RM atual";
+          }
+
+          msg += `\n\nObjetivo: chegar a ${formatKg(targetKgVal)} em cerca de ${weeksVal} semanas (${dificuldade}). ` +
+                 `Uma sugestão, tendo em conta o teu nível, é realizar ${freq} de ${ex}, com ${seriesReps}, ` +
+                 `aumentando 2,5–5 kg quando conseguires todas as séries com boa técnica e sem falhas.`;
+        } else {
+          msg += `\n\nTens como objetivo chegar a ${formatKg(targetKgVal)}. Define um prazo em semanas para obteres uma recomendação mais detalhada de volume e frequência.`;
+        }
+      }
+    }
+
+    calcResEl.textContent = msg;
   });
 }
 
+/* ===== GRÁFICO 1RM ===== */
 function updateRmChart() {
   if (!rmChartCanvas || !graphExerciseEl) return;
 
@@ -1130,6 +1294,7 @@ if (graphExerciseEl) {
   graphExerciseEl.addEventListener("change", updateRmChart);
 }
 
+/* ===== WOD ===== */
 function saveTreinos() {
   localStorage.setItem(STORAGE_TREINO, JSON.stringify(treinos));
 }
@@ -1498,6 +1663,7 @@ if (toggleDailyHistoryBtn && dailyHistorySection) {
   });
 }
 
+/* ===== BACKUP ===== */
 function formatDateTime(dt) {
   const d = new Date(dt);
   if (isNaN(d.getTime())) return "";
@@ -1659,6 +1825,7 @@ if (guiaSearch) {
   guiaSearch.addEventListener("input", renderGuiaExercicios);
 }
 
+/* TABS PRINCIPAIS */
 document.querySelectorAll(".tab-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
@@ -1670,6 +1837,7 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
   });
 });
 
+/* OPÇÕES (sub-seções) */
 document.querySelectorAll(".opt-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     const target = btn.dataset.target;
@@ -1679,6 +1847,7 @@ document.querySelectorAll(".opt-btn").forEach(btn => {
   });
 });
 
+/* INIT */
 initSelects();
 loadProfile();
 renderRm();
