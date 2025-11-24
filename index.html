@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CrossBox</title>
 
-  <meta name="theme-color" content="#020617" />
+  <meta name="theme-color" content="#f2f2f2" />
   <link rel="manifest" href="manifest.json" />
 
-  <!-- Ícone PWA / iOS -->
   <link rel="apple-touch-icon" sizes="180x180" href="imagens/crossmoita_logo.png" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -17,25 +16,13 @@
 
   <style>
     :root {
-      font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-      color-scheme: dark;
-      --bg-gradient-top: #1f2933;
-      --bg-gradient-bottom: #020617;
-      --card-bg: #020617;
-      --card-border: #374151;
-      --card-radius: 16px;
-      --primary: #22c55e;
-      --primary-dark: #16a34a;
-      --secondary-bg: #111827;
-      --secondary-border: #4b5563;
-      --text-main: #e5e7eb;
-      --text-muted: #9ca3af;
+      font-family: system-ui, sans-serif;
+      color-scheme: light;
     }
 
     body {
-      margin: 0;
-      background: radial-gradient(circle at top, #1f2933 0%, #020617 55%, #000000 100%);
-      color: var(--text-main);
+      background: linear-gradient(to bottom, #e0e0e0 90%, #d4d4d4 100%);
+      color: #111;
       display: flex;
       justify-content: center;
       min-height: 100vh;
@@ -44,119 +31,43 @@
     .app {
       width: 100%;
       max-width: 900px;
-      padding: 16px 14px 24px 14px;
+      padding: 16px;
       box-sizing: border-box;
-      border-radius: 20px;
-      background: linear-gradient(to bottom, rgba(15,23,42,0.96), rgba(15,23,42,0.98));
-      box-shadow: 0 18px 45px rgba(0,0,0,0.7);
     }
 
     header {
       text-align: center;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       position: relative;
-      padding: 12px 8px 6px 8px;
-      border-radius: 18px;
-      background: radial-gradient(circle at top, #0f172a 0%, #020617 70%);
-      border: 1px solid rgba(148,163,184,0.35);
-      box-shadow: 0 12px 30px rgba(15,23,42,0.7);
-    }
-
-    /* Caixa 3D tipo plyo box */
-    .logo-box {
-      display: inline-block;
-      margin: 0 auto 10px auto;
-      padding: 4px;
-      border-radius: 0;
-      background: radial-gradient(circle at top left, rgba(15,23,42,0.9), rgba(15,23,42,1));
-      box-shadow:
-        0 18px 40px rgba(0,0,0,0.9),
-        0 0 0 1px rgba(148,163,184,0.25);
-      position: relative;
-      transform: perspective(650px) rotateX(7deg);
-      transform-origin: center top;
-    }
-
-    .logo-box-inner {
-      position: relative;
-      border-radius: 0;
-      padding: 8px 10px;
-      background: linear-gradient(135deg, #e3b979, #c08a4a);
-      box-shadow:
-        inset 0 0 0 1px rgba(0,0,0,0.45),
-        inset 0 6px 14px rgba(255,255,255,0.25),
-        inset 0 -10px 24px rgba(0,0,0,0.45);
-      overflow: hidden;
-    }
-
-    .logo-box-inner::before {
-      content: "";
-      position: absolute;
-      inset: -20px;
-      background:
-        repeating-linear-gradient(
-          120deg,
-          rgba(120,72,32,0.32) 0,
-          rgba(120,72,32,0.32) 2px,
-          rgba(0,0,0,0) 2px,
-          rgba(0,0,0,0) 10px
-        );
-      opacity: 0.55;
-      mix-blend-mode: multiply;
-      pointer-events: none;
-    }
-
-    .logo-box-inner::after {
-      content: "";
-      position: absolute;
-      inset: 6px;
-      background:
-        radial-gradient(circle, #444 0, #222 45%, #000 70%, transparent 72%) 0 0,
-        radial-gradient(circle, #444 0, #222 45%, #000 70%, transparent 72%) 100% 0,
-        radial-gradient(circle, #444 0, #222 45%, #000 70%, transparent 72%) 0 100%,
-        radial-gradient(circle, #444 0, #222 45%, #000 70%, transparent 72%) 100% 100%;
-      background-size: 10px 10px;
-      background-repeat: no-repeat;
-      pointer-events: none;
-      opacity: 0.85;
     }
 
     #appLogo {
       max-width: 220px;
-      width: 100%;
       height: auto;
       display: block;
-      margin: 0;
-      position: relative;
-      z-index: 1;
-      padding: 0;
-      background: none;
-      box-shadow: none;
+      margin: 0 auto 6px auto;
     }
 
     .subtitle {
       font-size: 0.85rem;
-      color: #e5e7eb;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      opacity: 0.9;
+      color: #555;
     }
 
     .card {
-      background: radial-gradient(circle at top left, #111827 0%, #020617 70%);
-      border-radius: var(--card-radius);
+      background: #ffffff;
+      border-radius: 14px;
       padding: 14px;
       margin-bottom: 16px;
-      border: 1px solid var(--card-border);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.6);
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
     }
 
-    /* Perfil sem cartão branco */
+    /* PERFIL SEM “CARTÃO” BRANCO */
     #perfil.card {
       background: transparent;
       border: none;
       box-shadow: none;
-      padding: 0 2px;
+      padding: 0;
       margin-bottom: 4px;
     }
 
@@ -182,73 +93,51 @@
 
     label {
       font-size: 0.8rem;
-      color: #9ca3af;
+      color: #444;
     }
 
-    input,
-    select,
-    textarea,
-    button {
+    input, select, textarea, button {
       padding: 10px;
-      border-radius: 12px;
-      background: rgba(15,23,42,0.95);
-      color: #e5e7eb;
-      border: 1px solid #4b5563;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #111;
+      border: 1px solid #cccccc;
       font-size: 0.9rem;
-      font-family: inherit;
-      min-height: 40px;
       box-sizing: border-box;
+      font-family: inherit;
     }
 
-    input::placeholder,
-    textarea::placeholder {
-      color: #6b7280;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
+    input:focus, select:focus, textarea:focus {
       outline: none;
-      border-color: var(--primary);
+      border-color: #22c55e;
       box-shadow: 0 0 0 1px rgba(34,197,94,0.2);
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      border-color: #16a34a;
-      color: #f9fafb;
+      background: #22c55e;
+      border-color: #22c55e;
+      color: #ffffff;
       font-weight: 600;
       cursor: pointer;
-      box-shadow: 0 8px 18px rgba(34,197,94,0.45);
-      transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.08s ease;
-    }
-
-    .btn-primary:active {
-      transform: translateY(1px) scale(0.99);
-      box-shadow: 0 4px 10px rgba(22,163,74,0.6);
-      filter: brightness(0.96);
     }
 
     .btn-secondary {
       padding: 8px 10px;
       border-radius: 999px;
-      border: 1px solid #4b5563;
-      background: radial-gradient(circle at top, #111827 0%, #020617 80%);
-      color: #e5e7eb;
+      border: 1px solid #cccccc;
+      background: #e5e5e5;
+      color: #222;
       font-size: 0.8rem;
       cursor: pointer;
       white-space: nowrap;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.6);
-      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.08s ease;
     }
 
     .btn-secondary:active {
-      transform: scale(0.97) translateY(1px);
-      box-shadow: 0 3px 8px rgba(0,0,0,0.7);
+      transform: scale(0.97);
     }
 
     .btn-delete {
-      padding: 2px 6px;
+      padding: 2px 4px;
       border-radius: 999px;
       border: 1px solid #e5e5e5;
       background: #f97373;
@@ -264,7 +153,7 @@
     .helper-text {
       margin-top: 4px;
       font-size: 0.8rem;
-      color: #9ca3af;
+      color: #444;
     }
 
     .btn-edit-profile {
@@ -272,11 +161,10 @@
       border-radius: 999px;
       border: 1px solid #cccccc;
       background: #e5e5e5;
-      color: #222222;
+      color: #222;
       font-size: 0.65rem;
       cursor: pointer;
       white-space: nowrap;
-      transition: background 0.08s ease, transform 0.08s ease;
     }
 
     .btn-edit-profile:active {
@@ -287,7 +175,6 @@
       position: absolute;
       top: 4px;
       right: 8px;
-      z-index: 10;
     }
 
     .tabs {
@@ -300,37 +187,31 @@
       flex: 1;
       padding: 10px 0;
       border-radius: 999px;
-      border: 1px solid #4b5563;
-      background: radial-gradient(circle at top, #111827 0%, #020617 80%);
-      color: #e5e7eb;
+      border: 1px solid #cccccc;
+      background: #e5e5e5;
+      color: #222;
       cursor: pointer;
       font-size: 0.9rem;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.65);
-      transition: transform 0.1s ease, box-shadow 0.1s ease,
-                  background 0.1s ease, border-color 0.1s ease, color 0.1s ease;
+      box-shadow: 0 4px 0 #b3b3b3;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease, border-color 0.1s ease, color 0.1s ease;
     }
 
     .tab-btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 9px 18px rgba(0,0,0,0.75);
+      box-shadow: 0 5px 0 #aaaaaa;
     }
 
     .tab-btn.active {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      border-color: #16a34a;
-      color: #f9fafb;
+      background: #22c55e;
+      border-color: #22c55e;
+      color: #ffffff;
       font-weight: 600;
       transform: translateY(2px);
-      box-shadow: 0 4px 10px rgba(22,163,74,0.8);
+      box-shadow: 0 2px 0 #15803d;
     }
 
-    .section {
-      display: none;
-    }
-
-    .section.active {
-      display: block;
-    }
+    .section { display: none; }
+    .section.active { display: block; }
 
     .options-grid {
       display: grid;
@@ -363,20 +244,19 @@
       width: 100%;
       border-collapse: collapse;
       font-size: 0.8rem;
-      color: var(--text-main);
+      color: #111;
     }
 
-    th,
-    td {
+    th, td {
       padding: 6px;
       text-align: center;
-      border-bottom: 1px solid #4b5563;
+      border-bottom: 1px solid #dddddd;
       white-space: nowrap;
     }
 
     th {
-      background: #0b1120;
-      color: #e5e7eb;
+      background: #f9f9f9;
+      color: #333;
       position: sticky;
       top: 0;
       z-index: 1;
@@ -386,48 +266,13 @@
       max-height: 260px;
       overflow: auto;
       border-radius: 10px;
-      border: 1px solid #374151;
-      -webkit-overflow-scrolling: touch;
+      border: 1px solid #e5e5e5;
     }
 
     #backupInfo {
       margin-top: 6px;
       font-size: 0.75rem;
-      color: #9ca3af;
-    }
-
-    @media (max-width: 480px) {
-      .app {
-        padding: 12px 8px 18px 8px;
-      }
-
-      header {
-        margin-bottom: 10px;
-      }
-
-      .card {
-        padding: 10px;
-        margin-bottom: 10px;
-      }
-
-      .form-row {
-        flex-direction: column;
-      }
-
-      th,
-      td {
-        padding: 5px;
-        font-size: 0.75rem;
-      }
-
-      .tabs {
-        margin-top: 6px;
-      }
-
-      .tab-btn {
-        font-size: 0.8rem;
-        padding: 8px 0;
-      }
+      color: #555;
     }
   </style>
 </head>
@@ -436,11 +281,7 @@
 
   <header>
     <button id="editProfileBtnHeader" class="btn-edit-profile">Editar perfil</button>
-    <div class="logo-box">
-      <div class="logo-box-inner">
-        <img id="appLogo" src="imagens/crossmoita_logo.png" alt="Cross Moita Logo">
-      </div>
-    </div>
+    <img id="appLogo" src="imagens/crossmoita_logo.png" alt="Cross Moita Logo">
     <div class="subtitle" id="appSubtitle">Registo de treinos</div>
   </header>
 
@@ -564,6 +405,10 @@
         <button class="btn-secondary opt-btn" data-target="opt-graficos">
           <span class="opt-emoji">📈</span>
           <span>Gráfico</span>
+        </button>
+        <button class="btn-secondary opt-btn" data-target="opt-performance">
+          <span class="opt-emoji">🏅</span>
+          <span>Performance</span>
         </button>
         <button class="btn-secondary opt-btn" data-target="opt-guia">
           <span class="opt-emoji">📚</span>
@@ -696,7 +541,7 @@
 
         <div class="form-row">
           <div class="field">
-            <label>Exercício (com 1RM registado)</label>
+            <label>Exercício</label>
             <select id="calcExercicio"></select>
           </div>
           <div class="field">
@@ -730,7 +575,7 @@
 
         <button class="btn-primary" id="calcBtn">Calcular</button>
         <div class="helper-text" id="calcResultado" style="margin-top:6px;">
-          Escolhe um exercício com 1RM registado, indica o nº de repetições e, se quiseres, o objetivo (força / hipertrofia / técnica).
+          Escolhe um exercício, indica o nº de repetições e, se quiseres, o objetivo (força / hipertrofia / técnica).
         </div>
       </div>
     </section>
@@ -745,6 +590,60 @@
         </div>
         <div style="margin-top:8px;">
           <canvas id="rmChart" style="width:100%; max-height:260px;"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- PERFORMANCE -->
+    <section id="opt-performance" class="option-section">
+      <div class="card">
+        <h3 style="margin-top:0; margin-bottom:8px;">🏅 Performance física</h3>
+        <p class="helper-text">
+          Resumo automático com base nos teus registos de WOD, 1RM e metcons.
+        </p>
+
+        <h4 style="margin-top:10px; margin-bottom:4px;">WOD – dias com mais carga</h4>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Carga total</th>
+                <th>N.º exercícios</th>
+                <th>Melhor tempo metcon</th>
+              </tr>
+            </thead>
+            <tbody id="perfWodBody"></tbody>
+          </table>
+        </div>
+
+        <h4 style="margin-top:12px; margin-bottom:4px;">Top 1RM</h4>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Exercício</th>
+                <th>1RM</th>
+                <th>Rel. peso corporal</th>
+              </tr>
+            </thead>
+            <tbody id="perf1rmBody"></tbody>
+          </table>
+        </div>
+
+        <h4 style="margin-top:12px; margin-bottom:4px;">Metcon – melhores tempos</h4>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Exercício</th>
+                <th>Melhor tempo</th>
+                <th>Data</th>
+                <th>Carga aprox.</th>
+              </tr>
+            </thead>
+            <tbody id="perfMetconBody"></tbody>
+          </table>
         </div>
       </div>
     </section>
@@ -852,6 +751,7 @@ if (saveProfileBtn) {
     updateSubtitle();
     registerBackupMeta("Perfil atualizado");
     alert("Perfil atualizado.");
+    renderPerformance();
   });
 }
 
@@ -940,7 +840,7 @@ const MOVES_PT = {
   "Kettlebell Lunges": "Passadas com kettlebell"
 };
 
-/* GUIA – lista alargada */
+/* GUIA – LISTA TIPO JSON (inclui mais exercícios que MOVES) */
 const EXER_INFO = [
   { en: "Chest Press", pt: "Supino com barra", descricao: "Empurrar a barra para longe do peito, deitado no banco, controlando a descida e a subida." },
   { en: "Back Squat", pt: "Agachamento com barra nas costas", descricao: "Agachamento com a barra apoiada nas costas, descendo até pelo menos à paralela e subindo com o tronco firme." },
@@ -957,9 +857,8 @@ const EXER_INFO = [
   { en: "Push Press", pt: "Push press", descricao: "Press de ombros com pequeno impulso das pernas, terminando com a barra acima da cabeça." },
   { en: "Push Jerk", pt: "Push jerk", descricao: "Impulso de pernas e encaixe da barra acima da cabeça, recebendo em semi-agachamento antes de estender." },
   { en: "Split Jerk", pt: "Split jerk", descricao: "Jerk em passada, recebendo a barra overhead com uma perna à frente e outra atrás para maior estabilidade." },
-  { en: "Strict Press", pt: "Press militar estrito", descricao: "Press de ombros sem ajuda das pernas, só com força dos om
-bros e braços." },
-  { en: "Thruster", pt: "Thruster", descricao: "Agachamento frontal seguido diretamente de press acima da cabeça num único movimento." },
+  { en: "Strict Press", pt: "Press militar estrito", descricao: "Press de ombros sem ajuda das pernas, só com força dos ombros e braços, de pé ou sentado." },
+  { en: "Thruster", pt: "Thruster", descricao: "Agachamento frontal seguido diretamente de press acima da cabeça num único movimento fluido." },
   { en: "Barbell Row", pt: "Remada com barra", descricao: "Com o tronco inclinado à frente, puxar a barra em direção ao abdómen mantendo as costas neutras." },
   { en: "Bent Over Row", pt: "Remada inclinada", descricao: "Remada com maior inclinação do tronco, focando dorsais e parte média das costas." },
   { en: "Good Morning", pt: "Good morning", descricao: "Com a barra nas costas, inclinar o tronco à frente com ligeira flexão de joelhos e voltar à posição inicial." },
@@ -971,15 +870,69 @@ bros e braços." },
   { en: "Dumbbell Clean", pt: "Clean com halteres", descricao: "Levar o haltere do chão ou das pernas até ao ombro, com extensão de anca." },
   { en: "Dumbbell Clean & Jerk", pt: "Clean & jerk com halteres", descricao: "Clean com haltere até ao ombro seguido de impulso até overhead." },
   { en: "Dumbbell Thruster", pt: "Thruster com halteres", descricao: "Agachamento seguido de press com halteres acima da cabeça num só movimento." },
-  { en: "Dumbbell Row", pt: "Remada com halteres", descricao: "Remada unilateral ou bilateral puxando o haltere em direção ao tronco." },
+  { en: "Dumbbell Row", pt: "Remada com halteres", descricao: "Remada unilateral ou bilateral puxando o haltere em direção ao tronco, focando dorsais." },
   { en: "Dumbbell Lunges", pt: "Passadas com halteres", descricao: "Passadas segurando um haltere em cada mão junto ao corpo." },
-  { en: "Kettlebell Swing", pt: "Swing com kettlebell", descricao: "Balanço da kettlebell usando sobretudo o impulso da anca." },
+  { en: "Kettlebell Swing", pt: "Swing com kettlebell", descricao: "Balanço da kettlebell usando sobretudo o impulso da anca, não dos braços." },
   { en: "Kettlebell Clean", pt: "Clean com kettlebell", descricao: "Levar a kettlebell do fundo até à posição de rack junto ao peito." },
-  { en: "Kettlebell Snatch", pt: "Snatch com kettlebell", descricao: "Arranco unilateral até acima da cabeça." },
-  { en: "Goblet Squat", pt: "Agachamento goblet", descricao: "Agachamento segurando a kettlebell ou haltere junto ao peito." },
-  { en: "Kettlebell Lunges", pt: "Passadas com kettlebell", descricao: "Passadas segurando a kettlebell ao lado do corpo ou em rack." },
-  /* (restantes exercícios iguais aos que já tinhas; mantive para não ficar infinito) */
+  { en: "Kettlebell Snatch", pt: "Snatch com kettlebell", descricao: "Arranco unilateral, do chão ou baloiço até acima da cabeça." },
+  { en: "Goblet Squat", pt: "Agachamento goblet", descricao: "Agachamento segurando a kettlebell ou haltere junto ao peito, com pés à largura dos ombros." },
+  { en: "Kettlebell Lunges", pt: "Passadas com kettlebell", descricao: "Passadas segurando a kettlebell ao lado do corpo ou em posição de rack." },
+
+  /* GINÁSTICA / CALISTENIA */
+  { en: "Pull-Up", pt: "Puxada na barra", descricao: "Suspenso na barra, puxar até o queixo ultrapassar a barra, usando pegada em pronação." },
+  { en: "Chin-Up", pt: "Puxada em supinação", descricao: "Semelhante ao pull-up, mas com palmas das mãos viradas para ti, focando mais bíceps." },
+  { en: "Chest-to-Bar Pull-Up", pt: "Puxada ao peito", descricao: "Puxada na barra até o peito tocar na barra, exigindo maior amplitude." },
+  { en: "Bar Muscle-Up", pt: "Muscle-up na barra", descricao: "Puxada explosiva seguida de transição e dip, terminando com o tronco por cima da barra." },
+  { en: "Ring Muscle-Up", pt: "Muscle-up nas argolas", descricao: "Versão nas argolas, mais instável, combinando puxada e dip num só movimento." },
+  { en: "Toes-to-Bar (T2B)", pt: "Pés à barra", descricao: "Suspenso na barra, elevar os pés até tocar na barra, usando controlo de core." },
+  { en: "Knees-to-Elbows (K2E)", pt: "Joelhos aos cotovelos", descricao: "Suspenso na barra, elevar os joelhos até tocar nos cotovelos." },
+  { en: "Hanging Knee Raise", pt: "Elevação de joelhos", descricao: "Versão mais simples, elevando os joelhos até à altura da anca ou ligeiramente acima." },
+  { en: "Handstand Push-Up (HSPU)", pt: "Flexão de braços em pino", descricao: "Em pino contra a parede ou livre, realizar flexões de braços até a cabeça tocar ligeiramente no chão ou alvo." },
+  { en: "Handstand Walk", pt: "Caminhada em pino", descricao: "Deslocar-se apoiado apenas nas mãos, em posição de pino." },
+  { en: "Pistol Squat", pt: "Agachamento numa perna", descricao: "Agachamento completo numa perna, mantendo a outra estendida à frente." },
+  { en: "Sit-Up", pt: "Abdominal", descricao: "Deitado de costas, subir o tronco até ficar sentado, muitas vezes com apoio de almofada de abdominais." },
+  { en: "GHD Sit-Up", pt: "Abdominal GHD", descricao: "Abdominal profundo na máquina GHD, descendo além da linha da anca e regressando ao topo." },
+  { en: "Back Extension (GHD)", pt: "Extensão lombar", descricao: "Na GHD, descer o tronco em flexão de anca e voltar à extensão, focando lombar e glúteos." },
+
+  /* METCON / CONDICIONAMENTO */
+  { en: "Burpee", pt: "Burpee", descricao: "Agachar, colocar as mãos no chão, fazer flexão, voltar a levantar e terminar com um salto." },
+  { en: "Burpee Box Jump-Over", pt: "Burpee com salto sobre a caixa", descricao: "Realizar um burpee e depois saltar por cima da caixa, podendo não aterrar em pé em cima dela." },
+  { en: "Box Jump", pt: "Salto para a caixa", descricao: "Saltar com os dois pés para cima da caixa e estabilizar antes de descer." },
+  { en: "Box Jump Over", pt: "Salto por cima da caixa", descricao: "Saltar para cima e para o outro lado da caixa, sem necessidade de estabilizar no topo." },
+  { en: "Wall Ball", pt: "Lançamento de bola", descricao: "Agachamento com bola medicinal seguido de lançamento até um alvo na parede." },
+  { en: "Rowing", pt: "Remo", descricao: "Exercício na máquina de remo, trabalhando pernas, tronco e braços de forma coordenada." },
+  { en: "Ski Erg", pt: "Ski erg", descricao: "Simulador de esqui, puxando as manetes de cima para baixo em movimento contínuo." },
+  { en: "Assault Bike", pt: "Bicicleta de resistência", descricao: "Bicicleta com resistência de ar, trabalhando simultaneamente braços e pernas." },
+  { en: "Running", pt: "Corrida", descricao: "Corrida simples, em tapete ou no exterior, podendo ser em ritmo contínuo ou intervalado." },
+  { en: "Double Under", pt: "Saltos duplos na corda", descricao: "Saltos em que a corda passa duas vezes por baixo dos pés em cada salto." },
+  { en: "Single Under", pt: "Saltos simples na corda", descricao: "Saltos em que a corda passa uma vez por baixo dos pés em cada salto." },
+  { en: "Sled Push", pt: "Empurrar trenó", descricao: "Empurrar um trenó com carga ao longo de uma distância definida." },
+  { en: "Sled Pull", pt: "Puxar trenó", descricao: "Puxar um trenó com carga, com arnês ou corda, para trás ou para a frente." },
+  { en: "Farmer Carry", pt: "Caminhada com cargas", descricao: "Caminhar segurando cargas pesadas (halteres ou kettlebells) ao lado do corpo." },
+  { en: "Sprint", pt: "Sprint", descricao: "Corrida explosiva de curta distância, normalmente em máxima intensidade." },
+
+  /* COMPLEXOS / FORÇA FUNCIONAL */
+  { en: "Bear Complex", pt: "Bear complex", descricao: "Sequência contínua: power clean, front squat, push press, back squat e push press novamente." },
+  { en: "Devil Press", pt: "Devil press", descricao: "Burpee com halteres seguido de swing até overhead, num movimento fluido." },
+  { en: "Man Maker", pt: "Man maker", descricao: "Combinação de remada, burpee, clean e thruster com halteres." },
+  { en: "Sandbag Carry", pt: "Caminhada com saco", descricao: "Transportar um saco pesado ao peito, ombro ou costas ao longo de uma distância." },
+  { en: "Yoke Carry", pt: "Caminhada com yoke", descricao: "Caminhar com uma estrutura pesada apoiada nos ombros (yoke), trabalhando força total." },
+  { en: "Rope Climb", pt: "Subida à corda", descricao: "Subir a corda usando técnica de pernas ou apenas braços, tocando um alvo no topo." },
+
+  /* ACESSÓRIOS / MOBILIDADE EXTRA */
+  { en: "Hip Thrust", pt: "Elevação de anca", descricao: "Elevar a anca com costas apoiadas num banco, com ou sem carga, focando glúteos." },
+  { en: "Glute Bridge", pt: "Ponte de glúteos", descricao: "Elevar a anca a partir de posição deitado no chão, mantendo ombros apoiados." },
+  { en: "Reverse Hyperextension", pt: "Hiperextensão reversa", descricao: "Exercício na máquina Reverse Hyper, elevando as pernas atrás do corpo para trabalhar glúteos e lombar." },
+  { en: "Shrug", pt: "Encolhimento de ombros", descricao: "Elevar os ombros em direção às orelhas segurando barra ou halteres, focando trapézios." }
 ];
+
+/* Lista completa de exercícios em inglês (para WOD, Melhoramento, Guia) */
+const ALL_EXERCISES = Array.from(new Set(EXER_INFO.map(ex => ex.en))).sort();
+
+/* Completar MOVES_PT com todos os exercícios do guia */
+EXER_INFO.forEach(ex => {
+  MOVES_PT[ex.en] = ex.pt;
+});
 
 const PERC = [
   0.25, 0.30, 0.35, 0.40,
@@ -1031,6 +984,11 @@ let rmChart = null;
 const guiaBody = document.getElementById("guiaBody");
 const guiaSearch = document.getElementById("guiaSearch");
 
+/* Performance (rankings) */
+const perfWodBody = document.getElementById("perfWodBody");
+const perf1rmBody = document.getElementById("perf1rmBody");
+const perfMetconBody = document.getElementById("perfMetconBody");
+
 /* Backup */
 const exportBackupBtn = document.getElementById("exportBackupBtn");
 const importBackupBtn = document.getElementById("importBackupBtn");
@@ -1041,7 +999,7 @@ function formatKg(v) {
   return v.toFixed(1).replace(".", ",") + " kg";
 }
 
-/* Selects – só nomes em inglês (para 1RM e WOD) */
+/* Selects – 1RM só com MOVES (peso); WOD com ALL_EXERCISES */
 function initSelects() {
   if (sel) {
     sel.innerHTML = "";
@@ -1055,7 +1013,7 @@ function initSelects() {
 
   if (treinoExEl) {
     treinoExEl.innerHTML = "";
-    MOVES.forEach(m => {
+    ALL_EXERCISES.forEach(m => {
       const opt = document.createElement("option");
       opt.value = m;
       opt.textContent = m;
@@ -1064,22 +1022,22 @@ function initSelects() {
   }
 }
 
+/* Melhoramento – lista completa de exercícios; cálculo só funciona se tiver 1RM */
 function refreshCalcExOptions() {
   if (!calcExEl) return;
   calcExEl.innerHTML = "";
 
-  const names = Object.keys(dataRm).sort();
-  if (!names.length) {
+  if (!ALL_EXERCISES.length) {
     const opt = document.createElement("option");
     opt.value = "";
-    opt.textContent = "Nenhum 1RM registado";
+    opt.textContent = "Sem exercícios disponíveis";
     calcExEl.appendChild(opt);
     calcExEl.disabled = true;
     return;
   }
 
   calcExEl.disabled = false;
-  names.forEach(n => {
+  ALL_EXERCISES.forEach(n => {
     const opt = document.createElement("option");
     opt.value = n;
     opt.textContent = n;
@@ -1183,6 +1141,7 @@ function renderRm() {
 
   refreshCalcExOptions();
   refreshGraphExerciseOptions();
+  renderPerformance();
 }
 
 document.getElementById("addBtn").addEventListener("click", () => {
@@ -1249,12 +1208,16 @@ if (calcBtn) {
     const targetKgVal = calcTargetKgEl ? parseFloat(calcTargetKgEl.value || "0") : 0;
     const weeksVal = calcWeeksEl ? parseInt(calcWeeksEl.value || "0", 10) : 0;
 
-    if (!ex || !dataRm[ex]) {
-      calcResEl.textContent = "Escolhe um exercício com 1RM registado.";
+    if (!ex) {
+      calcResEl.textContent = "Escolhe um exercício.";
       return;
     }
     if (!reps || reps <= 0) {
       calcResEl.textContent = "Indica o número de repetições.";
+      return;
+    }
+    if (!dataRm[ex]) {
+      calcResEl.textContent = "Para calcular percentagens de carga, regista primeiro o 1RM desse exercício.";
       return;
     }
 
@@ -1275,8 +1238,7 @@ if (calcBtn) {
 
     if (targetKgVal && !isNaN(targetKgVal)) {
       if (targetKgVal <= oneRmVal) {
-        msg += `\n\nO peso objetivo (${formatKg(targetKgVal)}) está abaixo ou muito próximo do teu 1RM atual. ` +
-               `Foca-te em consolidar técnica, controlar o volume e manter consistência semanal.`;
+        msg += `\n\nO peso objetivo (${formatKg(targetKgVal)}) está abaixo ou muito próximo do teu 1RM atual. Foca-te em consolidar técnica, controlar o volume e manter consistência semanal.`;
       } else {
         if (weeksVal && weeksVal > 0) {
           const incPercent = ((targetKgVal - oneRmVal) / oneRmVal) * 100;
@@ -1309,8 +1271,7 @@ if (calcBtn) {
                  `Uma sugestão, tendo em conta o teu nível, é realizar ${freq} de ${ex}, com ${seriesReps}, ` +
                  `aumentando 2,5–5 kg quando conseguires todas as séries com boa técnica e sem falhas.`;
         } else {
-          msg += `\n\nTens como objetivo chegar a ${formatKg(targetKgVal)}. ` +
-                 `Define um prazo em semanas para obteres uma recomendação mais detalhada de volume e frequência.`;
+          msg += `\n\nTens como objetivo chegar a ${formatKg(targetKgVal)}. Define um prazo em semanas para obteres uma recomendação mais detalhada de volume e frequência.`;
         }
       }
     }
@@ -1663,6 +1624,7 @@ function renderTreinos() {
     if (treinoSugestaoEl) treinoSugestaoEl.textContent = "";
     renderWeeklyHistory();
     renderDailyHistory();
+    renderPerformance();
     return;
   }
 
@@ -1760,6 +1722,7 @@ function renderTreinos() {
 
   renderWeeklyHistory();
   renderDailyHistory();
+  renderPerformance();
 }
 
 if (treinoAddBtn) {
@@ -1940,6 +1903,225 @@ if (guiaSearch) {
   guiaSearch.addEventListener("input", renderGuiaExercicios);
 }
 
+/* ===== PERFORMANCE (WOD / 1RM / METCON) ===== */
+function parseTimeToSeconds(str) {
+  if (!str) return null;
+  const clean = String(str).trim();
+  const parts = clean.split(":");
+  if (parts.length < 2 || parts.length > 3) return null;
+
+  const nums = parts.map(p => parseInt(p, 10));
+  if (nums.some(n => isNaN(n))) return null;
+
+  let h = 0, m = 0, s = 0;
+  if (nums.length === 2) {
+    m = nums[0];
+    s = nums[1];
+  } else {
+    h = nums[0];
+    m = nums[1];
+    s = nums[2];
+  }
+
+  if (m < 0 || s < 0 || s >= 60) return null;
+  return h * 3600 + m * 60 + s;
+}
+
+function formatSecondsToTime(totalSeconds) {
+  if (totalSeconds == null || isNaN(totalSeconds)) return "";
+  const t = Math.round(totalSeconds);
+  const h = Math.floor(t / 3600);
+  const m = Math.floor((t % 3600) / 60);
+  const s = t % 60;
+  const mm = String(m).padStart(2, "0");
+  const ss = String(s).padStart(2, "0");
+  if (h > 0) {
+    return `${h}:${mm}:${ss}`;
+  }
+  return `${m}:${ss}`;
+}
+
+function renderPerformance() {
+  /* WOD – dias com mais carga */
+  if (perfWodBody) {
+    perfWodBody.innerHTML = "";
+    if (!treinos.length) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 4;
+      td.textContent = "Ainda não existem WOD registados.";
+      tr.appendChild(td);
+      perfWodBody.appendChild(tr);
+    } else {
+      const map = {};
+      treinos.forEach(t => {
+        if (!t.date) return;
+        if (!map[t.date]) {
+          map[t.date] = {
+            cargaTotal: 0,
+            numEx: 0,
+            melhorTempoMetconSeg: null
+          };
+        }
+        map[t.date].cargaTotal += t.carga || 0;
+        map[t.date].numEx += 1;
+
+        if (t.tipo === "metcon" && t.tempo) {
+          const sec = parseTimeToSeconds(t.tempo);
+          if (sec != null) {
+            if (map[t.date].melhorTempoMetconSeg == null || sec < map[t.date].melhorTempoMetconSeg) {
+              map[t.date].melhorTempoMetconSeg = sec;
+            }
+          }
+        }
+      });
+
+      const rows = Object.keys(map).map(date => ({
+        date,
+        cargaTotal: map[date].cargaTotal,
+        numEx: map[date].numEx,
+        melhorTempoMetconSeg: map[date].melhorTempoMetconSeg
+      }));
+
+      rows.sort((a, b) => (b.cargaTotal || 0) - (a.cargaTotal || 0));
+
+      rows.slice(0, 10).forEach(r => {
+        const tr = document.createElement("tr");
+
+        const tdData = document.createElement("td");
+        tdData.textContent = r.date;
+        tr.appendChild(tdData);
+
+        const tdCarga = document.createElement("td");
+        tdCarga.textContent = formatKg(r.cargaTotal);
+        tr.appendChild(tdCarga);
+
+        const tdNum = document.createElement("td");
+        tdNum.textContent = r.numEx.toString();
+        tr.appendChild(tdNum);
+
+        const tdTempo = document.createElement("td");
+        tdTempo.textContent = r.melhorTempoMetconSeg != null
+          ? formatSecondsToTime(r.melhorTempoMetconSeg)
+          : "-";
+        tr.appendChild(tdTempo);
+
+        perfWodBody.appendChild(tr);
+      });
+
+      if (!perfWodBody.hasChildNodes()) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 4;
+        td.textContent = "Sem dados suficientes para gerar ranking.";
+        tr.appendChild(td);
+        perfWodBody.appendChild(tr);
+      }
+    }
+  }
+
+  /* Top 1RM */
+  if (perf1rmBody) {
+    perf1rmBody.innerHTML = "";
+    const nomes = Object.keys(dataRm || {});
+    if (!nomes.length) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 3;
+      td.textContent = "Ainda não registaste nenhum 1RM.";
+      tr.appendChild(td);
+      perf1rmBody.appendChild(tr);
+    } else {
+      const pesoCorporal = profile && profile.peso ? profile.peso : null;
+      const rows = nomes.map(name => ({
+        name,
+        value: dataRm[name]
+      })).sort((a, b) => (b.value || 0) - (a.value || 0));
+
+      rows.slice(0, 10).forEach(r => {
+        const tr = document.createElement("tr");
+
+        const tdName = document.createElement("td");
+        const label = MOVES_PT[r.name] ? `${r.name} – ${MOVES_PT[r.name]}` : r.name;
+        tdName.textContent = label;
+        tr.appendChild(tdName);
+
+        const tdVal = document.createElement("td");
+        tdVal.textContent = formatKg(r.value);
+        tr.appendChild(tdVal);
+
+        const tdRel = document.createElement("td");
+        if (pesoCorporal) {
+          const rel = r.value / pesoCorporal;
+          tdRel.textContent = rel.toFixed(2) + "x";
+        } else {
+          tdRel.textContent = "-";
+        }
+        tr.appendChild(tdRel);
+
+        perf1rmBody.appendChild(tr);
+      });
+    }
+  }
+
+  /* Metcon – melhores tempos (tipo = 'metcon') */
+  if (perfMetconBody) {
+    perfMetconBody.innerHTML = "";
+    const metconMap = {};
+
+    treinos.forEach(t => {
+      if (t.tipo !== "metcon" || !t.tempo) return;
+      const sec = parseTimeToSeconds(t.tempo);
+      if (sec == null) return;
+      const key = t.ex || "Metcon";
+      const existing = metconMap[key];
+      if (!existing || sec < existing.tempoSeg) {
+        metconMap[key] = {
+          exercicio: key,
+          tempoSeg: sec,
+          tempoStr: t.tempo,
+          date: t.date || "",
+          carga: t.carga || 0
+        };
+      }
+    });
+
+    const rows = Object.keys(metconMap).map(k => metconMap[k]).sort((a, b) => a.tempoSeg - b.tempoSeg);
+
+    if (!rows.length) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 4;
+      td.textContent = "Ainda não registaste metcons com tempo em formato mm:ss.";
+      tr.appendChild(td);
+      perfMetconBody.appendChild(tr);
+    } else {
+      rows.slice(0, 10).forEach(r => {
+        const tr = document.createElement("tr");
+
+        const tdEx = document.createElement("td");
+        const label = MOVES_PT[r.exercicio] ? `${r.exercicio} – ${MOVES_PT[r.exercicio]}` : r.exercicio;
+        tdEx.textContent = label;
+        tr.appendChild(tdEx);
+
+        const tdTempo = document.createElement("td");
+        tdTempo.textContent = r.tempoStr;
+        tr.appendChild(tdTempo);
+
+        const tdData = document.createElement("td");
+        tdData.textContent = r.date;
+        tr.appendChild(tdData);
+
+        const tdCarga = document.createElement("td");
+        tdCarga.textContent = r.carga ? formatKg(r.carga) : "-";
+        tr.appendChild(tdCarga);
+
+        perfMetconBody.appendChild(tr);
+      });
+    }
+  }
+}
+
 /* TABS PRINCIPAIS */
 document.querySelectorAll(".tab-btn").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -1975,6 +2157,7 @@ if (treinoDataEl && !treinoDataEl.value) {
 renderTreinos();
 updateBackupInfo();
 renderGuiaExercicios();
+renderPerformance();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function () {
