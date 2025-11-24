@@ -21,34 +21,33 @@
     }
 
     body {
-  background:
-    /* RASGOS CASTANHOS MAIS FORTES */
-    repeating-linear-gradient(
-      135deg,
-      rgba(60, 74, 40, 1) 0px,
-      rgba(60, 74, 40, 1) 110px,
-      rgba(80, 58, 34, 0.55) 130px,
-      rgba(80, 58, 34, 0.55) 155px
-    ),
+      background:
+        /* RASGOS CASTANHOS MAIS FORTES */
+        repeating-linear-gradient(
+          135deg,
+          rgba(60, 74, 40, 1) 0px,
+          rgba(60, 74, 40, 1) 110px,
+          rgba(80, 58, 34, 0.55) 130px,
+          rgba(80, 58, 34, 0.55) 155px
+        ),
 
-    /* MANCHAS PROFUNDAS EM CAMADAS */
-    repeating-linear-gradient(
-      25deg,
-      rgba(35, 25, 15, 0.45) 0px,
-      rgba(35, 25, 15, 0.45) 60px,
-      rgba(80, 62, 34, 0.35) 80px,
-      rgba(80, 62, 34, 0.35) 110px
-    ),
+        /* MANCHAS PROFUNDAS EM CAMADAS */
+        repeating-linear-gradient(
+          25deg,
+          rgba(35, 25, 15, 0.45) 0px,
+          rgba(35, 25, 15, 0.45) 60px,
+          rgba(80, 62, 34, 0.35) 80px,
+          rgba(80, 62, 34, 0.35) 110px
+        ),
 
-    /* FUNDO PRINCIPAL VERDE TROPA */
-    linear-gradient(to bottom, #5e6b3a 0%, #3c4a28 100%);
+        /* FUNDO PRINCIPAL VERDE TROPA */
+        linear-gradient(to bottom, #5e6b3a 0%, #3c4a28 100%);
 
-  color: #111;
-  display: flex;
-  justify-content: center;
-  min-height: 100vh;
-}
-
+      color: #111;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
 
     .app {
       width: 100%;
@@ -67,12 +66,19 @@
       max-width: 280px;
       height: auto;
       display: block;
-      margin: 0 auto 2px auto;      
+      margin: 0 auto 2px auto;
     }
 
     .subtitle {
       font-size: 0.88rem;
       color: #d6d6d6;
+      cursor: pointer;
+      text-decoration: none;
+      transition: text-decoration 0.15s ease;
+    }
+
+    .subtitle:hover {
+      text-decoration: underline;
     }
 
     .card {
@@ -178,27 +184,6 @@
       color: #444;
     }
 
-    .btn-edit-profile {
-      padding: 4px 8px;
-      border-radius: 999px;
-      border: 1px solid #cccccc;
-      background: #e5e5e5;
-      color: #222;
-      font-size: 0.65rem;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .btn-edit-profile:active {
-      transform: scale(0.95);
-    }
-
-    #editProfileBtnHeader {
-      position: absolute;
-      top: 4px;
-      right: 8px;
-    }
-
     .tabs {
       display: flex;
       gap: 8px;
@@ -302,7 +287,6 @@
 <div class="app">
 
   <header>
-    <button id="editProfileBtnHeader" class="btn-edit-profile">Editar perfil</button>
     <img id="appLogo" src="imagens/crossmoita_logo.png" alt="Cross Moita Logo">
     <div class="subtitle" id="appSubtitle">Registo de treinos</div>
   </header>
@@ -729,7 +713,7 @@ const idadeEl = document.getElementById("idade");
 const alturaEl = document.getElementById("altura");
 const pesoEl = document.getElementById("peso");
 const perfilForm = document.getElementById("perfilForm");
-const editProfileBtnHeader = document.getElementById("editProfileBtnHeader");
+const subtitleEl = document.getElementById("appSubtitle");
 
 function updateProfileInfo() {
   if (perfilForm) perfilForm.style.display = "none";
@@ -741,7 +725,7 @@ function updateSubtitle() {
   if (profile && profile.nome && profile.nome.trim() !== "") {
     sub.textContent = `Registo de treinos do ${profile.nome}`;
   } else {
-    sub.textContent = "Registo de treinos";
+    sub.textContent = "Toca aqui para configurar o teu perfil";
   }
 }
 
@@ -777,9 +761,9 @@ if (saveProfileBtn) {
   });
 }
 
-if (editProfileBtnHeader) {
-  editProfileBtnHeader.addEventListener("click", () => {
-    if (!perfilForm) return;
+/* clicar no subtítulo abre/fecha o formulário de perfil */
+if (subtitleEl && perfilForm) {
+  subtitleEl.addEventListener("click", () => {
     const visible = perfilForm.style.display === "block";
     perfilForm.style.display = visible ? "none" : "block";
   });
@@ -2101,7 +2085,7 @@ function renderPerformance() {
         metconMap[key] = {
           exercicio: key,
           tempoSeg: sec,
-          tempoStr: t.tempo,
+          tempoStr: t.empo,
           date: t.date || "",
           carga: t.carga || 0
         };
@@ -2190,13 +2174,3 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
