@@ -82,15 +82,15 @@
     }
 
     .card {
-      background: #f3f3f3;          /* antes #ffffff */
+      background: #f2f2f2;
       border-radius: 14px;
       padding: 14px;
       margin-bottom: 16px;
-      border: 1px solid #d0d0d0;    /* antes #e0e0e0 */
+      border: 1px solid #d4d4d4;
       box-shadow: 0 4px 10px rgba(0,0,0,0.04);
     }
 
-    /* PERFIL SEM “CARTÃO” */
+    /* PERFIL SEM “CARTÃO” VISÍVEL */
     #perfil.card {
       background: transparent;
       border: none;
@@ -127,9 +127,9 @@
     input, select, textarea, button {
       padding: 10px;
       border-radius: 10px;
-      background: #f9f9f9;          /* antes #ffffff */
+      background: #f8f8f8;
       color: #111;
-      border: 1px solid #bbbbbb;    /* antes #cccccc */
+      border: 1px solid #c7c7c7;
       font-size: 0.9rem;
       box-sizing: border-box;
       font-family: inherit;
@@ -152,7 +152,7 @@
     .btn-secondary {
       padding: 8px 10px;
       border-radius: 999px;
-      border: 1px solid #cccccc;
+      border: 1px solid #c7c7c7;
       background: #e5e5e5;
       color: #222;
       font-size: 0.8rem;
@@ -194,7 +194,7 @@
       flex: 1;
       padding: 10px 0;
       border-radius: 999px;
-      border: 1px solid #cccccc;
+      border: 1px solid #c7c7c7;
       background: #e5e5e5;
       color: #222;
       cursor: pointer;
@@ -257,12 +257,12 @@
     th, td {
       padding: 6px;
       text-align: center;
-      border-bottom: 1px solid #dddddd;
+      border-bottom: 1px solid #d9d9d9;
       white-space: nowrap;
     }
 
     th {
-      background: #ececec;          /* antes #f9f9f9 */
+      background: #eaeaea;
       color: #333;
       position: sticky;
       top: 0;
@@ -273,7 +273,8 @@
       max-height: 260px;
       overflow: auto;
       border-radius: 10px;
-      border: 1px solid #e5e5e5;
+      border: 1px solid #d4d4d4;
+      background: #f5f5f5;
     }
 
     #backupInfo {
@@ -406,7 +407,7 @@
         </button>
         <button class="btn-secondary opt-btn" data-target="opt-calc">
           <span class="opt-emoji">🧮</span>
-          <span>Objectivo</span>
+          <span>Objetivo</span>
         </button>
         <button class="btn-secondary opt-btn" data-target="opt-graficos">
           <span class="opt-emoji">📈</span>
@@ -442,8 +443,8 @@
           </div>
           <div class="field">
             <label>Exercício</label>
+            <input id="treinoExercicioSearch" type="text" placeholder="Procurar exercício..." />
             <select id="treinoExercicio"></select>
-            <input id="treinoExercicioSearch" type="text" placeholder="Procurar exercício..." style="margin-top:4px;" />
           </div>
         </div>
 
@@ -481,14 +482,15 @@
             <input id="treinoTempo" type="text" placeholder="Ex.: 12:35, 20', AMRAP 10'..." />
           </div>
           <div class="field">
-            <label>Distância (km – opcional)</label>
-            <input id="treinoKm" type="number" step="0.01" min="0" />
+            <label>Distância (km – Metcon, opcional)</label>
+            <input id="treinoDist" type="number" step="0.01" min="0" />
           </div>
         </div>
 
         <button class="btn-primary" id="treinoAdd">Adicionar ao WOD</button>
         <div class="helper-text">
-          A carga de cada exercício é calculada como: peso × repetições × rondas.
+          A carga de cada exercício (kg) é calculada como: peso × repetições × rondas.  
+          A distância em metcon é somada à parte, em km.
         </div>
       </div>
 
@@ -506,8 +508,8 @@
                 <th>Peso</th>
                 <th>% 1RM</th>
                 <th>Tempo</th>
-                <th>Km</th>
-                <th>Carga</th>
+                <th>Distância (km)</th>
+                <th>Carga (kg)</th>
                 <th></th>
               </tr>
             </thead>
@@ -535,8 +537,8 @@
                   <th>Peso</th>
                   <th>% 1RM</th>
                   <th>Tempo</th>
-                  <th>Km</th>
-                  <th>Carga</th>
+                  <th>Distância (km)</th>
+                  <th>Carga (kg)</th>
                   <th></th>
                 </tr>
               </thead>
@@ -547,10 +549,10 @@
       </div>
     </section>
 
-    <!-- OBJECTIVO -->
+    <!-- OBJETIVO -->
     <section id="opt-calc" class="option-section">
       <div class="card">
-        <h3 style="margin-top:0; margin-bottom:8px;">🧮 Objectivo</h3>
+        <h3 style="margin-top:0; margin-bottom:8px;">🧮 Objetivo</h3>
 
         <div class="form-row">
           <div class="field">
@@ -612,7 +614,7 @@
       <div class="card">
         <h3 style="margin-top:0; margin-bottom:8px;">🏅 Performance física</h3>
         <p class="helper-text">
-          Resumo automático com base nos teus registos de WOD, 1RM e metcons.
+          Resumo automático com base nos teus registos de WOD, 1RM e metcons (carga em kg e distância em km).
         </p>
 
         <h4 style="margin-top:10px; margin-bottom:4px;">WOD – dias com mais carga</h4>
@@ -621,8 +623,8 @@
             <thead>
               <tr>
                 <th>Data</th>
-                <th>Carga total</th>
-                <th>Km totais</th>
+                <th>Carga total (kg)</th>
+                <th>Distância total (km)</th>
                 <th>N.º exercícios</th>
                 <th>Melhor tempo metcon</th>
               </tr>
@@ -653,8 +655,7 @@
                 <th>Exercício</th>
                 <th>Melhor tempo</th>
                 <th>Data</th>
-                <th>Km</th>
-                <th>Carga aprox.</th>
+                <th>Carga / distância</th>
               </tr>
             </thead>
             <tbody id="perfMetconBody"></tbody>
@@ -941,7 +942,7 @@ const EXER_INFO = [
   { en: "Shrug", pt: "Encolhimento de ombros", descricao: "Elevar os ombros em direção às orelhas segurando barra ou halteres, focando trapézios." }
 ];
 
-/* Lista completa de exercícios em inglês (para WOD, Objectivo, Guia) */
+/* Lista completa de exercícios em inglês (para WOD, Objetivo, Guia) */
 const ALL_EXERCISES = Array.from(new Set(EXER_INFO.map(ex => ex.en))).sort();
 
 /* Completar MOVES_PT com todos os exercícios do guia */
@@ -973,7 +974,7 @@ const treinoRondasEl = document.getElementById("treinoRondas");
 const treinoRepsEl = document.getElementById("treinoReps");
 const treinoPesoEl = document.getElementById("treinoPeso");
 const treinoTempoEl = document.getElementById("treinoTempo");
-const treinoKmEl = document.getElementById("treinoKm");
+const treinoDistEl = document.getElementById("treinoDist");
 const treinoAddBtn = document.getElementById("treinoAdd");
 const treinoBody = document.getElementById("treinoBody");
 const treinoResumoEl = document.getElementById("treinoResumo");
@@ -983,7 +984,7 @@ const toggleDailyHistoryBtn = document.getElementById("toggleDailyHistory");
 const dailyHistorySection = document.getElementById("dailyHistorySection");
 const dailyHistoryBody = document.getElementById("dailyHistoryBody");
 
-/* OBJECTIVO */
+/* OBJETIVO */
 const calcExEl = document.getElementById("calcExercicio");
 const calcRepsEl = document.getElementById("calcReps");
 const calcObjEl = document.getElementById("calcObjetivo");
@@ -1017,59 +1018,46 @@ function formatKg(v) {
 }
 
 function formatKm(v) {
-  if (!v || isNaN(v)) return "";
   return v.toFixed(2).replace(".", ",") + " km";
 }
 
 /* Selects – 1RM só com MOVES (peso); WOD com ALL_EXERCISES */
+function updateTreinoExercicioOptions(filter) {
+  if (!treinoExEl) return;
+  const f = (filter || "").toLowerCase();
+  treinoExEl.innerHTML = "";
+  ALL_EXERCISES.forEach(m => {
+    const label = MOVES_PT[m] ? `${m} – ${MOVES_PT[m]}` : m;
+    if (f && !label.toLowerCase().includes(f)) return;
+    const opt = document.createElement("option");
+    opt.value = m;
+    opt.textContent = label;
+    treinoExEl.appendChild(opt);
+  });
+}
+
 function initSelects() {
   if (sel) {
     sel.innerHTML = "";
     MOVES.forEach(m => {
       const opt = document.createElement("option");
       opt.value = m;
-      opt.textContent = m;
+      const label = MOVES_PT[m] ? `${m} – ${MOVES_PT[m]}` : m;
+      opt.textContent = label;
       sel.appendChild(opt);
     });
   }
 
-  if (treinoExEl) {
-    treinoExEl.innerHTML = "";
-    ALL_EXERCISES.forEach(m => {
-      const opt = document.createElement("option");
-      opt.value = m;
-      const label = MOVES_PT[m] ? `${m} – ${MOVES_PT[m]}` : m;
-      opt.textContent = label;
-      treinoExEl.appendChild(opt);
-    });
-  }
+  updateTreinoExercicioOptions("");
 }
 
-/* Filtro de exercícios na WOD */
-function filterTreinoExOptions() {
-  if (!treinoExEl) return;
-  const search = (treinoExSearchEl?.value || "").toLowerCase().trim();
-  const currentVal = treinoExEl.value;
-
-  treinoExEl.innerHTML = "";
-  ALL_EXERCISES.forEach(m => {
-    const label = MOVES_PT[m] ? `${m} – ${MOVES_PT[m]}` : m;
-    const texto = label.toLowerCase();
-    if (search && !texto.includes(search)) return;
-    const opt = document.createElement("option");
-    opt.value = m;
-    opt.textContent = label;
-    treinoExEl.appendChild(opt);
+if (treinoExSearchEl) {
+  treinoExSearchEl.addEventListener("input", () => {
+    updateTreinoExercicioOptions(treinoExSearchEl.value || "");
   });
-
-  if (currentVal && Array.from(treinoExEl.options).some(o => o.value === currentVal)) {
-    treinoExEl.value = currentVal;
-  } else if (treinoExEl.options.length > 0) {
-    treinoExEl.selectedIndex = 0;
-  }
 }
 
-/* Objectivo – lista completa de exercícios; cálculo só funciona se tiver 1RM */
+/* OBJETIVO – lista completa de exercícios; cálculo só funciona se tiver 1RM */
 function refreshCalcExOptions() {
   if (!calcExEl) return;
   calcExEl.innerHTML = "";
@@ -1215,7 +1203,7 @@ document.getElementById("addBtn").addEventListener("click", () => {
   renderRm();
 });
 
-/* ===== OBJECTIVO (CALCULADORA) ===== */
+/* ===== OBJETIVO (CALCULADORA) ===== */
 function getPercentRange(reps, objetivo) {
   let minP, maxP;
 
@@ -1437,7 +1425,7 @@ function addTreinoEntry() {
   const reps = parseInt(treinoRepsEl.value || "0", 10);
   const peso = parseFloat(treinoPesoEl.value || "0");
   const tempo = treinoTempoEl.value.trim();
-  const km = parseFloat(treinoKmEl.value || "0");
+  const distKmVal = parseFloat(treinoDistEl.value || "0");
 
   if (!ex || !reps || reps <= 0) return;
 
@@ -1455,9 +1443,9 @@ function addTreinoEntry() {
     reps,
     peso,
     tempo,
-    km: isNaN(km) ? 0 : km,
     carga,
-    perc1rm
+    perc1rm,
+    distanciaKm: (!isNaN(distKmVal) && distKmVal > 0) ? distKmVal : 0
   };
 
   treinos.unshift(entry);
@@ -1525,9 +1513,9 @@ function renderDailyHistory() {
     tdTempo.textContent = t.tempo || "";
     tr.appendChild(tdTempo);
 
-    const tdKm = document.createElement("td");
-    tdKm.textContent = formatKm(t.km || 0);
-    tr.appendChild(tdKm);
+    const tdDist = document.createElement("td");
+    tdDist.textContent = t.distanciaKm ? formatKm(t.distanciaKm) : "";
+    tr.appendChild(tdDist);
 
     const tdCarga = document.createElement("td");
     tdCarga.textContent = t.carga ? formatKg(t.carga) : "";
@@ -1633,8 +1621,9 @@ function renderWeeklyHistory() {
     const mon = getMonday(t.date);
     if (!mon) return;
     const key = mon.toISOString().slice(0,10);
-    if (!semanas[key]) semanas[key] = 0;
-    semanas[key] += t.carga || 0;
+    if (!semanas[key]) semanas[key] = { carga: 0, dist: 0 };
+    semanas[key].carga += t.carga || 0;
+    if (t.distanciaKm) semanas[key].dist += t.distanciaKm;
   });
 
   const keys = Object.keys(semanas).sort((a, b) => b.localeCompare(a));
@@ -1654,12 +1643,13 @@ function renderWeeklyHistory() {
     const mon = new Date(k);
     const sun = new Date(mon);
     sun.setDate(mon.getDate() + 6);
-    const txtCarga = formatKg(semanas[k]);
-    return fmt(mon) + " – " + fmt(sun) + ": " + txtCarga;
+    const txtCarga = formatKg(semanas[k].carga);
+    const txtDist = semanas[k].dist > 0 ? " · " + formatKm(semanas[k].dist) : "";
+    return fmt(mon) + " – " + fmt(sun) + ": " + txtCarga + txtDist;
   });
 
   weeklyHistoryEl.innerHTML =
-    "Histórico das últimas semanas (carga total):<br>" +
+    "Histórico das últimas semanas (carga total e distância):<br>" +
     lines.join("<br>");
 }
 
@@ -1683,6 +1673,7 @@ function renderTreinos() {
 
   let totalCarga = 0;
   let totalSeries = 0;
+  let totalDistKm = 0;
   let blocosForca = 0;
   let blocosHipertrofia = 0;
   let blocosLeve = 0;
@@ -1727,9 +1718,9 @@ function renderTreinos() {
     tdTempo.textContent = e.tempo || "";
     tr.appendChild(tdTempo);
 
-    const tdKm = document.createElement("td");
-    tdKm.textContent = formatKm(e.km || 0);
-    tr.appendChild(tdKm);
+    const tdDist = document.createElement("td");
+    tdDist.textContent = e.distanciaKm ? formatKm(e.distanciaKm) : "";
+    tr.appendChild(tdDist);
 
     const tdCarga = document.createElement("td");
     tdCarga.textContent = e.carga ? formatKg(e.carga) : "";
@@ -1747,6 +1738,7 @@ function renderTreinos() {
 
     totalCarga += e.carga || 0;
     totalSeries += (e.rondas || 0);
+    totalDistKm += e.distanciaKm || 0;
 
     if (e.perc1rm && e.reps) {
       const p = e.perc1rm;
@@ -1762,8 +1754,12 @@ function renderTreinos() {
   });
 
   if (treinoResumoEl) {
-    treinoResumoEl.textContent =
+    let resumo =
       "Resumo do dia " + dia + ": carga total do WOD = " + formatKg(totalCarga);
+    if (totalDistKm > 0) {
+      resumo += " · distância total = " + formatKm(totalDistKm);
+    }
+    treinoResumoEl.textContent = resumo;
   }
 
   const sugestao = buildSugestao(
@@ -1834,7 +1830,7 @@ function updateBackupInfo() {
 
 function buildBackupObject() {
   return {
-    version: 1,
+    version: 2,
     createdAt: new Date().toISOString(),
     profile: profile || {},
     dataRm: dataRm || {},
@@ -2016,13 +2012,13 @@ function renderPerformance() {
         if (!map[t.date]) {
           map[t.date] = {
             cargaTotal: 0,
-            kmTotal: 0,
+            distTotalKm: 0,
             numEx: 0,
             melhorTempoMetconSeg: null
           };
         }
         map[t.date].cargaTotal += t.carga || 0;
-        map[t.date].kmTotal += t.km || 0;
+        map[t.date].distTotalKm += t.distanciaKm || 0;
         map[t.date].numEx += 1;
 
         if (t.tipo === "metcon" && t.tempo) {
@@ -2038,7 +2034,7 @@ function renderPerformance() {
       const rows = Object.keys(map).map(date => ({
         date,
         cargaTotal: map[date].cargaTotal,
-        kmTotal: map[date].kmTotal,
+        distTotalKm: map[date].distTotalKm,
         numEx: map[date].numEx,
         melhorTempoMetconSeg: map[date].melhorTempoMetconSeg
       }));
@@ -2056,9 +2052,9 @@ function renderPerformance() {
         tdCarga.textContent = formatKg(r.cargaTotal);
         tr.appendChild(tdCarga);
 
-        const tdKm = document.createElement("td");
-        tdKm.textContent = formatKm(r.kmTotal || 0) || "-";
-        tr.appendChild(tdKm);
+        const tdDist = document.createElement("td");
+        tdDist.textContent = r.distTotalKm ? formatKm(r.distTotalKm) : "-";
+        tr.appendChild(tdDist);
 
         const tdNum = document.createElement("td");
         tdNum.textContent = r.numEx.toString();
@@ -2145,8 +2141,8 @@ function renderPerformance() {
           tempoSeg: sec,
           tempoStr: t.tempo,
           date: t.date || "",
-          km: t.km || 0,
-          carga: t.carga || 0
+          carga: t.carga || 0,
+          distanciaKm: t.distanciaKm || 0
         };
       }
     });
@@ -2156,7 +2152,7 @@ function renderPerformance() {
     if (!rows.length) {
       const tr = document.createElement("tr");
       const td = document.createElement("td");
-      td.colSpan = 5;
+      td.colSpan = 4;
       td.textContent = "Ainda não registaste metcons com tempo em formato mm:ss.";
       tr.appendChild(td);
       perfMetconBody.appendChild(tr);
@@ -2177,12 +2173,14 @@ function renderPerformance() {
         tdData.textContent = r.date;
         tr.appendChild(tdData);
 
-        const tdKm = document.createElement("td");
-        tdKm.textContent = formatKm(r.km || 0) || "-";
-        tr.appendChild(tdKm);
-
         const tdCarga = document.createElement("td");
-        tdCarga.textContent = r.carga ? formatKg(r.carga) : "-";
+        let cargaLabel = "-";
+        if (r.distanciaKm && r.distanciaKm > 0) {
+          cargaLabel = formatKm(r.distanciaKm);
+        } else if (r.carga && r.carga > 0) {
+          cargaLabel = formatKg(r.carga);
+        }
+        tdCarga.textContent = cargaLabel;
         tr.appendChild(tdCarga);
 
         perfMetconBody.appendChild(tr);
@@ -2219,11 +2217,6 @@ loadProfile();
 renderRm();
 refreshCalcExOptions();
 refreshGraphExerciseOptions();
-
-if (treinoExSearchEl) {
-  treinoExSearchEl.addEventListener("input", filterTreinoExOptions);
-  filterTreinoExOptions();
-}
 
 if (treinoDataEl && !treinoDataEl.value) {
   treinoDataEl.value = new Date().toISOString().slice(0, 10);
