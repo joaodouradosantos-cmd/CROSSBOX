@@ -15,23 +15,27 @@ self.addEventListener("install", (event) => {
   self.skipWaiting();
 });
 
-// ATIVAÇÃO — limpa caches antigos e assume controlo das páginas abertas
+// ATIVAÇÃO — limpa caches antigos
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then(keys => {
       return Promise.all(
         keys
-          .filter(key => key !== CACHE_NAME)
-          .map(key => caches.delete(key))
+          .filter(k => k !== CACHE_NAME)
+          .map(k => caches.delete(k))
       );
     })
   );
   self.clients.claim();
 });
 
-// FETCH
+// FETCH — gestão de pedidos
 self.addEventListener("fetch", (event) => {
   const req = event.request;
+
+  if (req.method !== "GET") {
+    return;
+  }
 
   // Navegação (abrir app, mudar de dia, etc.) — NETWORK FIRST
   if (req.mode === "navigate" || req.destination === "document") {
@@ -76,4 +80,3 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
-
