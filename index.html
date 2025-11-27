@@ -2613,9 +2613,12 @@ function renderReservas() {
 }
 
 /* LIGAR BOTÃO GUARDAR RESERVA */
-if (reservaAddBtn) {
-  reservaAddBtn.addEventListener("click", adicionarReserva);
-}
+document.addEventListener("DOMContentLoaded", () => {
+    const reservaAddBtn = document.getElementById("reservaAddBtn");
+    if (reservaAddBtn) {
+        reservaAddBtn.addEventListener("click", adicionarReserva);
+    }
+});
 
 /* TABS PRINCIPAIS */
 document.querySelectorAll(".tab-btn").forEach(btn => {
@@ -2684,5 +2687,6 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
