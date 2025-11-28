@@ -1,4 +1,4 @@
-const CACHE_NAME = "CrossBox-cache-v9";
+const CACHE_NAME = "CrossBox-cache-v7";
 
 const URLS_TO_CACHE = [
   "./",
@@ -15,27 +15,23 @@ self.addEventListener("install", (event) => {
   self.skipWaiting();
 });
 
-// ATIVAÇÃO — limpa caches antigos
+// ATIVAÇÃO — limpa caches antigos e assume controlo das páginas abertas
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then(keys => {
       return Promise.all(
         keys
-          .filter(k => k !== CACHE_NAME)
-          .map(k => caches.delete(k))
+          .filter(key => key !== CACHE_NAME)
+          .map(key => caches.delete(key))
       );
     })
   );
   self.clients.claim();
 });
 
-// FETCH — gestão de pedidos
+// FETCH
 self.addEventListener("fetch", (event) => {
   const req = event.request;
-
-  if (req.method !== "GET") {
-    return;
-  }
 
   // Navegação (abrir app, mudar de dia, etc.) — NETWORK FIRST
   if (req.mode === "navigate" || req.destination === "document") {
