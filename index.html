@@ -2407,247 +2407,217 @@ function renderPerformance() {
   }
 }
 
-/* ===== RESERVAS & PRESENÇAS (ALUNO) ===== */
-
-/* Garantir que as estruturas são sempre arrays válidas */
-if (!Array.isArray(reservas)) reservas = [];
-if (!Array.isArray(presencas)) presencas = [];
-if (!Array.isArray(rankingsMensais)) rankingsMensais = [];
-
+/* ===== RESERVAS ===== */
 function saveReservas() {
-  try {
-    localStorage.setItem(STORAGE_RESERVAS, JSON.stringify(reservas));
-  } catch (e) {
-    console.error("Erro ao guardar reservas:", e);
-    alert("Não foi possível guardar a reserva (erro de armazenamento do navegador).");
-  }
+  localStorage.setItem(STORAGE_RESERVAS, JSON.stringify(reservas));
 }
 
-function savePresencas() {
-  try {
-    localStorage.setItem(STORAGE_PRESENCAS, JSON.stringify(presencas));
-  } catch (e) {
-    console.error("Erro ao guardar presenças:", e);
-  }
+function formatDatePt(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  return `${dd}/${mm}/${yyyy}`;
 }
 
-function saveRankings() {
-  try {
-    localStorage.setItem(STORAGE_RANKINGS, JSON.stringify(rankingsMensais));
-  } catch (e) {
-    console.error("Erro ao guardar rankings mensais:", e);
-  }
-}
+function addReserva() {
+  let date = reservaDataEl.value || new Date().toISOString().slice(0,10);
+  const hora = reservaHoraEl.value;
 
-function gerarIdReserva() {
-  return "res_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-}
-
-function marcarPresenca(reservaId) {
-  const existe = presencas.some(p => p.reservaId === reservaId);
-  if (existe) return;
-  const now = new Date();
-  presencas.push({
-    reservaId,
-    data: now.toISOString().slice(0, 10),
-    hora: now.toTimeString().slice(0,5)
-  });
-  savePresencas();
-  renderReservas();
-  atualizarRankingsMensais();
-}
-
-function apagarReserva(id) {
-  if (!confirm("Apagar esta reserva?")) return;
-  reservas = reservas.filter(r => r.id !== id);
-  presencas = presencas.filter(p => p.reservaId !== id);
-  saveReservas();
-  savePresencas();
-  renderReservas();
-  atualizarRankingsMensais();
-}
-
-function adicionarReserva() {
-  try {
-    const hojeISO = new Date().toISOString().slice(0,10);
-
-    const data = (reservaDataEl && reservaDataEl.value) ? reservaDataEl.value : hojeISO;
-    const hora = reservaHoraEl ? reservaHoraEl.value : "";
-    const tipo = reservaTipoEl ? reservaTipoEl.value : "";
-    const nota = reservaNotaEl ? reservaNotaEl.value.trim() : "";
-
-    if (!data || !hora || !tipo) {
-      alert("Preenche pelo menos data, hora e tipo de aula.");
-      return;
-    }
-
-    const novaReserva = {
-      id: gerarIdReserva(),
-      data,
-      hora,
-      tipo,
-      nota,
-      inscritos: profile && profile.nome ? [profile.nome] : []
-    };
-
-    // Garantir outra vez que é array antes de usar unshift
-    if (!Array.isArray(reservas)) reservas = [];
-    reservas.unshift(novaReserva);
-
-    saveReservas();
-    if (reservaNotaEl) reservaNotaEl.value = "";
-    registerBackupMeta("Reserva registada");
-    renderReservas();
-    atualizarRankingsMensais();
-
-    console.log("Reserva adicionada:", novaReserva);
-  } catch (e) {
-    console.error("Erro ao adicionar reserva:", e);
-    alert("Ocorreu um erro ao guardar a reserva. Verifica a consola do navegador para mais detalhes.");
-  }
-}
-
-function mesmoMesAno(dataISO, ano, mes) {
-  const d = new Date(dataISO);
-  if (isNaN(d.getTime())) return false;
-  return d.getFullYear() === ano && (d.getMonth() + 1) === mes;
-}
-
-function atualizarRankingsMensais() {
-  if (!treinos || !treinos.length) {
-    rankingsMensais = [];
-    saveRankings();
-    renderReservasResumo();
+  if (!hora) {
+    alert("Seleciona a aula/horário.");
     return;
   }
 
-  const agora = new Date();
-  const ano = agora.getFullYear();
-  const mes = agora.getMonth() + 1;
-  const chave = `${ano}-${String(mes).padStart(2,"0")}`;
-
-  let cargaTotal = 0;
-  let distTotal = 0;
-  let nTreinos = 0;
-
-  treinos.forEach(t => {
-    if (!t.date) return;
-    if (!mesmoMesAno(t.date, ano, mes)) return;
-    nTreinos++;
-    cargaTotal += t.carga || 0;
-    distTotal += t.distanciaKm || 0;
-  });
-
-  const outras = rankingsMensais.filter(r => r.mes !== chave);
-  const atual = {
-    mes: chave,
-    ano,
-    mesNumero: mes,
-    nTreinos,
-    cargaTotal,
-    distTotal
-  };
-
-  rankingsMensais = [...outras, atual];
-  saveRankings();
-  renderReservasResumo();
-}
-
-function renderReservasResumo() {
-  if (!reservasResumoEl) return;
-  const agora = new Date();
-  const ano = agora.getFullYear();
-  const mes = agora.getMonth() + 1;
-
-  const nReservasMes = reservas.filter(r => mesmoMesAno(r.data, ano, mes)).length;
-  const nPresencasMes = presencas.filter(p => mesmoMesAno(p.data, ano, mes)).length;
-
-  const chave = `${ano}-${String(mes).padStart(2,"0")}`;
-  const rank = rankingsMensais.find(r => r.mes === chave);
-
-  let texto = `Este mês: ${nReservasMes} reservas e ${nPresencasMes} presenças registadas.`;
-
-  if (rank && rank.nTreinos > 0) {
-    texto += ` Treinos registados em WOD: ${rank.nTreinos} · Carga total = ${formatKg(rank.cargaTotal)}.`;
-    if (rank.distTotal > 0) {
-      texto += ` Distância total = ${formatKm(rank.distTotal)}.`;
-    }
-  } else {
-    texto += " Ainda não há dados suficientes de WOD para resumo mensal.";
+  let nome = "Atleta";
+  if (profile && profile.nome && profile.nome.trim() !== "") {
+    nome = profile.nome.trim();
   }
 
-  reservasResumoEl.textContent = texto;
+  const existe = reservas.some(r => r.date === date && r.hora === hora && r.nome.toLowerCase() === nome.toLowerCase());
+  if (existe) {
+    alert("Já tens uma reserva registada para essa aula e data.");
+    return;
+  }
+
+  const vagasUsadas = reservas.filter(r => r.date === date && r.hora === hora).length;
+  if (vagasUsadas >= VAGAS_POR_AULA) {
+    alert("A aula está cheia. Não é possível registar mais reservas.");
+    return;
+  }
+
+  const vagaNumero = vagasUsadas + 1;
+
+  const entry = {
+    date,
+    hora,
+    nome,
+    vaga: vagaNumero
+  };
+
+  reservas.push(entry);
+  saveReservas();
+  registerBackupMeta("Reserva registada");
+  renderReservas();
+}
+
+function deleteReserva(index) {
+  if (index < 0 || index >= reservas.length) return;
+  if (!confirm("Apagar esta reserva?")) return;
+  reservas.splice(index, 1);
+  saveReservas();
+  registerBackupMeta("Reserva removida");
+  renderReservas();
 }
 
 function renderReservas() {
   if (!reservasBody) return;
   reservasBody.innerHTML = "";
 
-  if (!reservas || !reservas.length) {
+  if (!reservas.length) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
-    td.colSpan = 6;
-    td.textContent = "Sem reservas registadas.";
+    td.colSpan = 5;
+    td.textContent = "Ainda não existem reservas registadas.";
     tr.appendChild(td);
     reservasBody.appendChild(tr);
-    renderReservasResumo();
+
+    if (reservasResumoEl) reservasResumoEl.textContent = "Sem reservas ativas.";
+    if (reservasRankingBody) reservasRankingBody.innerHTML = "";
+    localStorage.setItem(STORAGE_PRESENCAS, JSON.stringify({}));
+    localStorage.setItem(STORAGE_RANKINGS, JSON.stringify({}));
     return;
   }
 
-  reservas.forEach(r => {
+  const lista = reservas.slice().sort((a, b) => {
+    const da = (a.date || "").localeCompare(b.date || "");
+    if (da !== 0) return da;
+    return (a.hora || "").localeCompare(b.hora || "");
+  });
+
+  const mapaAulas = {};
+  lista.forEach(r => {
+    const key = `${r.date} ${r.hora}`;
+    if (!mapaAulas[key]) mapaAulas[key] = 0;
+    mapaAulas[key] += 1;
+
     const tr = document.createElement("tr");
 
     const tdData = document.createElement("td");
-    tdData.textContent = r.data || "";
+    tdData.textContent = formatDatePt(r.date);
     tr.appendChild(tdData);
 
     const tdHora = document.createElement("td");
-    tdHora.textContent = r.hora || "";
+    tdHora.textContent = r.hora;
     tr.appendChild(tdHora);
 
-    const tdTipo = document.createElement("td");
-    tdTipo.textContent = r.tipo || "";
-    tr.appendChild(tdTipo);
+    const tdNome = document.createElement("td");
+    tdNome.textContent = r.nome;
+    tr.appendChild(tdNome);
 
-    const tdNota = document.createElement("td");
-    tdNota.textContent = r.nota || "";
-    tr.appendChild(tdNota);
-
-    const tdPres = document.createElement("td");
-    const temPresenca = presencas.some(p => p.reservaId === r.id);
-    if (temPresenca) {
-      tdPres.textContent = "Presente ✅";
-    } else {
-      const btnPres = document.createElement("button");
-      btnPres.className = "btn-secondary";
-      btnPres.style.padding = "4px 8px";
-      btnPres.style.fontSize = "0.7rem";
-      btnPres.textContent = "Marcar presença";
-      btnPres.addEventListener("click", () => marcarPresenca(r.id));
-      tdPres.appendChild(btnPres);
-    }
-    tr.appendChild(tdPres);
+    const tdVaga = document.createElement("td");
+    tdVaga.textContent = `${r.vaga}/${VAGAS_POR_AULA}`;
+    tr.appendChild(tdVaga);
 
     const tdDel = document.createElement("td");
-    const btnDel = document.createElement("button");
-    btnDel.className = "btn-delete";
-    btnDel.textContent = "🗑";
-    btnDel.addEventListener("click", () => apagarReserva(r.id));
-    tdDel.appendChild(btnDel);
+    const btn = document.createElement("button");
+    btn.textContent = "🗑";
+    btn.className = "btn-delete";
+    btn.addEventListener("click", () => {
+      const indexReal = reservas.indexOf(r);
+      deleteReserva(indexReal);
+    });
+    tdDel.appendChild(btn);
     tr.appendChild(tdDel);
 
     reservasBody.appendChild(tr);
   });
 
-  renderReservasResumo();
+  if (reservasResumoEl) {
+    const total = reservas.length;
+    const aulasHoje = reservas.filter(r => r.date === new Date().toISOString().slice(0,10)).length;
+    reservasResumoEl.textContent =
+      `Reservas ativas: ${total} (reservas para hoje: ${aulasHoje}). Limite por aula: ${VAGAS_POR_AULA} vagas.`;
+  }
+
+  const presencasMap = {};
+  reservas.forEach(r => {
+    const key = r.nome;
+    if (!presencasMap[key]) presencasMap[key] = 0;
+    presencasMap[key] += 1;
+  });
+  localStorage.setItem(STORAGE_PRESENCAS, JSON.stringify(presencasMap));
+
+  const agora = new Date();
+  const anoAtual = agora.getFullYear();
+  const mesAtual = agora.getMonth();
+  const rankingMap = {};
+
+  reservas.forEach(r => {
+    if (!r.date) return;
+    const d = new Date(r.date);
+    if (isNaN(d.getTime())) return;
+    if (d.getFullYear() !== anoAtual || d.getMonth() !== mesAtual) return;
+
+    const nome = r.nome;
+    if (!rankingMap[nome]) rankingMap[nome] = 0;
+    rankingMap[nome] += 1;
+  });
+
+  const rankingArray = Object.keys(rankingMap).map(nome => ({
+    nome,
+    presencas: rankingMap[nome]
+  })).sort((a, b) => b.presencas - a.presencas);
+
+  localStorage.setItem(STORAGE_RANKINGS, JSON.stringify({
+    mes: `${anoAtual}-${String(mesAtual+1).padStart(2,"0")}`,
+    ranking: rankingArray
+  }));
+
+  if (reservasRankingBody) {
+    reservasRankingBody.innerHTML = "";
+    if (!rankingArray.length) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 2;
+      td.textContent = "Ainda não há presenças registadas neste mês.";
+      tr.appendChild(td);
+      reservasRankingBody.appendChild(tr);
+    } else {
+      rankingArray.forEach(item => {
+        const tr = document.createElement("tr");
+        const tdNome = document.createElement("td");
+        tdNome.textContent = item.nome;
+        tr.appendChild(tdNome);
+
+        const tdPres = document.createElement("td");
+        tdPres.textContent = String(item.presencas);
+        tr.appendChild(tdPres);
+
+        reservasRankingBody.appendChild(tr);
+      });
+    }
+  }
 }
 
-/* LIGAR BOTÃO GUARDAR RESERVA */
 if (reservaAddBtn) {
-  reservaAddBtn.addEventListener("click", adicionarReserva);
+  reservaAddBtn.addEventListener("click", addReserva);
 }
 
-/* TABS PRINCIPAIS */
+/* Botão topo – abre secção reservas por baixo da imagem */
+if (reservasTopBtn && reservasSection) {
+  reservasTopBtn.addEventListener("click", () => {
+    const visivel = reservasSection.style.display === "block";
+    reservasSection.style.display = visivel ? "none" : "block";
+    if (!visivel) {
+      reservasSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+}
+
+  /* TABS PRINCIPAIS */
 
 document.querySelectorAll(".tab-btn").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -2715,6 +2685,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
