@@ -68,18 +68,10 @@
   gap: 8px;
 }
 
-/* logo principal (esquerda, por ex.) */
 #appLogo {
   max-width: 120px;
   height: auto;
   margin: 10;
-}
-
-/* segundo logo (direita) */
-#appLogo2 {
-  max-width: 80px;
-  height: auto;
-  margin: -10;
 }
 
     .subtitle {
@@ -423,13 +415,13 @@
 <body>
 <div class="app">
 
-  <header>
+<header>
   <div class="header-row">
     <img id="appLogo" src="imagens/crossbox_logo.png">
-    <img id="appLogo2" src="imagens/logo.png">    
+    <div class="subtitle" id="appSubtitle">Registo de treinos</div>
   </div>
-  <div class="subtitle" id="appSubtitle">Registo de treinos</div>
 </header>
+
 
    <!-- PERFIL -->
   <section class="card" id="perfil">
@@ -2732,6 +2724,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
