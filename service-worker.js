@@ -4,7 +4,7 @@ const URLS_TO_CACHE = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./imagens/crossmoita_logo..png"
+  "./imagens/crossbox_logo.png"
 ];
 
 // INSTALAÇÃO — pré-cache básico e entra logo em ação
@@ -76,6 +76,7 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+
 
 
 
