@@ -79,37 +79,40 @@
       display: block;
     }
 
-    /* BLOCO DO TÍTULO EM 2 LINHAS */
-    .subtitle-block {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      cursor: pointer;
-      font-family: "Stardos Stencil", system-ui, sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      text-shadow: 0 2px 3px rgba(0, 0, 0, 0.7);
-      transform-origin: left center;
-      transition: transform 0.1s ease;
-    }
+/* BLOCO DO TÍTULO EM 2 LINHAS */
+.subtitle-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;      /* centra horizontalmente as duas linhas */
+  text-align: center;       /* texto centrado */
+  cursor: pointer;
+  font-family: "Stardos Stencil", system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.7);
+  transform-origin: center center;
+  transition: transform 0.1s ease;
+}
 
-    .subtitle-block:hover {
-      transform: translateY(-1px);
-    }
+.subtitle-block:hover {
+  transform: translateY(-1px);
+}
 
-    .subtitle-line-1 {
-      font-size: 0.85rem;
-      color: #e0e5d8;
-    }
+.subtitle-line-1 {
+  font-size: 0.85rem;
+  color: #e0e5d8;
+}
 
-    .subtitle-line-2 {
-      font-size: 1.1rem;
-      color: #fefce8;
-      margin-top: 2px;
-      border-bottom: 2px solid rgba(254, 252, 232, 0.85);
-      align-self: flex-start;
-      padding-bottom: 1px;
-    }
+.subtitle-line-2 {
+  font-size: 1.1rem;
+  color: #fefce8;
+  margin-top: 2px;
+  border-bottom: 2px solid rgba(254, 252, 232, 0.85);
+  padding-bottom: 1px;
+  /* removido o align-self para não empurrar a 2.ª linha para a esquerda */
+}
+
 
     .card {
       background: #e1e1e1;
@@ -2749,3 +2752,4 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
