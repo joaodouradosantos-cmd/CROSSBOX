@@ -69,7 +69,7 @@
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      gap: 12px;
+      gap: 8px;
     }
 
     #appLogo {
@@ -84,14 +84,14 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;      /* centra horizontalmente as duas linhas */
-  text-align: center;       /* texto centrado */
+  align-items: flex-start;  /* texto encostado à esquerda, colado ao logo */
+  text-align: left;         /* texto alinhado à esquerda */
   cursor: pointer;
   font-family: "Stardos Stencil", system-ui, sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.7);
-  transform-origin: center center;
+  transform-origin: center left;
   transition: transform 0.1s ease;
 }
 
@@ -968,7 +968,8 @@ function updateSubtitle() {
   if (!subtitleLine1El || !subtitleLine2El) return;
 
   if (profile && profile.nome && profile.nome.trim() !== "") {
-    subtitleLine1El.textContent = "Registo de treinos de";
+    // primeira linha SEM "de"
+    subtitleLine1El.textContent = "Registo de treinos";
     subtitleLine2El.textContent = profile.nome.trim();
   } else {
     subtitleLine1El.textContent = "Registo de treinos";
@@ -2752,4 +2753,5 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
