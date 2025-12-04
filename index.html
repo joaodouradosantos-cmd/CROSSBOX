@@ -1574,6 +1574,110 @@ if (calcBtn) {
     }
 
     const oneRmVal = dataRm[ex];
+
+    // range base, igual ao que já tinhas
+    let { minP, maxP } = getPercentRange(reps, obj);
+
+    // ===== AJUSTE ESPECÍFICO PARA MOVIMENTOS TÉCNICOS =====
+    const isTechnical =
+      typeof TECHNICAL_MOVES !== "undefined" &&
+      Array.isArray(TECHNICAL_MOVES) &&
+      TECHNICAL_MOVES.includes(ex);
+
+    if (isTechnical) {
+      // Nunca passar dos 85% em trabalho normal
+      if (maxP > 0.85) maxP = 0.85;
+
+      if (obj === "tecnica") {
+        // Para técnica: 50–70% é o “doce”
+        if (minP < 0.50) minP = 0.50;
+        if (maxP > 0.70) maxP = 0.70;
+      } else {
+        // Força / hipertrofia / automático → 60–80% para lifts técnicos
+        if (minP < 0.60) minP = 0.60;
+        if (maxP > 0.80) maxP = 0.80;
+      }
+
+      // Garantir que minP nunca fica acima de maxP, caso o clamp troque a ordem
+      if (minP > maxP) {
+        const mid = (minP + maxP) / 2;
+        minP = mid - 0.05;
+        maxP = mid + 0.05;
+      }
+    }
+
+    const minLoad = oneRmVal * minP;
+    const maxLoad = oneRmVal * maxP;
+
+    let objetivoTexto = "automático";
+    if (obj === "forca") objetivoTexto = "força";
+    if (obj === "hipertrofia") objetivoTexto = "hipertrofia";
+    if (obj === "tecnica") objetivoTexto = "técnica / volume leve";
+
+    let msg =
+      `Para ${reps} repetições em ${ex}, com objetivo ${objetivoTexto}, ` +
+      `a carga sugerida é entre ${(minP*100).toFixed(0)}% e ${(maxP*100).toFixed(0)}% do 1RM: ` +
+      `${formatKg(minLoad)} – ${formatKg(maxLoad)}. Ajusta ligeiramente para bater certo com os discos que tens.`;
+
+    if (isTechnical) {
+      msg +=
+        `\n\nNota: ${ex} é um movimento técnico de elevada complexidade. ` +
+        `Prioriza sempre posição, estabilidade e controlo. Trabalha sobretudo com séries curtas ` +
+        `de 2–3 repetições e reduz 5–10% se sentires perda de técnica.`;
+    }
+
+    // ===== PARTE DO OBJETIVO EM KG E PRAZO (igual ao que já tinhas, reaproveitada) =====
+    if (targetKgVal && !isNaN(targetKgVal)) {
+      if (targetKgVal <= oneRmVal) {
+        msg += `\n\nO peso objetivo (${formatKg(targetKgVal)}) está abaixo ou muito próximo do teu 1RM atual. ` +
+               `Foca-te em consolidar técnica, controlar o volume e manter consistência semanal.`;
+      } else {
+        if (weeksVal && weeksVal > 0) {
+          const incPercent = ((targetKgVal - oneRmVal) / oneRmVal) * 100;
+          const incPerWeek = incPercent / weeksVal;
+          let dificuldade;
+          if (incPerWeek <= 1) {
+            dificuldade = "uma progressão realista";
+          } else if (incPerWeek <= 2) {
+            dificuldade = "uma progressão exigente mas ainda possível";
+          } else {
+            dificuldade = "uma progressão muito agressiva e pouco realista para a maioria das pessoas";
+          }
+
+          const nivel = (profile && profile.nivel) ? profile.nivel.toLowerCase() : "";
+          let freq = "2–3 sessões semanais";
+          let seriesReps = "3–5 séries de 3–6 repetições entre 75–90% do 1RM atual";
+
+          if (nivel === "iniciante") {
+            freq = "2–3 sessões semanais focadas no movimento principal";
+            seriesReps = "3–4 séries de 5–8 repetições entre 70–80% do 1RM atual";
+          } else if (nivel === "intermedio") {
+            freq = "2–3 sessões semanais com variações do movimento principal";
+            seriesReps = "4–5 séries de 3–6 repetições entre 75–85% do 1RM atual";
+          } else if (nivel === "avancado") {
+            freq = "2–3 sessões semanais mais específicas (força + variações técnicas)";
+            seriesReps = "3–6 séries entre 2–5 repetições a 80–90% do 1RM atual";
+          }
+
+          msg += `\n\nObjetivo: chegar a ${formatKg(targetKgVal)} em cerca de ${weeksVal} semanas (${dificuldade}). ` +
+                 `Uma sugestão, tendo em conta o teu nível, é realizar ${freq} de ${ex}, com ${seriesReps}, ` +
+                 `aumentando 2,5–5 kg quando conseguires todas as séries com boa técnica e sem falhas.`;
+
+          if (isTechnical) {
+            msg += ` Em movimentos técnicos como ${ex}, dá sempre prioridade à qualidade da posição em vez de subir carga a todo o custo.`;
+          }
+        } else {
+          msg += `\n\nTens como objetivo chegar a ${formatKg(targetKgVal)}. ` +
+                 `Define um prazo em semanas para obteres uma recomendação mais detalhada de volume e frequência.`;
+        }
+      }
+    }
+
+    calcResEl.textContent = msg;
+  });
+}
+
+    const oneRmVal = dataRm[ex];
     const { minP, maxP } = getPercentRange(reps, obj);
     const minLoad = oneRmVal * minP;
     const maxLoad = oneRmVal * maxP;
@@ -2819,6 +2923,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
