@@ -433,6 +433,27 @@
       background-image: none !important;
       background-color: #e1e1e1 !important;
     }
+    /* ============================
+   MELHORIA DO ECRÃ DO GUIA DE EXERCÍCIOS
+   (só mexe no aspecto dentro do #opt-guia)
+   ============================ */
+
+/* Aumentar a altura útil do guia – usa quase o ecrã todo */
+#opt-guia .scroll {
+  max-height: calc(100vh - 220px);  /* se ainda parecer pequeno, podemos ajustar este valor */
+}
+
+/* Texto mais legível na tabela do guia */
+#opt-guia table {
+  font-size: 0.85rem;
+}
+
+#opt-guia th,
+#opt-guia td {
+  text-align: left;      /* deixa de estar tudo centrado */
+  white-space: normal;   /* permite que o texto parta linha */
+  vertical-align: top;
+}
   </style>
 </head>
 <body>
@@ -2859,6 +2880,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
