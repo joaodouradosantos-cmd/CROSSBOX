@@ -297,6 +297,37 @@
       font-size: 0.8rem;
       color: #222;
     }
+    /* Resumo rápido do WOD (chips) */
+.stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 6px 0 4px;
+}
+
+.stat-chip {
+  flex: 1 1 calc(50% - 6px);
+  min-width: 140px;
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: #d7d7d7;
+  border: 1px solid #b5b5b5;
+  font-size: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.stat-chip span:first-child {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stat-chip span:last-child {
+  font-weight: 500;
+}
 
     .tabs {
       display: flex;
@@ -689,6 +720,26 @@
         <div class="helper-text" id="treinoResumo" style="margin-bottom:4px;"></div>
         <div class="helper-text" id="treinoSugestao" style="margin-top:0; font-weight:500;"></div>
         <div class="helper-text" id="weeklyHistory" style="margin-top:4px;"></div>
+
+              <!-- Resumo rápido em chips -->
+<div id="treinoStats" class="stats-row" style="display:none;">
+  <div class="stat-chip">
+    <span>Carga total</span>
+    <span id="statCarga">0 kg</span>
+  </div>
+  <div class="stat-chip">
+    <span>Exercícios</span>
+    <span id="statExercicios">0</span>
+  </div>
+  <div class="stat-chip">
+    <span>Melhor tempo</span>
+    <span id="statTempo">–</span>
+  </div>
+  <div class="stat-chip">
+    <span>Volume</span>
+    <span id="statVolume">0 reps</span>
+  </div>
+</div>
 
         <!-- WOD do dia – compacto e fácil de ler -->
         <h4 style="margin-top:10px; margin-bottom:4px;">WOD do dia</h4>
@@ -1332,6 +1383,15 @@ const treinoSugestaoEl = document.getElementById("treinoSugestao");
 const weeklyHistoryEl = document.getElementById("weeklyHistory");
 const toggleDailyHistoryBtn = document.getElementById("toggleDailyHistory");
 const dailyHistorySection = document.getElementById("dailyHistorySection");
+const printHistoryBtn = document.getElementById("printHistoryBtn");
+  
+  /* Chips de resumo do dia */
+const treinoStatsRow = document.getElementById("treinoStats");
+const statCargaEl = document.getElementById("statCarga");
+const statExerciciosEl = document.getElementById("statExercicios");
+const statTempoEl = document.getElementById("statTempo");
+const statVolumeEl = document.getElementById("statVolume");
+
 
 /* OBJETIVO */
 const calcExEl = document.getElementById("calcExercicio");
@@ -2246,11 +2306,16 @@ function renderTreinos() {
   const dia = treinoDataEl.value || new Date().toISOString().slice(0,10);
   const lista = treinos.filter(t => t.date === dia);
 
+  // Se não houver WOD nesse dia
   if (!lista.length) {
     if (treinoResumoEl) {
       treinoResumoEl.textContent = "Sem WOD registado para " + dia + ".";
     }
     if (treinoSugestaoEl) treinoSugestaoEl.textContent = "";
+    // esconder chips
+    if (treinoStatsRow) {
+      treinoStatsRow.style.display = "none";
+    }
     renderWeeklyHistory();
     renderDailyHistory();
     renderPerformance();
@@ -2264,6 +2329,10 @@ function renderTreinos() {
   let blocosForca = 0;
   let blocosHipertrofia = 0;
   let blocosLeve = 0;
+
+  // NOVOS CAMPOS PARA OS CHIPS
+  let totalVolumeReps = 0;      // reps × rondas
+  let melhorTempoSeg = null;    // melhor tempo do dia em segundos
 
   lista.forEach(e => {
     const tr = document.createElement("tr");
@@ -2323,6 +2392,7 @@ function renderTreinos() {
 
     treinoBody.appendChild(tr);
 
+    // ACUMULADORES EXISTENTES
     totalCarga += e.carga || 0;
     totalSeries += (e.rondas || 0);
     totalDistKm += e.distanciaKm || 0;
@@ -2338,7 +2408,67 @@ function renderTreinos() {
         blocosLeve++;
       }
     }
+
+    // 🔹 NOVOS ACUMULADORES PARA OS CHIPS
+    totalVolumeReps += (e.reps || 0) * (e.rondas || 0);
+
+    if (e.tempo) {
+      const sec = parseTimeToSeconds(e.tempo);
+      if (sec != null && (melhorTempoSeg === null || sec < melhorTempoSeg)) {
+        melhorTempoSeg = sec;
+      }
+    }
   });
+
+  // RESUMO EM TEXTO
+  if (treinoResumoEl) {
+    let resumo =
+      "Resumo do dia " + dia + ": carga total do WOD = " + formatKg(totalCarga);
+    if (totalDistKm > 0) {
+      resumo += " · distância total = " + formatKm(totalDistKm);
+    }
+    treinoResumoEl.textContent = resumo;
+  }
+
+  const sugestao = buildSugestao(
+    lista,
+    totalCarga,
+    totalSeries,
+    blocosForca,
+    blocosHipertrofia,
+    blocosLeve,
+    dia
+  );
+  if (treinoSugestaoEl) treinoSugestaoEl.textContent = sugestao;
+
+  // 🔹 ATUALIZAR OS CHIPS DE RESUMO
+  if (treinoStatsRow) {
+    treinoStatsRow.style.display = "flex";
+
+    if (statCargaEl) {
+      statCargaEl.textContent = formatKg(totalCarga);
+    }
+
+    if (statExerciciosEl) {
+      statExerciciosEl.textContent = String(lista.length);
+    }
+
+    if (statTempoEl) {
+      statTempoEl.textContent = (melhorTempoSeg != null)
+        ? formatSecondsToTime(melhorTempoSeg)
+        : "–";
+    }
+
+    if (statVolumeEl) {
+      statVolumeEl.textContent = `${totalVolumeReps} reps`;
+    }
+  }
+
+  renderWeeklyHistory();
+  renderDailyHistory();
+  renderPerformance();
+  atualizarRankingsMensais();
+}
 
   if (treinoResumoEl) {
     let resumo =
@@ -3089,6 +3219,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
