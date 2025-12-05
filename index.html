@@ -644,45 +644,35 @@
       Aqui registas apenas o teu 1RM por exercício. As percentagens e cálculos rápidos passam a ser usados diretamente no WOD.
     </div>
   </div>
-      <!-- CARD 2: FERRAMENTA RÁPIDA 1RM (reorganizado) -->
-  <div class="card quick-1rm-card">
-    <div class="quick-1rm-header">
-      <h3>1RM – Ferramenta rápida</h3>
-      <span class="quick-1rm-tag">Uso imediato no WOD</span>
+        <!-- FERRAMENTA RÁPIDA 1RM (estilo GUIA, tudo vertical e estável) -->
+  <div class="card">
+    <h3 style="margin-top:0; margin-bottom:8px;">Cálculo rápido (% ↔ kg)</h3>
+
+    <div class="helper-text" style="margin-bottom:8px;">
+      Introduz a percentagem ou o peso, e vê o valor correspondente com base no teu 1RM.
     </div>
 
-    <p class="helper-text quick-1rm-text">
-      Olha para o quadro (ex.: <strong>35% Back Squat</strong>), escolhe o exercício, mete a percentagem e vê logo o peso sugerido em kg.
-    </p>
-
-    <div class="quick-1rm-grid">
-      <!-- LADO ESQUERDO: EXERCÍCIO + % -->
-      <div class="quick-1rm-col">
-        <div class="field">
-          <label>Exercício com 1RM registado</label>
-          <select id="quickExercise"></select>
-        </div>
-
-        <div class="field">
-          <label>Percentagem do 1RM (%)</label>
-          <input id="quickPercent" type="number" min="10" max="130" step="1" />
-        </div>
-      </div>
-
-      <!-- LADO DIREITO: PESO DESTACADO + INVERSO -->
-      <div class="quick-1rm-col">
-        <div class="field">
-          <label>Peso sugerido (kg)</label>
-          <input id="quickPeso" type="text" readonly class="quick-1rm-output" />
-        </div>
-
-        <div class="field">
-          <label>Ou escreve o peso (kg)</label>
-          <input id="quickPesoInput" type="number" step="0.5" min="0" />
-          <div class="helper-text" id="quickPercResult"></div>
-        </div>
-      </div>
+    <div class="field">
+      <label>Exercício</label>
+      <select id="quickExercise"></select>
     </div>
+
+    <div class="field">
+      <label>Percentagem do 1RM (%)</label>
+      <input id="quickPercent" type="number" min="10" max="130" step="1" />
+    </div>
+
+    <div class="field">
+      <label>Peso calculado (kg)</label>
+      <input id="quickPeso" type="text" readonly />
+    </div>
+
+    <div class="field">
+      <label>Ou escreve o peso (kg)</label>
+      <input id="quickPesoInput" type="number" step="0.5" min="0" />
+      <div class="helper-text" id="quickPercResult"></div>
+    </div>
+
   </div>
 
   <!-- CARD 2: TABELA COMPLETA DO 1RM -->
@@ -690,25 +680,13 @@
     <div class="scroll">
       <table>
         <thead>
-          <tr>
-            <th>Exercício</th>
-            <th>1RM</th>
-            <th>25%</th>
-            <th>30%</th>
-            <th>35%</th>
-            <th>40%</th>
-            <th>50%</th>
-            <th>60%</th>
-            <th>65%</th>
-            <th>70%</th>
-            <th>75%</th>
-            <th>80%</th>
-            <th>85%</th>
-            <th>90%</th>
-            <th>95%</th>
-            <th></th>
-          </tr>
-        </thead>
+  <tr>
+    <th>Exercício</th>
+    <th>1RM (kg)</th>
+    <th>x Peso corporal</th>
+    <th></th>
+  </tr>
+</thead>
         <tbody id="tableBody"></tbody>
       </table>
     </div>
@@ -3496,6 +3474,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
