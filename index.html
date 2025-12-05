@@ -682,8 +682,16 @@
         </div>
       </div>
 
-      <div class="card">
+            <div class="card">
         <h3 style="margin-top:0; margin-bottom:8px;">Registo e histórico</h3>
+
+        <!-- Resumo rápido do dia (sempre visível) -->
+        <div class="helper-text" id="treinoResumo" style="margin-bottom:4px;"></div>
+        <div class="helper-text" id="treinoSugestao" style="margin-top:0; font-weight:500;"></div>
+        <div class="helper-text" id="weeklyHistory" style="margin-top:4px;"></div>
+
+        <!-- WOD do dia – compacto e fácil de ler -->
+        <h4 style="margin-top:10px; margin-bottom:4px;">WOD do dia</h4>
         <div class="scroll">
           <table>
             <thead>
@@ -704,15 +712,21 @@
             <tbody id="treinoBody"></tbody>
           </table>
         </div>
-        <div class="helper-text" id="treinoResumo"></div>
-        <div class="helper-text" id="treinoSugestao" style="margin-top:4px; font-weight:500;"></div>
-        <div class="helper-text" id="weeklyHistory" style="margin-top:6px;"></div>
 
-        <button class="btn-secondary" id="toggleDailyHistory" style="margin-top:8px;">
-          Histórico diário completo
-        </button>
+        <!-- Botões de histórico e exportação -->
+        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">
+          <button class="btn-secondary" id="toggleDailyHistory">
+            Histórico diário completo
+          </button>
 
+          <button class="btn-secondary" id="printHistoryBtn">
+            Exportar histórico (PDF)
+          </button>
+        </div>
+
+        <!-- Histórico diário completo (todas as datas) -->
         <div id="dailyHistorySection" style="display:none; margin-top:8px;">
+          <h4 style="margin-top:0; margin-bottom:4px;">Histórico detalhado (todos os dias)</h4>
           <div class="scroll">
             <table>
               <thead>
@@ -1318,7 +1332,12 @@ const treinoSugestaoEl = document.getElementById("treinoSugestao");
 const weeklyHistoryEl = document.getElementById("weeklyHistory");
 const toggleDailyHistoryBtn = document.getElementById("toggleDailyHistory");
 const dailyHistorySection = document.getElementById("dailyHistorySection");
+const weeklyHistoryEl = document.getElementById("weeklyHistory");
+const toggleDailyHistoryBtn = document.getElementById("toggleDailyHistory");
+const dailyHistorySection = document.getElementById("dailyHistorySection");
 const dailyHistoryBody = document.getElementById("dailyHistoryBody");
+const printHistoryBtn = document.getElementById("printHistoryBtn");
+
 
 /* OBJETIVO */
 const calcExEl = document.getElementById("calcExercicio");
@@ -1911,6 +1930,202 @@ function renderDailyHistory() {
     dailyHistoryBody.appendChild(tr);
   });
 }
+function printTreinosPdf() {
+  try {
+    const dia = treinoDataEl.value || new Date().toISOString().slice(0, 10);
+
+    // WOD do dia
+    const listaDia = treinos.filter(t => t.date === dia);
+    // Histórico completo (tudo ordenado da data mais recente para a mais antiga)
+    const listaFull = treinos.slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+
+    let html = `
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <title>CrossBox - Histórico de treinos</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 12px;
+      color: #111;
+      margin: 16px;
+    }
+    h1, h2, h3 {
+      margin: 0 0 6px 0;
+    }
+    h1 { font-size: 18px; }
+    h2 { font-size: 14px; margin-top: 14px; }
+    p { margin: 4px 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 11px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 4px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    th {
+      background: #e5e5e5;
+    }
+    .small {
+      font-size: 10px;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+  <h1>CrossBox – Histórico de treinos</h1>
+`;
+
+    if (profile && profile.nome) {
+      html += `<p><strong>Atleta:</strong> ${profile.nome}</p>`;
+    }
+
+    html += `<p class="small">Gerado em: ${new Date().toLocaleString()}</p>`;
+
+    // Resumo do dia + sugestão + histórico semanal
+    html += `<h2>Resumo do dia ${dia}</h2>`;
+    if (treinoResumoEl && treinoResumoEl.textContent) {
+      html += `<p><strong>Resumo:</strong> ${treinoResumoEl.textContent}</p>`;
+    }
+    if (treinoSugestaoEl && treinoSugestaoEl.textContent) {
+      html += `<p><strong>Sugestão:</strong> ${treinoSugestaoEl.textContent}</p>`;
+    }
+    if (weeklyHistoryEl && weeklyHistoryEl.innerHTML) {
+      html += `<h2>Histórico semanal</h2>`;
+      html += `<div class="small">${weeklyHistoryEl.innerHTML}</div>`;
+    }
+
+    // Tabela do WOD do dia
+    html += `<h2>WOD do dia (${dia})</h2>`;
+
+    if (!listaDia.length) {
+      html += `<p>Sem WOD registado para este dia.</p>`;
+    } else {
+      html += `
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Exercício</th>
+            <th>Tipo</th>
+            <th>Rondas</th>
+            <th>Reps</th>
+            <th>Peso</th>
+            <th>% 1RM</th>
+            <th>Tempo</th>
+            <th>Distância (km)</th>
+            <th>Carga (kg)</th>
+          </tr>
+        </thead>
+        <tbody>
+      `;
+      listaDia.forEach(t => {
+        const label = MOVES_PT[t.ex] ? `${t.ex} – ${MOVES_PT[t.ex]}` : (t.ex || "");
+        const pesoTxt = t.peso ? formatKg(t.peso) : "";
+        const percTxt = t.perc1rm ? (t.perc1rm * 100).toFixed(0) + "%" : "";
+        const distTxt = t.distanciaKm ? formatKm(t.distanciaKm) : "";
+        const cargaTxt = t.carga ? formatKg(t.carga) : "";
+
+        html += `
+          <tr>
+            <td>${t.date || ""}</td>
+            <td>${label}</td>
+            <td>${t.tipo || ""}</td>
+            <td>${t.rondas || ""}</td>
+            <td>${t.reps || ""}</td>
+            <td>${pesoTxt}</td>
+            <td>${percTxt}</td>
+            <td>${t.tempo || ""}</td>
+            <td>${distTxt}</td>
+            <td>${cargaTxt}</td>
+          </tr>
+        `;
+      });
+      html += `
+        </tbody>
+      </table>
+      `;
+    }
+
+    // Histórico diário completo
+    html += `<h2>Histórico diário completo</h2>`;
+
+    if (!listaFull.length) {
+      html += `<p>Sem registos de WOD.</p>`;
+    } else {
+      html += `
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Exercício</th>
+            <th>Tipo</th>
+            <th>Rondas</th>
+            <th>Reps</th>
+            <th>Peso</th>
+            <th>% 1RM</th>
+            <th>Tempo</th>
+            <th>Distância (km)</th>
+            <th>Carga (kg)</th>
+          </tr>
+        </thead>
+        <tbody>
+      `;
+      listaFull.forEach(t => {
+        const label = MOVES_PT[t.ex] ? `${t.ex} – ${MOVES_PT[t.ex]}` : (t.ex || "");
+        const pesoTxt = t.peso ? formatKg(t.peso) : "";
+        const percTxt = t.perc1rm ? (t.perc1rm * 100).toFixed(0) + "%" : "";
+        const distTxt = t.distanciaKm ? formatKm(t.distanciaKm) : "";
+        const cargaTxt = t.carga ? formatKg(t.carga) : "";
+
+        html += `
+          <tr>
+            <td>${t.date || ""}</td>
+            <td>${label}</td>
+            <td>${t.tipo || ""}</td>
+            <td>${t.rondas || ""}</td>
+            <td>${t.reps || ""}</td>
+            <td>${pesoTxt}</td>
+            <td>${percTxt}</td>
+            <td>${t.tempo || ""}</td>
+            <td>${distTxt}</td>
+            <td>${cargaTxt}</td>
+          </tr>
+        `;
+      });
+      html += `
+        </tbody>
+      </table>
+      `;
+    }
+
+    html += `
+</body>
+</html>
+`;
+
+    const win = window.open("", "_blank");
+    if (!win) {
+      alert("O navegador bloqueou a janela de impressão. Permite pop-ups para exportar o PDF.");
+      return;
+    }
+    win.document.open();
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    win.print();
+  } catch (e) {
+    console.error("Erro ao gerar PDF:", e);
+    alert("Ocorreu um erro ao gerar o PDF do histórico.");
+  }
+}
 
 function buildSugestao(lista, totalCarga, totalSeries, blocosForca, blocosHipertrofia, blocosLeve, dia) {
   let partes = [];
@@ -2171,6 +2386,9 @@ if (toggleDailyHistoryBtn && dailyHistorySection) {
       renderDailyHistory();
     }
   });
+}
+  if (printHistoryBtn) {
+  printHistoryBtn.addEventListener("click", printTreinosPdf);
 }
 
 /* ===== BACKUP ===== */
@@ -2877,6 +3095,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
