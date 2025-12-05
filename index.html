@@ -2078,6 +2078,7 @@ function addTreinoEntry() {
   const tempo = treinoTempoEl.value.trim();
   const distKmVal = parseFloat(treinoDistEl.value || "0");
 
+  // validações básicas do WOD
   if (!ex || !reps || reps <= 0) return;
 
   const carga = calcCarga({ peso, reps, rondas });
@@ -2099,10 +2100,66 @@ function addTreinoEntry() {
     distanciaKm: (!isNaN(distKmVal) && distKmVal > 0) ? distKmVal : 0
   };
 
+  // 1) guardar sempre o WOD primeiro
   treinos.unshift(entry);
   saveTreinos();
   registerBackupMeta("WOD registado");
   renderTreinos();
+
+  // 2) MODO ASSISTIDO DE 1RM – só corre se fizer sentido
+  //    (há 1RM registado, peso > 0, reps moderadas, esforço relevante)
+  const current1rm = dataRm[ex];
+  if (!current1rm || current1rm <= 0) return;
+  if (!peso || peso <= 0) return;
+  if (reps < 1 || reps > 10) return; // só séries "de força" contam
+
+  // se a percentagem aproximada for muito baixa, ignora (séries muito leves)
+  const approxPerc = peso / current1rm;
+  if (approxPerc < 0.6) return;
+
+  // estimativa simples de 1RM (Epley)
+  const est1rm = peso * (1 + reps / 30);
+
+  // arredondar para 0.5 kg
+  const new1rmVal = Math.round(est1rm * 2) / 2;
+
+  const diff = new1rmVal - current1rm;
+
+  // só sugerir se for uma subida "real" (>= 1 kg e pelo menos +2%)
+  if (diff < 1 || new1rmVal < current1rm * 1.02) return;
+
+  const label = MOVES_PT[ex] ? `${ex} – ${MOVES_PT[ex]}` : ex;
+
+  const msg =
+    "Modo assistido de 1RM\n\n" +
+    `Exercício: ${label}\n` +
+    `Série registada: ${reps} repetições com ${formatKg(peso)}\n\n` +
+    `1RM atual registado: ${formatKg(current1rm)}\n` +
+    `1RM estimado a partir desta série: ${formatKg(new1rmVal)}\n\n` +
+    "Esta série parece indicar que o teu 1RM subiu.\n" +
+    "Queres atualizar o 1RM para este novo valor?";
+
+  const aceitar = confirm(msg);
+  if (!aceitar) return;
+
+  // guardar histórico antes de atualizar (tal como no botão de 1RM)
+  if (!rmHistory[ex]) rmHistory[ex] = [];
+  rmHistory[ex].push({
+    date: new Date().toISOString().slice(0, 10),
+    value: current1rm
+  });
+
+  dataRm[ex] = new1rmVal;
+
+  localStorage.setItem(STORAGE_RM, JSON.stringify(dataRm));
+  localStorage.setItem(STORAGE_RM_HISTORY, JSON.stringify(rmHistory));
+
+  registerBackupMeta("1RM atualizado (modo assistido)");
+  renderRm();
+
+  alert(
+    `Novo 1RM registado para ${label}: ${formatKg(new1rmVal)} (estimado a partir do WOD).`
+  );
 }
 
 function deleteTreinoEntry(index) {
@@ -3504,6 +3561,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
