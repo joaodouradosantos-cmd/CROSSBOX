@@ -2853,13 +2853,16 @@ function renderTreinos() {
 
   // RESUMO EM TEXTO
   if (treinoResumoEl) {
-    let resumo =
-      "Resumo do dia " + dia + ": carga total do WOD = " + formatKg(totalCarga);
-    if (totalDistKm > 0) {
-      resumo += " · distância total = " + formatKm(totalDistKm);
-    }
-    treinoResumoEl.textContent = resumo;
+  let resumo =
+    "Resumo do dia " + dia + ": carga total do WOD = " + formatKg(totalCarga);
+  if (totalDistKm > 0) {
+    resumo += " · distância total = " + formatKm(totalDistKm);
   }
+  if (melhorTempoSeg != null) {
+    resumo += " · melhor tempo = " + formatSecondsToTime(melhorTempoSeg);
+  }
+  treinoResumoEl.textContent = resumo;
+}
 
   const sugestao = buildSugestao(
     lista,
@@ -3093,39 +3096,46 @@ if (guiaSearch) {
 /* ===== PERFORMANCE (WOD / 1RM / METCON) ===== */
 function parseTimeToSeconds(str) {
   if (!str) return null;
-  const clean = String(str).trim();
-  const parts = clean.split(":");
-  if (parts.length < 2 || parts.length > 3) return null;
+  const clean = String(str).trim().toLowerCase();
 
-  const nums = parts.map(p => parseInt(p, 10));
-  if (nums.some(n => isNaN(n))) return null;
+  // 1) Formatos tipo "12:35" ou "1:02:30"
+  if (clean.includes(":")) {
+    const parts = clean.split(":");
+    if (parts.length === 2 || parts.length === 3) {
+      const nums = parts.map(p => parseInt(p, 10));
+      if (nums.some(n => isNaN(n))) return null;
 
-  let h = 0, m = 0, s = 0;
-  if (nums.length === 2) {
-    m = nums[0];
-    s = nums[1];
-  } else {
-    h = nums[0];
-    m = nums[1];
-    s = nums[2];
+      let h = 0, m = 0, s = 0;
+      if (parts.length === 2) {
+        m = nums[0];
+        s = nums[1];
+      } else {
+        h = nums[0];
+        m = nums[1];
+        s = nums[2];
+      }
+      if (m < 0 || s < 0 || s >= 60) return null;
+      return h * 3600 + m * 60 + s;
+    }
   }
 
-  if (m < 0 || s < 0 || s >= 60) return null;
-  return h * 3600 + m * 60 + s;
-}
+  // 2) Formatos tipo "20'", "20 min", "20min", "amrap 10'", "for time 15min"
+  //    → vamos procurar "número + unidade de tempo"
+  const match = clean.match(/(\d+)\s*(h|hr|hrs|hora|horas|m|min|mins|minuto|minutos|')/);
+  if (match) {
+    const valor = parseInt(match[1], 10);
+    if (isNaN(valor) || valor < 0) return null;
 
-function formatSecondsToTime(totalSeconds) {
-  if (totalSeconds == null || isNaN(totalSeconds)) return "";
-  const t = Math.round(totalSeconds);
-  const h = Math.floor(t / 3600);
-  const m = Math.floor((t % 3600) / 60);
-  const s = t % 60;
-  const mm = String(m).padStart(2, "0");
-  const ss = String(s).padStart(2, "0");
-  if (h > 0) {
-    return `${h}:${mm}:${ss}`;
+    const unidade = match[2];
+    if (["h", "hr", "hrs", "hora", "horas"].includes(unidade)) {
+      return valor * 3600;
+    }
+    // tudo o resto tratamos como minutos
+    return valor * 60;
   }
-  return `${m}:${ss}`;
+
+  // se não bater em nenhum padrão conhecido, não arriscamos
+  return null;
 }
 
 function renderPerformance() {
@@ -3624,6 +3634,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
