@@ -1698,6 +1698,39 @@ function refreshGraphExerciseOptions() {
   // garante que o gráfico corresponde ao exercício selecionado
   updateRmChart();
 }
+function refreshQuickExerciseOptions() {
+  if (!quickExerciseEl) return;
+
+  quickExerciseEl.innerHTML = "";
+
+  // só exercícios com 1RM registado
+  const nomes = Object.keys(dataRm || {}).sort();
+
+  if (!nomes.length) {
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "Sem 1RM registado";
+    quickExerciseEl.appendChild(opt);
+    quickExerciseEl.disabled = true;
+
+    if (quickPesoEl) quickPesoEl.value = "";
+    if (quickPercentEl) quickPercentEl.value = "";
+    if (quickPesoInputEl) quickPesoInputEl.value = "";
+    if (quickPercResultEl) quickPercResultEl.textContent = "";
+
+    return;
+  }
+
+  quickExerciseEl.disabled = false;
+
+  nomes.forEach(name => {
+    const opt = document.createElement("option");
+    opt.value = name;
+    const label = MOVES_PT[name] ? `${name} – ${MOVES_PT[name]}` : name;
+    opt.textContent = label;
+    quickExerciseEl.appendChild(opt);
+  });
+}
 
 /* Cálculo: percentagem → peso */
 function updateQuickFromPercent() {
@@ -3573,6 +3606,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
