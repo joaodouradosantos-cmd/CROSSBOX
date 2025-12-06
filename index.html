@@ -566,6 +566,27 @@
 #sec-1rm .card:nth-of-type(2) td:last-child {
   text-align: center !important;
 }
+/* Campos do WOD mais compactos no telemóvel */
+#opt-wod .field label {
+  font-size: 0.7rem;
+  line-height: 1.1;
+}
+
+#opt-wod .field input {
+  padding: 6px 8px;      /* em vez de 10px – ficam mais baixinhos */
+}
+
+/* Placeholder um pouco mais pequeno */
+#opt-wod .field input::placeholder {
+  font-size: 0.75rem;
+}
+
+/* Em ecrãs pequenos, garantir que as colunas não ficam gigantes */
+@media (max-width: 600px) {
+  #opt-wod .field {
+    min-width: 110px;
+  }
+}
 
 </style>
 </head>
@@ -3619,6 +3640,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
