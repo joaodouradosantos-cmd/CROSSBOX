@@ -566,22 +566,6 @@
 #sec-1rm .card:nth-of-type(2) td:last-child {
   text-align: center !important;
 }
-/* Campos do WOD ligeiramente mais compactos */
-#opt-wod .field input,
-#opt-wod .field select {
-  padding: 8px;
-  font-size: 0.85rem;
-}
-
-/* Label mais juntinho ao campo no WOD */
-#opt-wod label {
-  margin-bottom: 0;
-}
-
-/* Linha das 3 colunas (Rondas / Reps / Peso) bem apertada */
-#opt-wod .form-row {
-  margin-bottom: 6px;
-}
 
 </style>
 </head>
@@ -640,18 +624,6 @@
         <div class="field">
           <label>Peso (kg)</label>
           <input id="peso" type="number" step="0.1" min="30" max="250" />
-        </div>
-      </div>
-            <div class="form-row">
-        <div class="field">
-          <label>Objetivo principal</label>
-          <select id="objetivo">
-            <option value="">Sem objetivo específico</option>
-            <option value="ganhar_forca">Ganhar força</option>
-            <option value="ganhar_peso">Ganhar massa / peso</option>
-            <option value="perder_peso">Perder gordura / peso</option>
-            <option value="condicionamento">Melhorar condicionamento / metcon</option>
-          </select>
         </div>
       </div>
 
@@ -787,157 +759,156 @@
 
     <!-- WOD -->
     <section id="opt-wod" class="option-section">
-  <div class="card">
-    <h3 style="margin-top:0; margin-bottom:8px;">🟩 WOD</h3>
+      <div class="card">
+        <h3 style="margin-top:0; margin-bottom:8px;">🟩 WOD</h3>
 
-    <!-- Linha 1: Data + Exercício (igual) -->
-    <div class="form-row">
-      <div class="field">
-        <label>Data</label>
-        <input id="treinoData" type="date">
-      </div>
-      <div class="field">
-        <label>Exercício</label>
-        <input id="treinoExercicioSearch" type="text" placeholder="Procurar exercício..." />
-        <select id="treinoExercicio"></select>
-      </div>
-    </div>
+        <div class="form-row">
+          <div class="field">
+            <label>Data</label>
+            <input id="treinoData" type="date">
+          </div>
+          <div class="field">
+            <label>Exercício</label>
+            <input id="treinoExercicioSearch" type="text" placeholder="Procurar exercício..." />
+            <select id="treinoExercicio"></select>
+          </div>
+        </div>
 
-    <!-- Linha 2: Rondas / Reps / Peso (tudo junto para encolher) -->
-    <div class="form-row">
+         <div class="form-row">
       <div class="field">
         <label>Rondas / Séries</label>
         <input id="treinoRondas" type="number" min="1" />
       </div>
-      <div class="field">
-        <label>Repetições por série</label>
-        <input id="treinoReps" type="number" min="1" />
-      </div>
-      <div class="field">
-        <label>Peso (kg)</label>
-        <input id="treinoPeso" type="number" step="0.5" min="0" />
-      </div>
     </div>
 
-    <!-- Linha 3: %1RM + Tempo (lado a lado) -->
-    <div class="form-row">
-      <div class="field">
-        <label>Percentagem do 1RM (%) (opcional)</label>
-        <input id="treinoPercent" type="number" min="10" max="130" step="1" />
-        <div class="helper-text" id="treinoPercentInfo" style="margin-top:2px;">
-          <!-- texto preenchido pelo JS -->
+        <div class="form-row">
+          <div class="field">
+            <label>Repetições por série</label>
+            <input id="treinoReps" type="number" min="1" />
+          </div>
+          <div class="field">
+            <label>Peso (kg)</label>
+            <input id="treinoPeso" type="number" step="0.5" min="0" />
+          </div>
+        </div>
+        <!-- NOVO BLOCO: CÁLCULO % 1RM → KG DENTRO DO WOD -->
+          <div class="form-row">
+       <div class="field">
+         <label>Percentagem do 1RM (%) (opcional)</label>
+         <input id="treinoPercent" type="number" min="10" max="130" step="1" />
+       </div>
+     </div>
+     <div class="helper-text" id="treinoPercentInfo" style="margin-top:-4px; margin-bottom:4px;">
+     </div>
+
+        <!-- FIM DO BLOCO NOVO -->
+        <div class="form-row">
+          <div class="field">
+            <label>Tempo (opcional)</label>
+            <input id="treinoTempo" type="text" placeholder="Ex.: 12:35, 20', AMRAP 10'..." />
+          </div>
+          <div class="field">
+            <label>Distância (km – Metcon, opcional)</label>
+            <input id="treinoDist" type="number" step="0.01" min="0" />
+          </div>
+        </div>
+
+        <button class="btn-primary" id="treinoAdd">Adicionar ao WOD</button>
+        <div class="helper-text">
+          A carga de cada exercício (kg) é calculada como: peso × repetições × rondas.
+          A distância em metcon é somada à parte, em km.
         </div>
       </div>
-      <div class="field">
-        <label>Tempo (opcional)</label>
-        <input id="treinoTempo" type="text" placeholder="Ex.: 12:35, 20', AMRAP 10'..." />
-      </div>
-    </div>
 
-    <!-- Linha 4: Distância sozinha (normalmente menos usada) -->
-    <div class="form-row">
-      <div class="field">
-        <label>Distância (km – Metcon, opcional)</label>
-        <input id="treinoDist" type="number" step="0.01" min="0" />
-      </div>
-    </div>
+            <div class="card">
+        <h3 style="margin-top:0; margin-bottom:8px;">Registo e histórico</h3>
 
-    <button class="btn-primary" id="treinoAdd">Adicionar ao WOD</button>
-    <div class="helper-text">
-      A carga de cada exercício (kg) é calculada como: peso × repetições × rondas.
-      A distância em metcon é somada à parte, em km.
-    </div>
+        <!-- Resumo rápido do dia (sempre visível) -->
+        <div class="helper-text" id="treinoResumo" style="margin-bottom:4px;"></div>
+        <div class="helper-text" id="treinoSugestao" style="margin-top:0; font-weight:500;"></div>
+        <div class="helper-text" id="weeklyHistory" style="margin-top:4px;"></div>
+
+              <!-- Resumo rápido em chips -->
+<div id="treinoStats" class="stats-row" style="display:none;">
+  <div class="stat-chip">
+    <span>Carga total</span>
+    <span id="statCarga">0 kg</span>
   </div>
-
-  <!-- CARD 2: Registo & histórico (igual, só copiado o teu código atual) -->
-  <div class="card">
-    <h3 style="margin-top:0; margin-bottom:8px;">Registo e histórico</h3>
-
-    <!-- Resumo rápido do dia -->
-    <div class="helper-text" id="treinoResumo" style="margin-bottom:4px;"></div>
-    <div class="helper-text" id="treinoSugestao" style="margin-top:0; font-weight:500;"></div>
-    <div class="helper-text" id="weeklyHistory" style="margin-top:4px;"></div>
-
-    <!-- Chips de resumo -->
-    <div id="treinoStats" class="stats-row" style="display:none;">
-      <div class="stat-chip">
-        <span>Carga total</span>
-        <span id="statCarga">0 kg</span>
-      </div>
-      <div class="stat-chip">
-        <span>Exercícios</span>
-        <span id="statExercicios">0</span>
-      </div>
-      <div class="stat-chip">
-        <span>Melhor tempo</span>
-        <span id="statTempo">–</span>
-      </div>
-      <div class="stat-chip">
-        <span>Volume</span>
-        <span id="statVolume">0 reps</span>
-      </div>
-    </div>
-
-    <!-- WOD do dia -->
-    <h4 style="margin-top:10px; margin-bottom:4px;">WOD do dia</h4>
-    <div class="scroll" id="treinoScroll">
-      <table>
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Exercício</th>
-            <th>Tipo</th>
-            <th>Rondas</th>
-            <th>Reps</th>
-            <th>Peso</th>
-            <th>% 1RM</th>
-            <th>Tempo</th>
-            <th>Distância (km)</th>
-            <th>Carga (kg)</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="treinoBody"></tbody>
-      </table>
-    </div>
-
-    <!-- Botões histórico / exportação -->
-    <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">
-      <button class="btn-secondary" id="toggleDailyHistory">
-        Histórico diário completo
-      </button>
-
-      <button class="btn-secondary" id="printHistoryBtn">
-        Exportar histórico (PDF)
-      </button>
-    </div>
-
-    <!-- Histórico diário completo -->
-    <div id="dailyHistorySection" style="display:none; margin-top:8px;">
-      <h4 style="margin-top:0; margin-bottom:4px;">Histórico detalhado (todos os dias)</h4>
-      <div class="scroll" id="dailyHistoryScroll">
-        <table>
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Exercício</th>
-              <th>Tipo</th>
-              <th>Rondas</th>
-              <th>Reps</th>
-              <th>Peso</th>
-              <th>% 1RM</th>
-              <th>Tempo</th>
-              <th>Distância (km)</th>
-              <th>Carga (kg)</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="dailyHistoryBody"></tbody>
-        </table>
-      </div>
-    </div>
+  <div class="stat-chip">
+    <span>Exercícios</span>
+    <span id="statExercicios">0</span>
   </div>
-</section>
+  <div class="stat-chip">
+    <span>Melhor tempo</span>
+    <span id="statTempo">–</span>
+  </div>
+  <div class="stat-chip">
+    <span>Volume</span>
+    <span id="statVolume">0 reps</span>
+  </div>
+</div>
+
+        <!-- WOD do dia – compacto e fácil de ler -->
+        <h4 style="margin-top:10px; margin-bottom:4px;">WOD do dia</h4>
+<div class="scroll" id="treinoScroll">
+  <table>
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Exercício</th>
+        <th>Tipo</th>
+        <th>Rondas</th>
+        <th>Reps</th>
+        <th>Peso</th>
+        <th>% 1RM</th>
+        <th>Tempo</th>
+        <th>Distância (km)</th>
+        <th>Carga (kg)</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="treinoBody"></tbody>
+  </table>
+</div>
+
+
+        <!-- Botões de histórico e exportação -->
+        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">
+          <button class="btn-secondary" id="toggleDailyHistory">
+            Histórico diário completo
+          </button>
+
+          <button class="btn-secondary" id="printHistoryBtn">
+            Exportar histórico (PDF)
+          </button>
+        </div>
+
+        <!-- Histórico diário completo (todas as datas) -->
+        <div id="dailyHistorySection" style="display:none; margin-top:8px;">
+  <h4 style="margin-top:0; margin-bottom:4px;">Histórico detalhado (todos os dias)</h4>
+  <div class="scroll" id="dailyHistoryScroll">
+    <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Exercício</th>
+                  <th>Tipo</th>
+                  <th>Rondas</th>
+                  <th>Reps</th>
+                  <th>Peso</th>
+                  <th>% 1RM</th>
+                  <th>Tempo</th>
+                  <th>Distância (km)</th>
+                  <th>Carga (kg)</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="dailyHistoryBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- OBJETIVO -->
     <section id="opt-calc" class="option-section">
@@ -1177,7 +1148,6 @@ const sexoEl = document.getElementById("sexo");
 const idadeEl = document.getElementById("idade");
 const alturaEl = document.getElementById("altura");
 const pesoEl = document.getElementById("peso");
-const objetivoEl = document.getElementById("objetivo");
 const perfilForm = document.getElementById("perfilForm");
 const subtitleEl = document.getElementById("appSubtitle");
 const subtitleLine1El = document.getElementById("appSubtitleLine1");
@@ -1208,7 +1178,6 @@ function loadProfile() {
   if (profile.idade) idadeEl.value = profile.idade;
   if (profile.altura) alturaEl.value = profile.altura;
   if (profile.peso) pesoEl.value = profile.peso;
-  if (profile.objetivo && objetivoEl) objetivoEl.value = profile.objetivo;
   updateProfileInfo();
   updateSubtitle();
 }
@@ -1693,41 +1662,14 @@ function refreshCalcExOptions() {
     calcExEl.appendChild(opt);
   });
 }
+
 function refreshGraphExerciseOptions() {
   if (!graphExerciseEl) return;
-
-  // junta todos os nomes que tenham 1RM atual ou histórico
   const allNames = new Set([
     ...Object.keys(dataRm || {}),
     ...Object.keys(rmHistory || {})
   ]);
-
   const names = Array.from(allNames).sort();
-
-  graphExerciseEl.innerHTML = "";
-
-  if (!names.length) {
-    const opt = document.createElement("option");
-    opt.value = "";
-    opt.textContent = "Sem dados de 1RM";
-    graphExerciseEl.appendChild(opt);
-    graphExerciseEl.disabled = true;
-    updateRmChart();
-    return;
-  }
-
-  graphExerciseEl.disabled = false;
-
-  names.forEach(n => {
-    const opt = document.createElement("option");
-    opt.value = n;
-    opt.textContent = n;
-    graphExerciseEl.appendChild(opt);
-  });
-
-  // garante que o gráfico corresponde ao exercício selecionado
-  updateRmChart();
-}
 
   graphExerciseEl.innerHTML = "";
   if (!names.length) {
@@ -2055,13 +1997,6 @@ if (calcBtn) {
 function updateRmChart() {
   if (!rmChartCanvas || !graphExerciseEl) return;
 
-  // Se o Chart.js não estiver carregado (offline / falha de CDN),
-  // não desenhamos nada mas deixamos o resto da app funcionar.
-  if (typeof Chart === "undefined") {
-    console.warn("Chart.js não carregou; gráficos desativados (modo offline).");
-    return;
-  }
-
   const ex = graphExerciseEl.value;
   let labels = [];
   let values = [];
@@ -2114,9 +2049,7 @@ function updateRmChart() {
     return;
   }
 
-  const datasetLabel = MOVES_PT[ex]
-    ? `${ex} – ${MOVES_PT[ex]} – 1RM (kg)`
-    : ex + " – 1RM (kg)";
+  const datasetLabel = MOVES_PT[ex] ? `${ex} – ${MOVES_PT[ex]} – 1RM (kg)` : ex + " – 1RM (kg)";
 
   rmChart = new Chart(ctx, {
     type: "line",
@@ -2144,6 +2077,10 @@ function updateRmChart() {
       }
     }
   });
+}
+
+if (graphExerciseEl) {
+  graphExerciseEl.addEventListener("change", updateRmChart);
 }
 
 /* ===== WOD ===== */
@@ -2557,7 +2494,7 @@ function buildSugestao(lista, totalCarga, totalSeries, blocosForca, blocosHipert
   let partes = [];
 
   if (totalSeries === 0 || totalCarga === 0) {
-    return "Hoje o treino ficou muito leve em termos de carga. Se quiseres tirar mais proveito, planeia alguns blocos estruturados com séries e repetições definidas, ajustando a intensidade às tuas capacidades.";
+    return "Hoje o treino ficou muito leve. Se o objetivo é ganhar força e músculo, planeia pelo menos 2–3 blocos de trabalho com carga moderada a alta.";
   }
 
   partes.push("Bom trabalho hoje, treino concluído em " + dia + "!");
@@ -2566,66 +2503,49 @@ function buildSugestao(lista, totalCarga, totalSeries, blocosForca, blocosHipert
   const sexo = profile && profile.sexo ? profile.sexo : null;
   const peso = profile && profile.peso ? profile.peso : null;
   const altura = profile && profile.altura ? profile.altura : null;
-  const objetivo = profile && profile.objetivo ? profile.objetivo : null;
 
-  // Leitura neutra do tipo de estímulo
   if (blocosForca === 0 && blocosHipertrofia === 0) {
-    partes.push("O dia ficou mais orientado para um esforço global mais leve ou técnico, com menos foco em cargas moderadas / altas.");
-    partes.push("Em semanas em que tenhas mais disponibilidade, pode ser útil incluir 1–2 sessões com trabalho estruturado de carga moderada a elevada, para manter a progressão global.");
+    partes.push("O dia ficou mais leve em termos de estímulo de força e hipertrofia.");
+    partes.push("Para evoluir, tenta incluir 2–3 exercícios principais entre 70–85% do teu 1RM, com 5–10 repetições.");
   } else if (blocosForca > 0 && blocosHipertrofia === 0) {
-    partes.push("O treino de hoje esteve mais concentrado em séries pesadas com poucas repetições, típicas de trabalho mais intenso por série.");
-    partes.push("Equilibrar ao longo da semana com algum volume intermédio (mais repetições com carga moderada) pode ajudar a manter a técnica sólida e a recuperação controlada.");
+    partes.push("Treino muito focado em força máxima, com séries pesadas e repetições baixas.");
+    partes.push("Para aumentar também a massa muscular, acrescenta 2–4 séries de 6–10 repetições a 65–75% do 1RM em 1–2 exercícios grandes.");
   } else if (blocosHipertrofia > 0 && blocosForca === 0) {
-    partes.push("O treino apresentou bastante volume em faixas de repetições intermédias, com ênfase em trabalho contínuo.");
-    partes.push("Incluir pontualmente séries um pouco mais pesadas com menos repetições pode contribuir para desenvolver controlo e estabilidade nas principais posições.");
+    partes.push("Treino consistente para hipertrofia, com bastante trabalho de volume.");
+    partes.push("Para reforçar a força, vale a pena incluir 2–3 séries pesadas (3–5 repetições a 80–85% do 1RM) em movimentos fundamentais.");
   } else {
-    partes.push("O treino resultou numa combinação equilibrada entre séries mais pesadas e trabalho de volume intermédio.");
-    partes.push("Manter esta mistura ao longo das semanas tende a criar um estímulo variado, que favorece tanto a capacidade de esforço como a qualidade do movimento.");
+    partes.push("Boa combinação de força e hipertrofia hoje.");
+    partes.push("Mantém a lógica de 2–3 exercícios principais mais pesados (3–5 reps a 80–85% do 1RM) e 2–3 exercícios de apoio com 6–12 reps a 65–75% do 1RM.");
   }
 
-  // Ajuste da recomendação ao objetivo do perfil
-  if (objetivo === "ganhar_forca") {
-    partes.push("Como o teu objetivo principal é ganhar força, dá prioridade a 2–3 exercícios base (agachamento, peso morto, press, clean) com 3–5 séries de 3–5 repetições em cargas mais altas, e usa os metcons mais curtos como complemento.");
-  } else if (objetivo === "ganhar_peso") {
-    partes.push("Como queres ganhar massa / peso, é importante garantir um volume consistente ao longo da semana, com várias séries em faixas de 6–12 repetições e recuperação adequada entre sessões.");
-  } else if (objetivo === "perder_peso") {
-    partes.push("Como o objetivo é perder gordura / peso, faz sentido manter o trabalho de carga para preservar massa muscular e integrar metcons regulares, com intensidade controlada e pausas bem geridas.");
-  } else if (objetivo === "condicionamento") {
-    partes.push("Como o foco está no condicionamento, é útil combinar dias com metcons de duração moderada (10–20 minutos) com algum trabalho de carga que assegure boa base de força e estabilidade.");
-  }
-
-  // Ajustes finos por sexo
   if (sexo === "homem") {
-    partes.push("De forma geral, podes tolerar blocos com cargas relativamente altas, desde que respeites a técnica e mantenhas dias mais leves para recuperar.");
+    partes.push("Como homem, toleras bem blocos pesados entre 80–85% do 1RM, desde que respeites a técnica e a recuperação.");
   } else if (sexo === "mulher") {
-    partes.push("De forma geral, tens tendência a recuperar bem entre séries; aproveitar faixas de 6–12 repetições com técnica controlada pode ser uma boa base de trabalho ao longo da semana.");
+    partes.push("Como mulher, costumas recuperar melhor entre séries; não tenhas receio de trabalhar com 8–12 repetições a 70–75% do 1RM nos grandes movimentos.");
   }
 
-  // Ajustes por idade
   if (idade && idade >= 40) {
-    partes.push("Com a idade atual, torna-se ainda mais importante gerir o volume e a intensidade: dá prioridade à qualidade do movimento e assegura 48–72 horas de recuperação entre dias mais exigentes.");
+    partes.push("Com a idade atual, é importante controlar o volume: dá prioridade à qualidade do movimento e garante 48–72 horas de recuperação entre dias muito pesados.");
   }
 
-  // Relação com peso corporal
   if (peso) {
     const cargaMediaPorSerie = totalCarga / Math.max(totalSeries, 1);
     const rel = cargaMediaPorSerie / peso;
 
     if (rel < 0.8) {
-      partes.push("A carga média por série ficou relativamente baixa em relação ao teu peso corporal; se te sentires bem, podes ir testando cargas um pouco mais desafiantes, sem sacrificar a técnica.");
+      partes.push("A carga média por série ficou relativamente baixa face ao teu peso corporal; aos poucos podes aproximar os principais levantamentos de 1.0–1.5x do teu peso.");
     } else if (rel >= 0.8 && rel <= 1.5) {
-      partes.push("A relação entre carga média por série e peso corporal está numa faixa equilibrada para progressão gradual, desde que a recuperação e o sono acompanhem o esforço.");
+      partes.push("A relação entre carga média por série e peso corporal está numa faixa interessante para progresso contínuo. Mantém esta consistência.");
     } else if (rel > 1.5) {
-      partes.push("A carga média por série está bastante alta face ao teu peso corporal; é uma boa ideia manter atenção à gestão de fadiga e dar espaço para dias mais leves quando necessário.");
+      partes.push("Estás a trabalhar com uma carga média por série alta relativamente ao teu peso corporal; mantém atenção à técnica e à recuperação para evitar excesso de fadiga.");
     }
   }
 
-  // Ajustes por altura
   if (altura) {
     if (altura >= 185) {
-      partes.push("Com a tua estatura, compensa reforçar o cuidado com a posição lombar e com a trajetória da barra em movimentos como agachamento e peso morto, garantindo sempre um bom controlo do core.");
+      partes.push("Com a tua estatura, dá atenção extra à posição lombar em agachamentos e deadlifts, mantendo o core firme em todas as repetições.");
     } else if (altura <= 165) {
-      partes.push("Com a tua estatura, podes tirar partido da tua alavanca mais favorável para estabilizar cargas, desde que mantenhas o foco em técnica sólida antes de aumentar demasiado o volume.");
+      partes.push("Com a tua estatura, tens vantagem para estabilizar cargas pesadas; usa isso para consolidar técnica sólida nos básicos antes de aumentar muito o volume.");
     }
   }
 
@@ -2902,16 +2822,13 @@ function renderTreinos() {
 
   // RESUMO EM TEXTO
   if (treinoResumoEl) {
-  let resumo =
-    "Resumo do dia " + dia + ": carga total do WOD = " + formatKg(totalCarga);
-  if (totalDistKm > 0) {
-    resumo += " · distância total = " + formatKm(totalDistKm);
+    let resumo =
+      "Resumo do dia " + dia + ": carga total do WOD = " + formatKg(totalCarga);
+    if (totalDistKm > 0) {
+      resumo += " · distância total = " + formatKm(totalDistKm);
+    }
+    treinoResumoEl.textContent = resumo;
   }
-  if (melhorTempoSeg != null) {
-    resumo += " · melhor tempo = " + formatSecondsToTime(melhorTempoSeg);
-  }
-  treinoResumoEl.textContent = resumo;
-}
 
   const sugestao = buildSugestao(
     lista,
@@ -3145,68 +3062,45 @@ if (guiaSearch) {
 /* ===== PERFORMANCE (WOD / 1RM / METCON) ===== */
 function parseTimeToSeconds(str) {
   if (!str) return null;
-  const clean = String(str).trim().toLowerCase();
+  const clean = String(str).trim();
+  const parts = clean.split(":");
+  if (parts.length < 2 || parts.length > 3) return null;
 
-  // 1) Formatos tipo "12:35" ou "1:02:30"
-  if (clean.includes(":")) {
-    const parts = clean.split(":");
-    if (parts.length === 2 || parts.length === 3) {
-      const nums = parts.map(p => parseInt(p, 10));
-      if (nums.some(n => isNaN(n))) return null;
+  const nums = parts.map(p => parseInt(p, 10));
+  if (nums.some(n => isNaN(n))) return null;
 
-      let h = 0, m = 0, s = 0;
-      if (parts.length === 2) {
-        m = nums[0];
-        s = nums[1];
-      } else {
-        h = nums[0];
-        m = nums[1];
-        s = nums[2];
-      }
-      if (m < 0 || s < 0 || s >= 60) return null;
-      return h * 3600 + m * 60 + s;
-    }
+  let h = 0, m = 0, s = 0;
+  if (nums.length === 2) {
+    m = nums[0];
+    s = nums[1];
+  } else {
+    h = nums[0];
+    m = nums[1];
+    s = nums[2];
   }
 
-  // 2) Formatos tipo "20'", "20 min", "20min", "amrap 10'", "for time 15min"
-  const match = clean.match(/(\d+)\s*(h|hr|hrs|hora|horas|m|min|mins|minuto|minutos|')/);
-  if (match) {
-    const valor = parseInt(match[1], 10);
-    if (isNaN(valor) || valor < 0) return null;
-
-    const unidade = match[2];
-    if (["h", "hr", "hrs", "hora", "horas"].includes(unidade)) {
-      return valor * 3600;
-    }
-    // tudo o resto tratamos como minutos
-    return valor * 60;
-  }
-
-  // se não bater em nenhum padrão conhecido, não arriscamos
-  return null;
+  if (m < 0 || s < 0 || s >= 60) return null;
+  return h * 3600 + m * 60 + s;
 }
 
-/* Agora sim, função global para usar em todo o lado */
-function formatSecondsToTime(totalSec) {
-  if (totalSec == null || isNaN(totalSec)) return "-";
-
-  const s = Math.max(0, Math.round(totalSec));
-  const h = Math.floor(s / 3600);
-  const rest = s % 3600;
-  const m = Math.floor(rest / 60);
-  const sec = rest % 60;
-
+function formatSecondsToTime(totalSeconds) {
+  if (totalSeconds == null || isNaN(totalSeconds)) return "";
+  const t = Math.round(totalSeconds);
+  const h = Math.floor(t / 3600);
+  const m = Math.floor((t % 3600) / 60);
+  const s = t % 60;
+  const mm = String(m).padStart(2, "0");
+  const ss = String(s).padStart(2, "0");
   if (h > 0) {
-    return `${h}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+    return `${h}:${mm}:${ss}`;
   }
-  return `${m}:${String(sec).padStart(2, "0")}`;
+  return `${m}:${ss}`;
 }
 
 function renderPerformance() {
   /* WOD – dias com mais carga */
   if (perfWodBody) {
     perfWodBody.innerHTML = "";
-
     if (!treinos.length) {
       const tr = document.createElement("tr");
       const td = document.createElement("td");
@@ -3216,10 +3110,8 @@ function renderPerformance() {
       perfWodBody.appendChild(tr);
     } else {
       const map = {};
-
       treinos.forEach(t => {
         if (!t.date) return;
-
         if (!map[t.date]) {
           map[t.date] = {
             cargaTotal: 0,
@@ -3228,7 +3120,6 @@ function renderPerformance() {
             melhorTempoMetconSeg: null
           };
         }
-
         map[t.date].cargaTotal += t.carga || 0;
         map[t.date].distTotalKm += t.distanciaKm || 0;
         map[t.date].numEx += 1;
@@ -3236,10 +3127,7 @@ function renderPerformance() {
         if (t.tipo === "metcon" && t.tempo) {
           const sec = parseTimeToSeconds(t.tempo);
           if (sec != null) {
-            if (
-              map[t.date].melhorTempoMetconSeg == null ||
-              sec < map[t.date].melhorTempoMetconSeg
-            ) {
+            if (map[t.date].melhorTempoMetconSeg == null || sec < map[t.date].melhorTempoMetconSeg) {
               map[t.date].melhorTempoMetconSeg = sec;
             }
           }
@@ -3276,10 +3164,9 @@ function renderPerformance() {
         tr.appendChild(tdNum);
 
         const tdTempo = document.createElement("td");
-        tdTempo.textContent =
-          r.melhorTempoMetconSeg != null
-            ? formatSecondsToTime(r.melhorTempoMetconSeg)
-            : "-";
+        tdTempo.textContent = r.melhorTempoMetconSeg != null
+          ? formatSecondsToTime(r.melhorTempoMetconSeg)
+          : "-";
         tr.appendChild(tdTempo);
 
         perfWodBody.appendChild(tr);
@@ -3309,17 +3196,16 @@ function renderPerformance() {
       perf1rmBody.appendChild(tr);
     } else {
       const pesoCorporal = profile && profile.peso ? profile.peso : null;
-      const rows = nomes
-        .map(name => ({ name, value: dataRm[name] }))
-        .sort((a, b) => (b.value || 0) - (a.value || 0));
+      const rows = nomes.map(name => ({
+        name,
+        value: dataRm[name]
+      })).sort((a, b) => (b.value || 0) - (a.value || 0));
 
       rows.slice(0, 10).forEach(r => {
         const tr = document.createElement("tr");
 
         const tdName = document.createElement("td");
-        const label = MOVES_PT[r.name]
-          ? `${r.name} – ${MOVES_PT[r.name]}`
-          : r.name;
+        const label = MOVES_PT[r.name] ? `${r.name} – ${MOVES_PT[r.name]}` : r.name;
         tdName.textContent = label;
         tr.appendChild(tdName);
 
@@ -3341,16 +3227,15 @@ function renderPerformance() {
     }
   }
 
-  /* Metcon – melhores tempos */
+  /* Metcon – melhores tempos (tipo = 'metcon') */
   if (perfMetconBody) {
     perfMetconBody.innerHTML = "";
     const metconMap = {};
 
     treinos.forEach(t => {
-      if (!t.tempo) return;
+      if (t.tipo !== "metcon" || !t.tempo) return;
       const sec = parseTimeToSeconds(t.tempo);
       if (sec == null) return;
-
       const key = t.ex || "Metcon";
       const existing = metconMap[key];
       if (!existing || sec < existing.tempoSeg) {
@@ -3365,16 +3250,13 @@ function renderPerformance() {
       }
     });
 
-    const rows = Object.keys(metconMap)
-      .map(k => metconMap[k])
-      .sort((a, b) => a.tempoSeg - b.tempoSeg);
+    const rows = Object.keys(metconMap).map(k => metconMap[k]).sort((a, b) => a.tempoSeg - b.tempoSeg);
 
     if (!rows.length) {
       const tr = document.createElement("tr");
       const td = document.createElement("td");
       td.colSpan = 4;
-      td.textContent =
-        "Ainda não registaste metcons com tempo em formato reconhecido (ex.: 12:35 ou 20').";
+      td.textContent = "Ainda não registaste metcons com tempo em formato mm:ss.";
       tr.appendChild(td);
       perfMetconBody.appendChild(tr);
     } else {
@@ -3382,9 +3264,7 @@ function renderPerformance() {
         const tr = document.createElement("tr");
 
         const tdEx = document.createElement("td");
-        const label = MOVES_PT[r.exercicio]
-          ? `${r.exercicio} – ${MOVES_PT[r.exercicio]}`
-          : r.exercicio;
+        const label = MOVES_PT[r.exercicio] ? `${r.exercicio} – ${MOVES_PT[r.exercicio]}` : r.exercicio;
         tdEx.textContent = label;
         tr.appendChild(tdEx);
 
@@ -3411,7 +3291,7 @@ function renderPerformance() {
     }
   }
 }
- 
+
 /* ===== RESERVAS & PRESENÇAS (ALUNO) ===== */
 
 /* Garantir que as estruturas são sempre arrays válidas */
@@ -3659,8 +3539,7 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
 
     const target = btn.dataset.target;
     document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
-    const sec = document.getElementById(target);
-    if (sec) sec.classList.add("active");
+    document.getElementById(target).classList.add("active");
   });
 });
 
@@ -3688,34 +3567,6 @@ if (reservasBtn && reservasSection) {
   });
 }
 
-/* Listener para atualizar o gráfico quando mudas o exercício */
-if (graphExerciseEl) {
-  graphExerciseEl.addEventListener("change", updateRmChart);
-}
-
-/* INIT */
-initSelects();
-loadProfile();
-renderRm();
-refreshCalcExOptions();
-refreshGraphExerciseOptions();
-
-if (treinoDataEl && !treinoDataEl.value) {
-  treinoDataEl.value = new Date().toISOString().slice(0, 10);
-}
-renderTreinos();
-updateBackupInfo();
-renderGuiaExercicios();
-renderPerformance();
-renderReservas();
-atualizarRankingsMensais();
-
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function () {
-    navigator.serviceWorker.register("service-worker.js");
-  });
-}
-  
 /* INIT */
 initSelects();
 loadProfile();
