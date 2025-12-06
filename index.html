@@ -1494,20 +1494,6 @@ function inferTipo(ex) {
   return "força";
 }
 
-  // Complexos e movimentos combinados
-  "Thruster",
-  "Bear Complex",
-
-  // Ginástica técnica
-  "Handstand Push-Up (HSPU)",
-  "Strict Handstand Push-Up",
-  "Muscle-Up",
-  "Bar Muscle-Up",
-  "Ring Muscle-Up",
-  "Toes-to-Bar (T2B)",
-
-  // Mobilidade / técnica de PVC
-  "PVC Overhead Squat"
 ];
 
 /* Lista completa de exercícios em inglês (para WOD, Objetivo, Guia) */
@@ -2623,19 +2609,20 @@ function renderWeeklyHistory() {
     "Histórico das últimas semanas (carga total e distância):<br>" +
     lines.join("<br>");
 }
+
 /* ===== CÁLCULO RÁPIDO NO WOD: % 1RM ↔ PESO ===== */
 
 function updateWodPesoFromPercent() {
-  if (!treinoPercentEl || !treinoPesoSugEl || !treinoExEl) return;
+  if (!treinoPercentEl || !treinoExEl || !treinoPesoEl) return;
 
   const ex = treinoExEl.value;
   const perc = parseFloat(treinoPercentEl.value || "0");
 
-  // limpar mensagens se não houver dados
+  // limpar mensagem
   if (treinoPercentInfoEl) treinoPercentInfoEl.textContent = "";
 
+  // sem exercício, sem 1RM ou sem percentagem válida
   if (!ex || !dataRm[ex] || !perc || perc <= 0) {
-    if (treinoPesoSugEl) treinoPesoSugEl.value = "";
     if (!ex || !dataRm[ex]) {
       if (treinoPercentInfoEl && ex) {
         treinoPercentInfoEl.textContent =
@@ -2645,16 +2632,11 @@ function updateWodPesoFromPercent() {
     return;
   }
 
-  const base = dataRm[ex]; // 1RM
+  const base = dataRm[ex];      // 1RM
   const peso = base * (perc / 100);
 
-  // mostra sugestão no campo readonly (com vírgula)…
-  treinoPesoSugEl.value = peso.toFixed(1).replace(".", ",");
-
-  // …e preenche automaticamente o campo de peso real do WOD (em formato numérico)
-  if (treinoPesoEl) {
-    treinoPesoEl.value = peso.toFixed(1);
-  }
+  // preenche diretamente o peso do WOD
+  treinoPesoEl.value = peso.toFixed(1);
 
   if (treinoPercentInfoEl) {
     treinoPercentInfoEl.textContent =
@@ -2662,36 +2644,32 @@ function updateWodPesoFromPercent() {
   }
 }
 
-
 function updateWodPercentFromPeso() {
-  if (!treinoPesoEl || !treinoExEl || !treinoPercentInfoEl) return;
+  if (!treinoPesoEl || !treinoExEl) return;
 
   const ex = treinoExEl.value;
   const peso = parseFloat(treinoPesoEl.value || "0");
 
-  // limpa quando não há dados suficientes
+  if (treinoPercentInfoEl) treinoPercentInfoEl.textContent = "";
+
+  // sem exercício, sem 1RM ou sem peso válido
   if (!ex || !dataRm[ex] || !peso || peso <= 0) {
-    treinoPercentInfoEl.textContent = "";
     if (treinoPercentEl) treinoPercentEl.value = "";
-    if (treinoPesoSugEl) treinoPesoSugEl.value = "";
     return;
   }
 
-  const base = dataRm[ex]; // 1RM
+  const base = dataRm[ex];     // 1RM
   const perc = (peso / base) * 100;
 
-  // ATUALIZA SEMPRE o campo da percentagem com o valor correto
+  // atualiza sempre o campo da percentagem
   if (treinoPercentEl) {
     treinoPercentEl.value = perc.toFixed(0);
   }
 
-  // opcional: refletir também no campo de sugestão, para ficar tudo alinhado
-  if (treinoPesoSugEl) {
-    treinoPesoSugEl.value = peso.toFixed(1).replace(".", ",");
+  if (treinoPercentInfoEl) {
+    treinoPercentInfoEl.textContent =
+      `Este peso corresponde a cerca de ${perc.toFixed(0)}% do teu 1RM nesse exercício.`;
   }
-
-  treinoPercentInfoEl.textContent =
-    `Este peso corresponde a cerca de ${perc.toFixed(0)}% do teu 1RM nesse exercício.`;
 }
 
 /* Ligações de eventos no WOD */
@@ -3617,6 +3595,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
