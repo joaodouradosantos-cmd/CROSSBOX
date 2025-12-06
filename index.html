@@ -2814,35 +2814,35 @@ function renderTreinos() {
   const clean = String(str).trim().toLowerCase();
   if (!clean) return null;
 
-  // 1) Procurar padrão hh:mm:ss ou mm:ss em qualquer lado do texto
+  // 1) hh:mm:ss ou mm:ss em qualquer parte do texto
   const colonMatch = clean.match(/(\d{1,2}):(\d{2})(?::(\d{2}))?/);
   if (colonMatch) {
-    const hasHours = !!colonMatch[3];
-    const h = hasHours ? parseInt(colonMatch[1], 10) : 0;
-    const m = hasHours ? parseInt(colonMatch[2], 10) : parseInt(colonMatch[1], 10);
-    const s = hasHours ? parseInt(colonMatch[3], 10) : parseInt(colonMatch[2], 10);
+    const h = colonMatch[3] ? parseInt(colonMatch[1], 10) : 0;
+    const m = colonMatch[3] ? parseInt(colonMatch[2], 10) : parseInt(colonMatch[1], 10);
+    const s = colonMatch[3] ? parseInt(colonMatch[3], 10) : parseInt(colonMatch[2], 10);
 
     if ([h, m, s].some(n => isNaN(n))) return null;
-    if (h < 0 || m < 0 || m >= 60 || s < 0 || s >= 60) return null;
+    if (m < 0 || m >= 60 || s < 0 || s >= 60) return null;
 
     return h * 3600 + m * 60 + s;
   }
 
-  // 2) Formatos tipo "20'", "20 min", "20min", "1h", "2 horas"
-  const minMatch = clean.match(/(\d+)\s*(h|hr|hrs|hora|horas|m|min|mins|minuto|minutos|')/);
-  if (minMatch) {
-    const valor = parseInt(minMatch[1], 10);
-    if (isNaN(valor) || valor < 0) return null;
+  // 2) Só número → minutos
+  if (/^\d+(\.\d+)?$/.test(clean)) {
+    const val = parseFloat(clean);
+    return isNaN(val) ? null : Math.round(val * 60);
+  }
 
-    const unidade = minMatch[2];
-    if (["h", "hr", "hrs", "hora", "horas"].includes(unidade)) {
-      return valor * 3600;
-    }
-    // tudo o resto tratamos como minutos
+  // 3) Formatos tipo “20'”, “20 min”, “2h”
+  const unitMatch = clean.match(/(\d+)\s*(h|hr|hrs|hora|horas|m|min|mins|minuto|minutos|')/);
+  if (unitMatch) {
+    const valor = parseInt(unitMatch[1], 10);
+    const unidade = unitMatch[2];
+
+    if (["h", "hr", "hrs", "hora", "horas"].includes(unidade)) return valor * 3600;
     return valor * 60;
   }
 
-  // se não bater em nenhum padrão conhecido, não usamos
   return null;
 }
 
@@ -3619,6 +3619,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
