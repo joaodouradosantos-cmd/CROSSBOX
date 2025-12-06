@@ -2028,9 +2028,18 @@ if (calcBtn) {
 function updateRmChart() {
   if (!rmChartCanvas || !graphExerciseEl) return;
 
+  // 🔐 Defesa: se o Chart.js não carregou (offline/CDN em falha),
+  // não tentamos desenhar nada, mas deixamos o resto da app funcionar.
+  if (typeof Chart === "undefined") {
+    console.warn("Chart.js não carregou; gráficos desativados (modo offline).");
+    return;
+  }
+
   const ex = graphExerciseEl.value;
   let labels = [];
   let values = [];
+  // ... resto da função fica igual ...
+}
 
   if (ex && (rmHistory[ex] || dataRm[ex])) {
     const hist = (rmHistory[ex] || []).slice().sort((a, b) => {
@@ -3379,123 +3388,7 @@ function renderPerformance() {
     }
   }
 }
-
-  /* Top 1RM */
-  if (perf1rmBody) {
-    perf1rmBody.innerHTML = "";
-    const nomes = Object.keys(dataRm || {});
-    if (!nomes.length) {
-      const tr = document.createElement("tr");
-      const td = document.createElement("td");
-      td.colSpan = 3;
-      td.textContent = "Ainda não registaste nenhum 1RM.";
-      tr.appendChild(td);
-      perf1rmBody.appendChild(tr);
-    } else {
-      const pesoCorporal = profile && profile.peso ? profile.peso : null;
-      const rows = nomes
-        .map(name => ({ name, value: dataRm[name] }))
-        .sort((a, b) => (b.value || 0) - (a.value || 0));
-
-      rows.slice(0, 10).forEach(r => {
-        const tr = document.createElement("tr");
-
-        const tdName = document.createElement("td");
-        const label = MOVES_PT[r.name]
-          ? `${r.name} – ${MOVES_PT[r.name]}`
-          : r.name;
-        tdName.textContent = label;
-        tr.appendChild(tdName);
-
-        const tdVal = document.createElement("td");
-        tdVal.textContent = formatKg(r.value);
-        tr.appendChild(tdVal);
-
-        const tdRel = document.createElement("td");
-        if (pesoCorporal) {
-          const rel = r.value / pesoCorporal;
-          tdRel.textContent = rel.toFixed(2) + "x";
-        } else {
-          tdRel.textContent = "-";
-        }
-        tr.appendChild(tdRel);
-
-        perf1rmBody.appendChild(tr);
-      });
-    }
-  }
-
-  /* Metcon – melhores tempos */
-  if (perfMetconBody) {
-    perfMetconBody.innerHTML = "";
-    const metconMap = {};
-
-    treinos.forEach(t => {
-      if (!t.tempo) return;
-      const sec = parseTimeToSeconds(t.tempo);
-      if (sec == null) return;
-
-      const key = t.ex || "Metcon";
-      const existing = metconMap[key];
-      if (!existing || sec < existing.tempoSeg) {
-        metconMap[key] = {
-          exercicio: key,
-          tempoSeg: sec,
-          tempoStr: t.tempo,
-          date: t.date || "",
-          carga: t.carga || 0,
-          distanciaKm: t.distanciaKm || 0
-        };
-      }
-    });
-
-    const rows = Object.keys(metconMap)
-      .map(k => metconMap[k])
-      .sort((a, b) => a.tempoSeg - b.tempoSeg);
-
-    if (!rows.length) {
-      const tr = document.createElement("tr");
-      const td = document.createElement("td");
-      td.colSpan = 4;
-      td.textContent =
-        "Ainda não registaste metcons com tempo em formato reconhecido (ex.: 12:35 ou 20').";
-      tr.appendChild(td);
-      perfMetconBody.appendChild(tr);
-    } else {
-      rows.slice(0, 10).forEach(r => {
-        const tr = document.createElement("tr");
-
-        const tdEx = document.createElement("td");
-        const label = MOVES_PT[r.exercicio]
-          ? `${r.exercicio} – ${MOVES_PT[r.exercicio]}`
-          : r.exercicio;
-        tdEx.textContent = label;
-        tr.appendChild(tdEx);
-
-        const tdTempo = document.createElement("td");
-        tdTempo.textContent = r.tempoStr;
-        tr.appendChild(tdTempo);
-
-        const tdData = document.createElement("td");
-        tdData.textContent = r.date;
-        tr.appendChild(tdData);
-
-        const tdCarga = document.createElement("td");
-        let cargaLabel = "-";
-        if (r.distanciaKm && r.distanciaKm > 0) {
-          cargaLabel = formatKm(r.distanciaKm);
-        } else if (r.carga && r.carga > 0) {
-          cargaLabel = formatKg(r.carga);
-        }
-        tdCarga.textContent = cargaLabel;
-        tr.appendChild(tdCarga);
-
-        perfMetconBody.appendChild(tr);
-      });
-    }
-  }
-}
-
+  
 /* ===== RESERVAS & PRESENÇAS (ALUNO) ===== */
 
 /* Garantir que as estruturas são sempre arrays válidas */
@@ -3797,6 +3690,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
