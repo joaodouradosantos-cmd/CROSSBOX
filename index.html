@@ -3220,10 +3220,8 @@ function renderPerformance() {
               map[t.date].melhorTempoMetconSeg = sec;
             }
           }
-        }
-      });
-
-      const rows = Object.keys(map).map(date => ({
+    
+        const rows = Object.keys(map).map(date => ({
         date,
         cargaTotal: map[date].cargaTotal,
         distTotalKm: map[date].distTotalKm,
@@ -3690,6 +3688,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
