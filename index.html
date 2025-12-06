@@ -1665,13 +1665,17 @@ function refreshCalcExOptions() {
 
 function refreshGraphExerciseOptions() {
   if (!graphExerciseEl) return;
+
+  // junta todos os nomes que tenham 1RM atual ou histórico
   const allNames = new Set([
     ...Object.keys(dataRm || {}),
     ...Object.keys(rmHistory || {})
   ]);
+
   const names = Array.from(allNames).sort();
 
   graphExerciseEl.innerHTML = "";
+
   if (!names.length) {
     const opt = document.createElement("option");
     opt.value = "";
@@ -1683,6 +1687,7 @@ function refreshGraphExerciseOptions() {
   }
 
   graphExerciseEl.disabled = false;
+
   names.forEach(n => {
     const opt = document.createElement("option");
     opt.value = n;
@@ -1690,33 +1695,8 @@ function refreshGraphExerciseOptions() {
     graphExerciseEl.appendChild(opt);
   });
 
+  // garante que o gráfico corresponde ao exercício selecionado
   updateRmChart();
-}
-/* Exercícios disponíveis na ferramenta rápida (apenas com 1RM registado) */
-function refreshQuickExerciseOptions() {
-  if (!quickExerciseEl) return;
-
-  quickExerciseEl.innerHTML = "";
-
-  const nomes = Object.keys(dataRm || {}).sort();
-  if (!nomes.length) {
-    const opt = document.createElement("option");
-    opt.value = "";
-    opt.textContent = "Sem 1RM registado";
-    quickExerciseEl.appendChild(opt);
-    quickExerciseEl.disabled = true;
-    return;
-  }
-
-  quickExerciseEl.disabled = false;
-
-  nomes.forEach(name => {
-    const opt = document.createElement("option");
-    opt.value = name;
-    const label = MOVES_PT[name] ? `${name} – ${MOVES_PT[name]}` : name;
-    opt.textContent = label;
-    quickExerciseEl.appendChild(opt);
-  });
 }
 
 /* Cálculo: percentagem → peso */
@@ -3593,5 +3573,6 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
