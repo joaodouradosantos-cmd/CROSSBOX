@@ -2602,31 +2602,34 @@ function buildSugestao(lista, totalCarga, totalSeries, blocosForca, blocosHipert
     }
   }
 
+* 
   if (altura) {
     if (altura >= 185) {
-      partes.push("Com a tua estatura, dá atenção extra à posição lombar em agachamentos e deadlifts, mantendo o core firme em todas as repetições.");
+      partes.push("Com a tua estatura, dá atenção extra à posição lombar em agachamentos e deadlifts, mantendo o core firme.");
     } else if (altura <= 165) {
-      partes.push("Com a tua estatura, tens vantagem para estabilizar cargas pesadas; usa isso para consolidar técnica sólida nos básicos antes de aumentar muito o volume.");
+      partes.push("Com a tua estatura, tens vantagem em estabilizar cargas pesadas; usa isso para consolidar a técnica nos básicos.");
     }
-      // Ajuste em função do objetivo principal escolhido no perfil
-  if (objetivo === "forca") {
-    partes.push("Como definiste ganhar força como objetivo principal, garante pelo menos 2–3 blocos pesados por semana entre 80–90% do teu 1RM nos levantamentos base.");
-  } else if (objetivo === "massa") {
-    partes.push("Tendo como foco ganhar massa muscular, dá prioridade a séries de 6–12 repetições a 65–80% do 1RM e controla bem o descanso entre séries.");
-  } else if (objetivo === "perder") {
-    partes.push("Como o objetivo é perder peso/gordura, combina blocos de força com metcons em que consigas acumular bastante trabalho em 10–20 minutos, sem perder a técnica.");
-  } else if (objetivo === "ganhar") {
-    partes.push("Se queres ganhar peso, mantém uma boa base de força e aumenta aos poucos o volume total semanal, garantindo também que a alimentação acompanha o esforço.");
-  } else if (objetivo === "resistencia") {
-    partes.push("Com o foco na resistência, acrescenta mais sessões de corrida, remo ou bicicleta entre 15–30 minutos, mantendo 1–2 dias de força para prevenir lesões.");
-  } else if (objetivo === "manter") {
-    partes.push("Se o teu objetivo é manter forma física, mantém 3–4 treinos semanais equilibrando força, metcon e mobilidade, sem necessidade de volumes exagerados.");
   }
-}
-  return partes.join(" ");
-}
 
-function getMonday(dateStr) {
+  // Ajustes por objetivo principal
+  if (objetivo === "forca") {
+    partes.push("Como definiste ganhar força, garante 2–3 blocos pesados por semana entre 80–90% do 1RM nos levantamentos base.");
+  } else if (objetivo === "massa") {
+    partes.push("Para ganhar massa muscular, prioriza séries de 6–12 repetições a 65–80% do 1RM, com descanso controlado.");
+  } else if (objetivo === "perder") {
+    partes.push("Para perder peso, combina força com metcons de 10–20 minutos, mantendo a técnica sempre sólida.");
+  } else if (objetivo === "ganhar") {
+    partes.push("Para ganhar peso, aumenta o volume semanal e mantém uma boa base de força nos movimentos principais.");
+  } else if (objetivo === "resistencia") {
+    partes.push("Com objetivo de resistência, aposta mais em corrida, remo ou bicicleta por 15–30 minutos, mantendo 1–2 dias de força.");
+  } else if (objetivo === "manter") {
+    partes.push("Para manter forma física, 3–4 treinos semanais equilibrando força, metcon e mobilidade são suficientes.");
+  }
+
+  return partes.join(" ");
+*
+
+  function getMonday(dateStr) {
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return null;
   const day = d.getDay();
@@ -3685,6 +3688,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
