@@ -637,7 +637,7 @@
         </div>
       </div>
 
-      <div class="form-row">
+            <div class="form-row">
         <div class="field">
           <label>Altura (cm)</label>
           <input id="altura" type="number" min="100" max="230" />
@@ -648,7 +648,34 @@
         </div>
       </div>
 
+            <div class="form-row">
+        <div class="field">
+          <label>Altura (cm)</label>
+          <input id="altura" type="number" min="100" max="230" />
+        </div>
+        <div class="field">
+          <label>Peso (kg)</label>
+          <input id="peso" type="number" step="0.1" min="30" max="250" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Objetivo principal</label>
+          <select id="objetivo">
+            <option value="">Selecionar</option>
+            <option value="forca">Ganhar força</option>
+            <option value="massa">Ganhar massa muscular</option>
+            <option value="perder">Perder peso / gordura</option>
+            <option value="ganhar">Ganhar peso</option>
+            <option value="resistencia">Melhorar resistência</option>
+            <option value="manter">Manter forma física</option>
+          </select>
+        </div>
+      </div>
+
       <button class="btn-primary" id="saveProfile">Guardar perfil</button>
+
     </div>
   </section>
 
@@ -1173,6 +1200,7 @@ const sexoEl = document.getElementById("sexo");
 const idadeEl = document.getElementById("idade");
 const alturaEl = document.getElementById("altura");
 const pesoEl = document.getElementById("peso");
+const objetivoEl = document.getElementById("objetivo");
 const perfilForm = document.getElementById("perfilForm");
 const subtitleEl = document.getElementById("appSubtitle");
 const subtitleLine1El = document.getElementById("appSubtitleLine1");
@@ -1203,6 +1231,7 @@ function loadProfile() {
   if (profile.idade) idadeEl.value = profile.idade;
   if (profile.altura) alturaEl.value = profile.altura;
   if (profile.peso) pesoEl.value = profile.peso;
+  if (profile.objetivo && objetivoEl) objetivoEl.value = profile.objetivo;
   updateProfileInfo();
   updateSubtitle();
 }
@@ -1211,13 +1240,15 @@ const saveProfileBtn = document.getElementById("saveProfile");
 if (saveProfileBtn) {
   saveProfileBtn.addEventListener("click", () => {
     profile = {
-      nome: nomeEl && nomeEl.value ? nomeEl.value.trim() : "",
-      nivel: nivelEl ? (nivelEl.value || "") : "",
-      sexo: sexoEl.value || "",
-      idade: idadeEl.value ? parseInt(idadeEl.value, 10) : "",
-      altura: alturaEl.value ? parseInt(alturaEl.value, 10) : "",
-      peso: pesoEl.value ? parseFloat(pesoEl.value) : ""
-    };
+  nome: nomeEl && nomeEl.value ? nomeEl.value.trim() : "",
+  nivel: nivelEl ? (nivelEl.value || "") : "",
+  sexo: sexoEl.value || "",
+  idade: idadeEl.value ? parseInt(idadeEl.value, 10) : "",
+  altura: alturaEl.value ? parseInt(alturaEl.value, 10) : "",
+  peso: pesoEl.value ? parseFloat(pesoEl.value) : "",
+  objetivo: objetivoEl ? (objetivoEl.value || "") : ""
+};
+
     localStorage.setItem(STORAGE_PROFILE, JSON.stringify(profile));
     updateProfileInfo();
     updateSubtitle();
@@ -2543,6 +2574,7 @@ function buildSugestao(lista, totalCarga, totalSeries, blocosForca, blocosHipert
   const sexo = profile && profile.sexo ? profile.sexo : null;
   const peso = profile && profile.peso ? profile.peso : null;
   const altura = profile && profile.altura ? profile.altura : null;
+  const objetivo = profile && profile.objetivo ? profile.objetivo : null;
 
   if (blocosForca === 0 && blocosHipertrofia === 0) {
     partes.push("O dia ficou mais leve em termos de estímulo de força e hipertrofia.");
@@ -2587,8 +2619,21 @@ function buildSugestao(lista, totalCarga, totalSeries, blocosForca, blocosHipert
     } else if (altura <= 165) {
       partes.push("Com a tua estatura, tens vantagem para estabilizar cargas pesadas; usa isso para consolidar técnica sólida nos básicos antes de aumentar muito o volume.");
     }
+      // Ajuste em função do objetivo principal escolhido no perfil
+  if (objetivo === "forca") {
+    partes.push("Como definiste ganhar força como objetivo principal, garante pelo menos 2–3 blocos pesados por semana entre 80–90% do teu 1RM nos levantamentos base.");
+  } else if (objetivo === "massa") {
+    partes.push("Tendo como foco ganhar massa muscular, dá prioridade a séries de 6–12 repetições a 65–80% do 1RM e controla bem o descanso entre séries.");
+  } else if (objetivo === "perder") {
+    partes.push("Como o objetivo é perder peso/gordura, combina blocos de força com metcons em que consigas acumular bastante trabalho em 10–20 minutos, sem perder a técnica.");
+  } else if (objetivo === "ganhar") {
+    partes.push("Se queres ganhar peso, mantém uma boa base de força e aumenta aos poucos o volume total semanal, garantindo também que a alimentação acompanha o esforço.");
+  } else if (objetivo === "resistencia") {
+    partes.push("Com o foco na resistência, acrescenta mais sessões de corrida, remo ou bicicleta entre 15–30 minutos, mantendo 1–2 dias de força para prevenir lesões.");
+  } else if (objetivo === "manter") {
+    partes.push("Se o teu objetivo é manter forma física, mantém 3–4 treinos semanais equilibrando força, metcon e mobilidade, sem necessidade de volumes exagerados.");
   }
-
+}
   return partes.join(" ");
 }
 
@@ -3651,6 +3696,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
