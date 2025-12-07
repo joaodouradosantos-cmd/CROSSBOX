@@ -485,6 +485,7 @@
   white-space: normal;   /* permite que o texto parta linha */
   vertical-align: top;
 }
+    
  /* ============================
    FERRAMENTA RÁPIDA 1RM – VISUAL PRO
    ============================ */
@@ -570,6 +571,17 @@
 #opt-wod .field label {
   font-size: 0.7rem;
   line-height: 1.1;
+}
+/* ===== GRELLA 3x2 PARA O WOD ===== */
+#opt-wod .wod-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px 10px;
+  margin-top: 8px;
+}
+
+#opt-wod .wod-grid .field {
+  min-width: 0;
 }
 
 #opt-wod .field input {
@@ -818,37 +830,38 @@
           </div>
         </div>
 
-        <!-- LINHA 2: rondas / repetições / peso -->
-        <div class="form-row">
-          <div class="field">
-            <label>Rondas / Séries</label>
-            <input id="treinoRondas" type="number" min="1" />
-          </div>
-          <div class="field">
-            <label>Repetições por série</label>
-            <input id="treinoReps" type="number" min="1" />
-          </div>
-          <div class="field">
-            <label>Peso (kg)</label>
-            <input id="treinoPeso" type="number" step="0.5" min="0" />
-          </div>
-        </div>
+        <!-- GRELLA 3x2 DO WOD -->
+<div class="wod-grid">
+  <div class="field">
+    <label>Séries</label>
+    <input id="treinoRondas" type="number" min="1" />
+  </div>
 
-        <!-- LINHA 3: percentagem / tempo / distância -->
-        <div class="form-row">
-          <div class="field">
-            <label>Percentagem 1RM (%)</label>
-            <input id="treinoPercent" type="number" min="10" max="130" step="1" />
-          </div>
-          <div class="field">
-            <label>Tempo</label>
-            <input id="treinoTempo" type="text" placeholder="Ex.: 12:35, 20', AMRAP 10'..." />
-          </div>
-          <div class="field">
-            <label>Distância (km)</label>
-            <input id="treinoDist" type="number" step="0.01" min="0" />
-          </div>
-        </div>
+  <div class="field">
+    <label>Repetições</label>
+    <input id="treinoReps" type="number" min="1" />
+  </div>
+
+  <div class="field">
+    <label>Peso kg</label>
+    <input id="treinoPeso" type="number" step="0.5" min="0" />
+  </div>
+
+  <div class="field">
+    <label>%1RM</label>
+    <input id="treinoPercent" type="number" min="10" max="130" step="1" />
+  </div>
+
+  <div class="field">
+    <label>Tempo</label>
+    <input id="treinoTempo" type="text" placeholder="Ex.: 12:35, 20', AMRAP 10'..." />
+  </div>
+
+  <div class="field">
+    <label>Distância (km)</label>
+    <input id="treinoDist" type="number" step="0.01" min="0" />
+  </div>
+</div>
 
         <div class="helper-text" id="treinoPercentInfo" style="margin-top:-4px; margin-bottom:4px;">
         </div>
@@ -3670,6 +3683,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
