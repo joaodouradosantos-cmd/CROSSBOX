@@ -652,14 +652,17 @@
         <div class="field">
           <label>Objetivo principal</label>
           <select id="objetivo">
-            <option value="">Selecionar</option>
-            <option value="forca">Ganhar força</option>
-            <option value="massa">Ganhar massa muscular</option>
-            <option value="perder">Perder peso / gordura</option>
-            <option value="ganhar">Ganhar peso</option>
-            <option value="resistencia">Melhorar resistência</option>
-            <option value="manter">Manter forma física</option>
-          </select>
+  <option value="">Selecionar</option>
+  <option value="condicionamento">Melhorar condicionamento</option>
+  <option value="forca_absoluta">Aumentar força absoluta</option>
+  <option value="potencia">Desenvolver potência / explosão</option>
+  <option value="resistencia_muscular">Melhorar resistência muscular</option>
+  <option value="recomposicao">Perder massa gorda / recomposição</option>
+  <option value="massa_funcional">Ganho de massa magra funcional</option>
+  <option value="longevidade">Manter forma e longevidade</option>
+  <option value="competicao">Preparação para competição / RX</option>
+</select>
+
         </div>
       </div>
 
@@ -794,62 +797,58 @@
       </div>
     </div>
 
-    <!-- WOD -->
+        <!-- WOD -->
     <section id="opt-wod" class="option-section">
       <div class="card">
         <h3 style="margin-top:0; margin-bottom:8px;">🟩 WOD</h3>
-            
-<!-- LINHA 1: data + exercício -->
-<div class="form-row">
-  <div class="field">
-    <label>Data</label>
-    <input id="treinoData" type="date" />
-  </div>
-  <div class="field">
-    <label>Exercício</label>
-    <select id="treinoExercicio"></select>
-  </div>
-</div>
 
-<!-- LINHA 1b: pesquisa (sem campo de tipo) -->
-<div class="form-row">
-  <div class="field">
-    <label>Procurar exercício</label>
-    <input id="treinoExercicioSearch" type="text" placeholder="Nome EN/PT..." />
-  </div>
-</div>
+        <!-- LINHA 1: data / procura / exercício -->
+        <div class="form-row">
+          <div class="field">
+            <label>Data</label>
+            <input id="treinoData" type="date" />
+          </div>
+          <div class="field">
+            <label>Procurar exercício</label>
+            <input id="treinoExercicioSearch" type="text" placeholder="Nome EN/PT..." />
+          </div>
+          <div class="field">
+            <label>Exercício</label>
+            <select id="treinoExercicio"></select>
+          </div>
+        </div>
 
-<!-- LINHA 2: rondas, repetições, peso + distância na mesma linha -->
-<div class="form-row">
-  <div class="field">
-    <label>Rondas / Séries</label>
-    <input id="treinoRondas" type="number" min="1" />
-  </div>
-  <div class="field">
-    <label>Repetições por série</label>
-    <input id="treinoReps" type="number" min="1" />
-  </div>
-  <div class="field">
-    <label>Peso (kg)</label>
-    <input id="treinoPeso" type="number" step="0.5" min="0" />
-  </div>
-  <div class="field">
-    <label>Distância (km)</label>
-    <input id="treinoDist" type="number" step="0.01" min="0" />
-  </div>
-</div>
+        <!-- LINHA 2: rondas / repetições / peso -->
+        <div class="form-row">
+          <div class="field">
+            <label>Rondas / Séries</label>
+            <input id="treinoRondas" type="number" min="1" />
+          </div>
+          <div class="field">
+            <label>Repetições por série</label>
+            <input id="treinoReps" type="number" min="1" />
+          </div>
+          <div class="field">
+            <label>Peso (kg)</label>
+            <input id="treinoPeso" type="number" step="0.5" min="0" />
+          </div>
+        </div>
 
-<!-- LINHA 3: percentagem + tempo -->
-<div class="form-row">
-  <div class="field">
-    <label>Percentagem 1RM (%)</label>
-    <input id="treinoPercent" type="number" min="10" max="130" step="1" />
-  </div>
-  <div class="field">
-    <label>Tempo</label>
-    <input id="treinoTempo" type="text" placeholder="Ex.: 12:35, 20', AMRAP 10'..." />
-  </div>
-</div>
+        <!-- LINHA 3: percentagem / tempo / distância -->
+        <div class="form-row">
+          <div class="field">
+            <label>Percentagem 1RM (%)</label>
+            <input id="treinoPercent" type="number" min="10" max="130" step="1" />
+          </div>
+          <div class="field">
+            <label>Tempo</label>
+            <input id="treinoTempo" type="text" placeholder="Ex.: 12:35, 20', AMRAP 10'..." />
+          </div>
+          <div class="field">
+            <label>Distância (km)</label>
+            <input id="treinoDist" type="number" step="0.01" min="0" />
+          </div>
+        </div>
 
         <div class="helper-text" id="treinoPercentInfo" style="margin-top:-4px; margin-bottom:4px;">
         </div>
@@ -861,7 +860,7 @@
         </div>
       </div>
 
-            <div class="card">
+      <div class="card">
         <h3 style="margin-top:0; margin-bottom:8px;">Registo e histórico</h3>
 
         <!-- Resumo rápido do dia (sempre visível) -->
@@ -869,49 +868,48 @@
         <div class="helper-text" id="treinoSugestao" style="margin-top:0; font-weight:500;"></div>
         <div class="helper-text" id="weeklyHistory" style="margin-top:4px;"></div>
 
-              <!-- Resumo rápido em chips -->
-<div id="treinoStats" class="stats-row" style="display:none;">
-  <div class="stat-chip">
-    <span>Carga total</span>
-    <span id="statCarga">0 kg</span>
-  </div>
-  <div class="stat-chip">
-    <span>Exercícios</span>
-    <span id="statExercicios">0</span>
-  </div>
-  <div class="stat-chip">
-    <span>Melhor tempo</span>
-    <span id="statTempo">–</span>
-  </div>
-  <div class="stat-chip">
-    <span>Volume</span>
-    <span id="statVolume">0 reps</span>
-  </div>
-</div>
+        <!-- Resumo rápido em chips -->
+        <div id="treinoStats" class="stats-row" style="display:none;">
+          <div class="stat-chip">
+            <span>Carga total</span>
+            <span id="statCarga">0 kg</span>
+          </div>
+          <div class="stat-chip">
+            <span>Exercícios</span>
+            <span id="statExercicios">0</span>
+          </div>
+          <div class="stat-chip">
+            <span>Melhor tempo</span>
+            <span id="statTempo">–</span>
+          </div>
+          <div class="stat-chip">
+            <span>Volume</span>
+            <span id="statVolume">0 reps</span>
+          </div>
+        </div>
 
         <!-- WOD do dia – compacto e fácil de ler -->
         <h4 style="margin-top:10px; margin-bottom:4px;">WOD do dia</h4>
-<div class="scroll" id="treinoScroll">
-  <table>
-    <thead>
-      <tr>
-        <th>Data</th>
-        <th>Exercício</th>
-        <th>Tipo</th>
-        <th>Rondas</th>
-        <th>Reps</th>
-        <th>Peso</th>
-        <th>% 1RM</th>
-        <th>Tempo</th>
-        <th>Distância (km)</th>
-        <th>Carga (kg)</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody id="treinoBody"></tbody>
-  </table>
-</div>
-
+        <div class="scroll" id="treinoScroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Exercício</th>
+                <th>Tipo</th>
+                <th>Rondas</th>
+                <th>Reps</th>
+                <th>Peso</th>
+                <th>% 1RM</th>
+                <th>Tempo</th>
+                <th>Distância (km)</th>
+                <th>Carga (kg)</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="treinoBody"></tbody>
+          </table>
+        </div>
 
         <!-- Botões de histórico e exportação -->
         <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">
@@ -926,9 +924,9 @@
 
         <!-- Histórico diário completo (todas as datas) -->
         <div id="dailyHistorySection" style="display:none; margin-top:8px;">
-  <h4 style="margin-top:0; margin-bottom:4px;">Histórico detalhado (todos os dias)</h4>
-  <div class="scroll" id="dailyHistoryScroll">
-    <table>
+          <h4 style="margin-top:0; margin-bottom:4px;">Histórico detalhado (todos os dias)</h4>
+          <div class="scroll" id="dailyHistoryScroll">
+            <table>
               <thead>
                 <tr>
                   <th>Data</th>
@@ -2551,98 +2549,78 @@ function printTreinosPdf() {
 }
 
 function buildSugestao(lista, totalCarga, totalSeries, blocosForca, blocosHipertrofia, blocosLeve, dia) {
-  let partes = [];
-
-  if (totalSeries === 0 || totalCarga === 0) {
-    return "Hoje o treino ficou muito leve. Se o objetivo é ganhar força e músculo, planeia pelo menos 2–3 blocos de trabalho com carga moderada a alta.";
+  // Caso de treino muito leve ou sem dados suficientes
+  if (!lista || !lista.length || totalSeries === 0 || totalCarga === 0) {
+    return "Treino muito leve hoje. Se queres progredir, planeia 2–3 blocos principais com alguma carga e um metcon simples.";
   }
 
-  partes.push("Bom trabalho hoje, treino concluído em " + dia + "!");
+  const partes = [];
 
-  const idade = profile && profile.idade ? profile.idade : null;
-  const sexo = profile && profile.sexo ? profile.sexo : null;
-  const peso = profile && profile.peso ? profile.peso : null;
-  const altura = profile && profile.altura ? profile.altura : null;
-  const objetivo = profile && profile.objetivo ? profile.objetivo : null;
+  // Mensagem base, sempre curta
+  partes.push(`Bom trabalho hoje – treino registado em ${dia}.`);
 
-  // Análise do tipo de blocos (força / hipertrofia / leve)
-  if (blocosForca === 0 && blocosHipertrofia === 0) {
-    partes.push("O dia ficou mais leve em termos de estímulo de força e hipertrofia.");
-    partes.push("Para evoluir, tenta incluir 2–3 exercícios principais entre 70–85% do teu 1RM, com 5–10 repetições.");
-  } else if (blocosForca > 0 && blocosHipertrofia === 0) {
-    partes.push("Treino muito focado em força máxima, com séries pesadas e repetições baixas.");
-    partes.push("Para aumentar também a massa muscular, acrescenta 2–4 séries de 6–10 repetições a 65–75% do 1RM em 1–2 exercícios grandes.");
-  } else if (blocosHipertrofia > 0 && blocosForca === 0) {
-    partes.push("Treino consistente para hipertrofia, com bastante trabalho de volume.");
-    partes.push("Para reforçar a força, vale a pena incluir 2–3 séries pesadas (3–5 repetições a 80–85% do 1RM) em movimentos fundamentais.");
-  } else {
-    partes.push("Boa combinação de força e hipertrofia hoje.");
-    partes.push("Mantém a lógica de 2–3 exercícios principais mais pesados (3–5 reps a 80–85% do 1RM) e 2–3 exercícios de apoio com 6–12 reps a 65–75% do 1RM.");
+  // Comentário rápido ao tipo de estímulo
+  if (blocosForca > 0 && blocosHipertrofia > 0) {
+    partes.push("Sessão equilibrada entre força e volume. Mantém esta combinação.");
+  } else if (blocosForca > 0) {
+    partes.push("Dia focado em força. Garante boa técnica nas séries pesadas.");
+  } else if (blocosHipertrofia > 0) {
+    partes.push("Boa dose de volume. Controla a fadiga para manter a qualidade das repetições.");
+  } else if (blocosLeve > 0) {
+    partes.push("Sessão mais leve. Pode ser útil para recuperação ativa.");
   }
 
-  // Ajustes por sexo
-  if (sexo === "homem") {
-    partes.push("Como homem, toleras bem blocos pesados entre 80–85% do 1RM, desde que respeites a técnica e a recuperação.");
-  } else if (sexo === "mulher") {
-    partes.push("Como mulher, costumas recuperar melhor entre séries; não tenhas receio de trabalhar com 8–12 repetições a 70–75% do 1RM nos grandes movimentos.");
+  // Ajuste extra com base no objetivo definido no perfil
+  const objetivo = profile && profile.objetivo ? profile.objetivo : "";
+
+  switch (objetivo) {
+    case "condicionamento":
+      partes.push("Para melhorar o condicionamento, aposta em metcons de 10–20 minutos com ritmo estável e poucas paragens.");
+      break;
+    case "forca_absoluta":
+      partes.push("Para ganhar força absoluta, mantém 2–3 blocos semanais de 3–5 repetições pesadas nos básicos.");
+      break;
+    case "potencia":
+      partes.push("Para desenvolver potência, usa cargas médias com movimentos explosivos e séries curtas bem rápidas.");
+      break;
+    case "resistencia_muscular":
+      partes.push("Para resistência muscular, trabalha séries longas e metcons com muitas repetições, sem deixar cair a técnica.");
+      break;
+    case "recomposicao":
+      partes.push("Para recomposição corporal, combina força com metcons moderados e foca-te na consistência semanal.");
+      break;
+    case "massa_funcional":
+      partes.push("Para ganhar massa funcional, usa cargas médias, 6–12 repetições e pausas controladas entre séries.");
+      break;
+    case "longevidade":
+      partes.push("Para longevidade, equilibra dias de carga com sessões mais leves e mobilidade regular.");
+      break;
+    case "competicao":
+      partes.push("Se o foco é competição, presta atenção ao pacing, transições e à qualidade dos movimentos RX.");
+      break;
+    default:
+      // Sem objetivo definido – deixar só a mensagem base + comentário do estímulo
+      break;
   }
 
-  // Ajustes por idade
-  if (idade && idade >= 40) {
-    partes.push("Com a idade atual, é importante controlar o volume: dá prioridade à qualidade do movimento e garante 48–72 horas de recuperação entre dias muito pesados.");
-  }
-
-  // Relação carga média por série / peso corporal
-  if (peso) {
-    const cargaMediaPorSerie = totalCarga / Math.max(totalSeries, 1);
-    const rel = cargaMediaPorSerie / peso;
-
-    if (rel < 0.8) {
-      partes.push("A carga média por série ficou relativamente baixa face ao teu peso corporal; aos poucos podes aproximar os principais levantamentos de 1.0–1.5x do teu peso.");
-    } else if (rel >= 0.8 && rel <= 1.5) {
-      partes.push("A relação entre carga média por série e peso corporal está numa faixa interessante para progresso contínuo. Mantém esta consistência.");
-    } else if (rel > 1.5) {
-      partes.push("Estás a trabalhar com uma carga média por série alta relativamente ao teu peso corporal; mantém atenção à técnica e à recuperação para evitar excesso de fadiga.");
-    }
-  }
-
-  // Comentário rápido por altura
-  if (altura) {
-    if (altura >= 185) {
-      partes.push("Com a tua estatura, dá atenção extra à posição lombar em agachamentos e deadlifts, mantendo o core firme.");
-    } else if (altura <= 165) {
-      partes.push("Com a tua estatura, tens vantagem em estabilizar cargas pesadas; usa isso para consolidar a técnica nos básicos.");
-    }
-  }
-
-  // Ajustes por objetivo principal
-  if (objetivo === "forca") {
-    partes.push("Como definiste ganhar força, garante 2–3 blocos pesados por semana entre 80–90% do 1RM nos levantamentos base.");
-  } else if (objetivo === "massa") {
-    partes.push("Para ganhar massa muscular, prioriza séries de 6–12 repetições a 65–80% do 1RM, com descanso controlado.");
-  } else if (objetivo === "perder") {
-    partes.push("Para perder peso, combina força com metcons de 10–20 minutos, mantendo a técnica sempre sólida.");
-  } else if (objetivo === "ganhar") {
-    partes.push("Para ganhar peso, aumenta o volume semanal e mantém uma boa base de força nos movimentos principais.");
-  } else if (objetivo === "resistencia") {
-    partes.push("Com objetivo de resistência, aposta mais em corrida, remo ou bicicleta por 15–30 minutos, mantendo 1–2 dias de força.");
-  } else if (objetivo === "manter") {
-    partes.push("Para manter forma física, 3–4 treinos semanais equilibrando força, metcon e mobilidade são suficientes.");
-  }
-
+  // Junta tudo numa “SMS” curta
   return partes.join(" ");
-}
-
-  function getMonday(dateStr) {
-  const d = new Date(dateStr);
+  }
+  
+function getMonday(dateStr) {
+  // dateStr no formato "YYYY-MM-DD"
+  const d = dateStr ? new Date(dateStr) : new Date();
   if (isNaN(d.getTime())) return null;
-  const day = d.getDay();
-  const diff = (day + 6) % 7;
-  d.setDate(d.getDate() - diff);
-  d.setHours(0, 0, 0, 0);
-  return d;
-}
 
+  const day = d.getDay(); // 0 = domingo, 1 = segunda, ..., 6 = sábado
+  const diff = (day === 0 ? -6 : 1) - day; // ajusta para segunda-feira
+
+  const monday = new Date(d);
+  monday.setDate(d.getDate() + diff);
+  monday.setHours(0, 0, 0, 0);
+  return monday;
+
+}
 function renderWeeklyHistory() {
   if (!weeklyHistoryEl) return;
 
@@ -3692,6 +3670,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
